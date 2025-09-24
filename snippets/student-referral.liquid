@@ -1,0 +1,188 @@
+{{ 'campaign-id.css' | asset_url | stylesheet_tag }}
+
+{% comment %} Modal to enter Student Referral Code {% endcomment %}
+<div id="popupFormModal" class="modal">
+  <div class="modal-content">
+    <form id="codeForm" onsubmit="handleSubmit(event)">
+      <h1>Student Referral Donation</h1>
+      <label for="studentRefCode">Enter Student Referral Code:</label>
+      <input
+        id="studentRefCode"
+        type="text"
+        oninput="validateInput(this)"
+        required
+      >
+      <button type="submit">Submit Code</button>
+    </form>
+
+    <p id="errorMsg" style="color: red"></p>
+  </div>
+</div>
+
+{% comment %} Fundraiser Details {% endcomment %}
+<div class="fullScreenCampaign">
+  <div class="campaignDetails">
+    <h3>Student Referral Donation</h3>
+    <h1 id="campaignTitle">FUNDRAISER TITLE HERE</h1>
+    <h2 id="campaignGroup">GROUP NAME HERE</h2>
+    <div id="campaignImg">
+      {{ 'product-1' | placeholder_svg_tag }}
+    </div>
+    <p id="campaignDescription">FUNDRAISER DESCRIPTION HERE</p>
+    <span>Student:</span>
+    <h3 id="studentName">Bart Simpson</h3>
+    <br>
+
+    {% comment %} MESSAGE INPUT  {% endcomment %}
+    <label for="messageInput">Write a message to your student:</label>
+    <br>
+    <textarea
+      name="message"
+      id="messageInput"
+      placeholder="Enter your message here"
+    ></textarea>
+
+    <br>
+    {% comment %} DONATION SELECTOR {% endcomment %}
+    {% if product.variants.size > 1 %}
+      <div class="donation-selector">
+        <label>Choose Your Donation Amount</label>
+        <form method="post" action="/cart/add">
+          <div id="donation-options">
+            {% for variant in product.variants %}
+              {% if variant.available %}
+                <label class="donation-option">
+                  <input
+                    type="radio"
+                    name="id"
+                    value="{{ variant.id }}"
+                    {% if forloop.first %}
+                      checked
+                    {% endif %}
+                  >
+                  {{ variant.price | money }}
+                </label>
+              {% endif %}
+            {% endfor %}
+          </div>
+          <input
+            id="fundraiserImgInput"
+            type="hidden"
+            name="properties[fundraiserImg]"
+            value="{{ data.avatar }}"
+          >
+          <input type="hidden" name="properties[Message Output]" id="messageOutput">
+          <button
+            class="addDonation product-form__submit button--full-width button"
+            type="submit"
+            class="btn btn-primary"
+          >
+            Donate
+          </button>
+        </form>
+      </div>
+    {% else %}
+      <p>This product has no variants available.</p>
+    {% endif %}
+  </div>
+</div>
+
+<script>
+  var modal = document.getElementById('popupFormModal');
+  const errMsg = document.getElementById('errorMsg');
+
+  window.onload = function () {
+    modal.style.display = 'block';
+    removeCode();
+  };
+  function validateInput(input) {
+    const value = input.value;
+    if (value.length > 6) {
+      input.value = value.slice(0, 6);
+    }
+  }
+
+  // Handle form submission and call API with user input
+  function handleSubmit(event) {
+    event.preventDefault();
+    const code = document.getElementById('studentRefCode').value;
+
+    if (code.length > 0) {
+      getCampaignData(code);
+    } else {
+      errMsg.textContent = 'Please enter a valid code';
+    }
+  }
+
+  // Resourcifi API data
+  async function getCampaignData(code) {
+    try {
+      const formData = new FormData();
+      formData.set('referral_code', code);
+      const response = await fetch(
+        'https://super-admin.scentcofundraising.com/api/fundraise/campaign-info-by-campaign-referral',
+        {
+          method: 'POST',
+          body: formData,
+        }
+      );
+      const responseData = await response.json();
+
+      // Success: Hide modal and populate fundraiser details
+      if (responseData.status === 'success') {
+        modal.style.display = 'none';
+        addCode(code);
+        addDetailsToDom(responseData.data);
+      }
+
+      // Fail: Prompt user to try again
+      else {
+        errMsg.textContent = 'Invalid Code. Try again';
+        console.log('INVALID CODE');
+      }
+    } catch (error) {
+      console.log('Something went wrong!', error);
+    }
+  }
+
+  // Populate fundraiser details
+  function addDetailsToDom(data) {
+    const campaignTitle = document.getElementById('campaignTitle');
+    const campaignGroup = document.getElementById('campaignGroup');
+    const campaignImg = document.getElementById('campaignImg');
+    const campaignDescription = document.getElementById('campaignDescription');
+    const studentName = document.getElementById('studentName');
+
+    campaignTitle.textContent = 'Fundraiser: ' + data.campaign_name;
+    campaignGroup.textContent = `${data.group_first_name || ''} ${data.group_last_name || ''}`;
+    campaignDescription.textContent = data.campaign_description;
+    studentName.textContent = `${data.student_first_name || ''} ${data.student_last_name || ''}`;
+
+    if (data.avatar) {
+      campaignImg.innerHTML = `<img src="${data.avatar}"/>`;
+      document.getElementById('fundraiserImgInput').value = data.avatar;
+    }
+  }
+
+  function removeCode() {
+    localStorage.removeItem('referral_code');
+  }
+
+  // Save Student Referral Code to local storage to collect upon order submission
+  function addCode(code) {
+    if (!code) {
+      removeCode();
+      return;
+    }
+    localStorage.setItem('referral_code', code);
+  }
+
+  document.addEventListener('DOMContentLoaded', function () {
+    var messageInput = document.getElementById('messageInput');
+    var messageOutput = document.getElementById('messageOutput');
+
+    messageInput.addEventListener('input', function () {
+      messageOutput.value = this.value;
+    });
+  });
+</script>

@@ -1,0 +1,188 @@
+<div class="mainContainer">
+  <!-- Modal 1 (enter phone number to send verification code) -->
+  <div class="modal-content">
+    <h3>Step 1: Enter Phone Number</h3>
+    <p>
+      Enter the phone number associated with your account below. We will send a verification code to this number, which
+      you will use to confirm your identity on the next screen.
+    </p>
+    <input placeholder="Phone number" id="phoneNumberInput" type="text">
+    <button class="btn" onclick="sendPhoneNumber()">Send Verification Code</button>
+    <br>
+    <br>
+    <div class="message" id="phoneNumberSuccess" style="display: none; color: green;">OTP was sent to your phone</div>
+    <div class="message" id="phoneNumberFail" style="display: none; color: red;">User not found</div>
+  </div>
+  <!-- Modal 2 (enter OTP for account verification) -->
+  <div class="modal-content">
+    <h3>Step 2: Verify with OTP</h3>
+    <p>Enter OTP sent to your phone:</p>
+    <input placeholder="0000" id="otpInput" type="number">
+    <button class="btn" onclick="verifyOTP()">Verify Account</button>
+    <br>
+    <br>
+    <div class="message" id="otpSuccess" style="display: none; color: green;">Validation successful</div>
+    <div class="message" id="otpFail" style="display: none; color: red;">Validation failed</div>
+  </div>
+  <!-- Modal 3 (final confirmation) -->
+  <div class="modal-content">
+    <h3>Step 3: Confirm Account Deletion</h3>
+    <p>
+      WARNING: This action CANNOT be undone. Deleting this accout will delete all of its spaces and data. All of your
+      current and previous campaign contribution records will be deleted.
+    </p>
+    <button class="btn" onclick="resetForm()">Keep my account and data</button>
+    <br>
+    <br>
+    <button class="btn" id="deleteBtn" onclick="deleteAccount()">Delete account</button>
+  </div>
+</div>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js" defer="defer"></script>
+<script>
+  var phoneNumber = '';
+  var phone = '';
+  var id = '';
+  const platform = 1;
+
+  function sendPhoneNumber() {
+    phoneNumber = document.getElementById('phoneNumberInput').value.trim();
+    phone = phoneNumber.startsWith('+1') ? phoneNumber : `+1${phoneNumber}`;
+
+    jQuery(document).ready(function () {
+      var url = 'https://super-admin.scentcofundraising.com/api/';
+      jQuery.ajax({
+        type: 'POST',
+        url: url + 'user-send-otp',
+        data: { phone, platform },
+        success: function (response) {
+          // Display the success message
+          document.getElementById('phoneNumberFail').style.display = 'none';
+          document.getElementById('phoneNumberSuccess').style.display = 'block';
+        },
+        error: function (error) {
+          console.log('Connection failed. Please check network.', error);
+          // Display error message
+          document.getElementById('phoneNumberSuccess').style.display = 'none';
+          document.getElementById('phoneNumberFail').style.display = 'block';
+        },
+      });
+    });
+  }
+
+  function resetForm() {
+    document.getElementById('phoneNumberInput').value = '';
+
+    document.getElementById('otpInput').value = '';
+  }
+
+  function verifyOTP() {
+    const otp = document.getElementById('otpInput').value.trim();
+
+    jQuery(document).ready(function () {
+      var url = 'https://super-admin.scentcofundraising.com/api/';
+      jQuery.ajax({
+        type: 'POST',
+        url: url + 'user-verify-otp',
+        data: { phone, otp, platform },
+        success: function (response) {
+          // Display the success message
+          document.getElementById('otpFail').style.display = 'none';
+          document.getElementById('otpSuccess').style.display = 'block';
+          id = response.data.id;
+        },
+        error: function (error) {
+          // Display the success message
+          document.getElementById('otpSuccess').style.display = 'none';
+          document.getElementById('otpFail').style.display = 'block';
+        },
+      });
+    });
+  }
+
+  function deleteAccount() {
+    jQuery(document).ready(function () {
+      var url = 'https://super-admin.scentcofundraising.com/api/';
+      jQuery.ajax({
+        type: 'POST',
+        url: url + 'delete-user-account',
+        data: { id },
+        success: function (response) {
+          var message = response.message;
+          alert(message);
+        },
+        error: function (error) {
+          alert('Connection failed. Please check network.', error);
+        },
+      });
+    });
+
+    resetForm();
+  }
+</script>
+
+<style>
+  .mainContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 10rem;
+  }
+
+  .modal-content {
+    margin: 2rem;
+    padding: 4rem;
+    border-radius: 30px;
+    background-color: #c2e5f2;
+    width: 100%;
+  }
+
+  @media (max-width: 900px) {
+    .modal-content {
+      max-width: 85%;
+    }
+  }
+
+  @media (min-width: 901px) and (max-width: 1400px) {
+    .modal-content {
+      max-width: 65%;
+    }
+  }
+
+  @media (min-width: 1401px) {
+    .modal-content {
+      max-width: 50%;
+    }
+  }
+
+  .btn {
+    background-color: #0094c9;
+    color: white;
+    padding: 1rem 2rem;
+    border-radius: 30px;
+    border: none;
+    cursor: pointer;
+  }
+
+  input {
+    border-radius: 5px;
+    border: none;
+    padding: 1rem 2rem;
+  }
+
+  @media (max-width: 541px) {
+    input {
+      margin-bottom: 2rem;
+    }
+  }
+
+  @media (min-width: 542px) {
+    input {
+      margin-right: 2rem;
+    }
+  }
+
+  #deleteBtn {
+    background-color: red;
+  }
+</style>

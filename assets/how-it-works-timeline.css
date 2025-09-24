@@ -1,0 +1,132 @@
+.outerTimelineContainer {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    height: 4000px;
+    width: 100%;
+    position: relative;
+    top: -25rem;
+    z-index: 0;
+}
+
+.timeline-box {
+    height: 95%;
+    width: 20%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.verticalBox {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: end;
+    padding-top: 20rem;
+
+}
+
+.timeline {
+    background-color: #0093C9;
+    display: block !important;
+    height: 90%;
+    width: 10px;
+    border-radius: 5px;
+    position: relative;
+    top: -45px;
+}
+
+.piggy {
+    width: 100%;
+    height: auto;
+}
+
+.piggyContainer {
+    width: 120px;
+    height: 15%;
+    display: flex;
+    align-items: end;
+    justify-content: center;
+    z-index: 5;
+    position: sticky;
+    top: 0px;
+}
+
+.row {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    align-items: center;
+    width: 95%;
+    height: 500px;
+}
+
+.row>img {
+    width: 300px;
+    height: auto;
+}
+
+.textBox {
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+    width: 50%;
+    height: auto;
+}
+
+@media (601px < width < 1000px) {
+    .verticalBox {
+        background-color: pink;
+    }
+}
+
+@media (width < 600px) {
+
+    h2,
+    .h2 {
+        font-size: 2.1rem;
+    }
+
+    p {
+        font-size: 1.3rem;
+    }
+
+    .verticalBox {
+        padding-top: 30rem;
+        align-items: center;
+    }
+
+    .timeline {
+        width: 6px;
+    }
+
+    .piggyContainer {
+        width: 80px;
+    }
+
+    .row {
+        flex-direction: column;
+        align-items: center;
+        width: 90%;
+        height: auto;
+    }
+
+    .row>img {
+        width: 80%;
+        height: auto;
+        padding-bottom: 2rem;
+    }
+
+    .textBox {
+        width: 100%;
+        text-align: center;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+}
+
+#shopify-section-template--24891623342401__how-it-works-timeline {
+    height: 3800px;
+}
