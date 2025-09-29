@@ -23,54 +23,6 @@
         "secondary_button_url": ""
       }
     },
-    "image_banner": {
-      "type": "image-banner",
-      "blocks": {
-        "heading": {
-          "type": "heading",
-          "settings": {
-            "heading": "Simple, smart, & stress-free school fundraising",
-            "heading_size": "hxl"
-          }
-        },
-        "text_x7KJQp": {
-          "type": "text",
-          "settings": {
-            "text": "We work hard so you can reach your goals",
-            "text_style": "subtitle"
-          }
-        },
-        "buttons_HAwpCn": {
-          "type": "buttons",
-          "settings": {
-            "button_label_1": "Start fundraising today",
-            "button_link_1": "shopify://pages/contact",
-            "button_style_secondary_1": false,
-            "button_label_2": "",
-            "button_link_2": "",
-            "button_style_secondary_2": false
-          }
-        }
-      },
-      "block_order": [
-        "heading",
-        "text_x7KJQp",
-        "buttons_HAwpCn"
-      ],
-      "settings": {
-        "image": "shopify://shop_images/Asset_40.svg",
-        "image_overlay_opacity": 0,
-        "image_height": "medium",
-        "desktop_content_position": "middle-left",
-        "show_text_box": true,
-        "desktop_content_alignment": "left",
-        "color_scheme": "scheme-1",
-        "image_behavior": "none",
-        "mobile_content_alignment": "center",
-        "stack_images_on_mobile": false,
-        "show_text_below": false
-      }
-    },
     "custom_liquid_JMY9bA": {
       "type": "custom-liquid",
       "custom_css": [
@@ -83,62 +35,6 @@
         "color_scheme": "",
         "padding_top": 0,
         "padding_bottom": 0
-      }
-    },
-    "multicolumn_7W9jGp": {
-      "type": "multicolumn",
-      "blocks": {
-        "column_LYwate": {
-          "type": "column",
-          "settings": {
-            "image": "shopify://shop_images/Asset_12_1.png",
-            "title": "Mobile app",
-            "text": "<p>Designed to make parent participation convenient and accessible.</p>",
-            "link_label": "Learn more",
-            "link": ""
-          }
-        },
-        "column_FNmD46": {
-          "type": "column",
-          "settings": {
-            "image": "shopify://shop_images/Asset_6_1.png",
-            "title": "Admin dashboard",
-            "text": "<p>Oversee and manage all aspects of your fundraiser through your dashboard.</p>",
-            "link_label": "Learn more",
-            "link": ""
-          }
-        },
-        "column_9iQ4bX": {
-          "type": "column",
-          "settings": {
-            "image": "shopify://shop_images/Asset_17_1.png",
-            "title": "Free lanyards",
-            "text": "<p>Send students home wearing our lanyards to share the fundraiser.</p>",
-            "link_label": "Learn more",
-            "link": ""
-          }
-        }
-      },
-      "block_order": [
-        "column_LYwate",
-        "column_FNmD46",
-        "column_9iQ4bX"
-      ],
-      "settings": {
-        "title": "Key features you'll love",
-        "heading_size": "h0",
-        "image_width": "third",
-        "image_ratio": "adapt",
-        "columns_desktop": 3,
-        "column_alignment": "center",
-        "background_style": "primary",
-        "button_label": "",
-        "button_link": "",
-        "color_scheme": "scheme-2",
-        "columns_mobile": "1",
-        "swipe_on_mobile": false,
-        "padding_top": 80,
-        "padding_bottom": 80
       }
     },
     "custom_liquid_X9PMTN": {
@@ -265,9 +161,7 @@
   },
   "order": [
     "hero_THbkFB",
-    "image_banner",
     "custom_liquid_JMY9bA",
-    "multicolumn_7W9jGp",
     "custom_liquid_X9PMTN",
     "rich_text_79BCzY",
     "how-it-works-timeline",
