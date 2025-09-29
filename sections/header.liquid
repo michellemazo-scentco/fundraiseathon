@@ -108,6 +108,59 @@
       padding-top: 0.5rem;
     }
   }
+
+  /* Keep the icons group on the far right and nicely spaced */
+.header__icons {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-left: auto; /* ensures the whole group sits at the far right */
+}
+
+/* Pill orange CTA */
+.nav-cta-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.6rem 1.1rem;
+  border-radius: 9999px;
+  background: #ff7a00;           /* orange */
+  color: #fff !important;         /* ensure text stays white */
+  text-decoration: none;
+  font-weight: 600;
+  line-height: 1;
+  border: 0;
+  outline: 0;
+  transition: transform .15s ease, box-shadow .15s ease, background .15s ease;
+  white-space: nowrap;
+}
+
+.nav-cta-button:hover { 
+  background: #e56e00; 
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px rgba(229, 110, 0, 0.35);
+}
+
+.nav-cta-button:active { 
+  transform: translateY(0);
+  box-shadow: none;
+}
+
+/* Tame the SVG icon size from the theme’s partial */
+.nav-cta-button svg {
+  width: 18px;
+  height: 18px;
+  display: block;
+  fill: currentColor;
+  stroke: currentColor;
+}
+
+/* Optional: compact on small screens */
+@media (max-width: 749px) {
+  .nav-cta-button { padding: 0.5rem 0.9rem; }
+  .nav-cta-label { font-size: 0.95rem; }
+}
+
 </style>
 
 {%- style -%}
