@@ -168,12 +168,12 @@
   .header {
     padding: {{ section.settings.padding_top | times: 0.5 | round: 0 }}px 3rem {{ section.settings.padding_bottom | times: 0.5 | round: 0 }}px 3rem;
     flex: 1; /* let header stretch full width inside wrapper */
-  display: flex;
-  align-items: center; /* vertical centering for contents */
-  justify-content: space-between; /* logo left, nav center, icons right */
-  height: 100%; /* take full height of wrapper */
-  padding: 0 2rem; /* control horizontal spacing */
-  }
+    display: flex;
+    align-items: center; /* vertical centering for contents */
+    justify-content: space-between; /* logo left, nav center, icons right */
+    height: 100%; /* take full height of wrapper */
+    padding: 0 2rem; /* control horizontal spacing */
+    }
 
   .section-header {
     position: sticky; /* This is for fixing a Safari z-index issue. PR #2147 */
