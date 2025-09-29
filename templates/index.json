@@ -23,6 +23,18 @@
         "secondary_button_url": ""
       }
     },
+    "custom_liquid_X9PMTN": {
+      "type": "custom-liquid",
+      "custom_css": [
+        ".pointed-border {position: relative; bottom: 0; left: 0; width: 100%; height: 50px; background-color: #Eaf3fb; clip-path: polygon(50% 100%, 0 0, 100% 0); box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);}"
+      ],
+      "settings": {
+        "custom_liquid": "<div class=\"pointed-border\">test</div>",
+        "color_scheme": "scheme-1",
+        "padding_top": 0,
+        "padding_bottom": 52
+      }
+    },
     "custom_liquid_JMY9bA": {
       "type": "custom-liquid",
       "custom_css": [
@@ -35,18 +47,6 @@
         "color_scheme": "",
         "padding_top": 0,
         "padding_bottom": 0
-      }
-    },
-    "custom_liquid_X9PMTN": {
-      "type": "custom-liquid",
-      "custom_css": [
-        ".pointed-border {position: relative; bottom: 0; left: 0; width: 100%; height: 50px; background-color: #c5f1ff; clip-path: polygon(50% 100%, 0 0, 100% 0); box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);}"
-      ],
-      "settings": {
-        "custom_liquid": "<div class=\"pointed-border\">test</div>",
-        "color_scheme": "scheme-1",
-        "padding_top": 0,
-        "padding_bottom": 52
       }
     },
     "rich_text_79BCzY": {
@@ -161,8 +161,8 @@
   },
   "order": [
     "hero_THbkFB",
-    "custom_liquid_JMY9bA",
     "custom_liquid_X9PMTN",
+    "custom_liquid_JMY9bA",
     "rich_text_79BCzY",
     "how-it-works-timeline",
     "rich_text_DegUFh",
