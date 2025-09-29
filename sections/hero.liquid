@@ -84,23 +84,36 @@
   position: relative;
   background: #eaf4fb;
   display: flex;
-  justify-content: space-around;
+  flex-wrap: wrap;
+  justify-content: space-between;
   align-items: center;
   padding: 80px 5%;
   overflow: hidden;
 }
 
-.hero-content {
-  min-width: 800px;
-  border: 1px solid black;
-  max-width: 600px;
+.hero-left {
+  flex: 1.5;
+  min-width: 300px;
   z-index: 2;
 }
 
+.hero-right {
+  flex: 1;
+  position: relative;
+  right: -200px;
+  z-index: 1;
+}
+
+.hero-image-wrapper img {
+  width: 100%;
+  height: auto;
+  max-width: 100%;
+  object-fit: contain;
+}
+
 .hero-content h1 {
-  font-family: 'Poppins', sans-serif;
-  font-size: 42px;
-  font-weight: 800px;
+  font-size: 2.8rem;
+  font-weight: 800;
   color: #1c1c3c;
   margin-bottom: 10px;
 }
@@ -125,9 +138,6 @@
 }
 
 .highlight-text {
-  font-family: 'Poppins', sans-serif;
-  font-size: 42px;
-  font-weight: 800px;
   position: relative;
   z-index: 2;
   color: #1c1c3c;
@@ -159,18 +169,6 @@
   background: transparent;
 }
 
-.hero-image-wrapper {
-  position: relative;
-  right: -100px;
-  max-width: 600px;
-  z-index: 1;
-}
-
-.hero-image-wrapper img {
-  width: 100%;
-  height: auto;
-}
-
 .hero-bottom-curve {
   position: absolute;
   bottom: -50px;
@@ -183,4 +181,26 @@
   border-bottom-right-radius: 100% 50px;
   z-index: 0;
 }
+
+/* Responsive adjustments */
+@media (max-width: 992px) {
+  .hero-landing-container {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .hero-left, .hero-right {
+    flex: 1 1 100%;
+    position: static;
+  }
+
+  .hero-image-wrapper {
+    margin-top: 40px;
+  }
+
+  .hero-buttons .btn {
+    margin-bottom: 10px;
+  }
+}
 </style>
+
