@@ -102,6 +102,21 @@
     line-height: calc(1 + 0.8 / var(--font-body-scale));
   }
 
+  .nav-cta-button {
+  display: inline-block;
+  padding: 0.6rem 1.5rem;
+  border-radius: 9999px; /* pill shape */
+  background-color: #000; /* change to your brand color */
+  color: #fff;
+  font-weight: 600;
+  text-decoration: none;
+  transition: background-color 0.3s ease;
+}
+
+.nav-cta-button:hover {
+  background-color: #333; /* hover state */
+}
+
   @media screen and (min-width: 750px) {
     .list-menu__item--link {
       padding-bottom: 0.5rem;
