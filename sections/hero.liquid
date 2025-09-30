@@ -113,6 +113,27 @@
   border: 1px solid black;
 }
 
+.hero-image-wrapper {
+  position: relative;
+  right: -200px;
+  flex: 1;
+  z-index: 1;
+}
+
+/* Gradient background */
+.hero-image-wrapper::before {
+  content: "";
+  position: absolute;
+  top: 10%;
+  left: 10%;
+  width: 120%;
+  height: 120%;
+  background: radial-gradient(circle at center, #ffdca7 0%, #ffe9c7 50%, transparent 100%);
+  z-index: -1;
+  border-radius: 50%;
+  filter: blur(40px);
+}
+
 .hero-content h1 {
   font-family: 'Poppins', sans-serif;
   font-size: 42px;
