@@ -62,7 +62,10 @@
   <div class="hero-content hero-left">
     <h1>{{ section.settings.headline }}</h1>
     <div class="highlighted-text-wrapper" id="highlighted-text">
-      <span class="highlight-bg"></span>
+      <span 
+        class="highlight-bg" 
+        style="background-image: url('{{ "brush-stroke.png" | file_url }}');">
+      </span>
       <span class="highlight-text">{{ section.settings.highlight_text }}</span>
     </div>
     <p>{{ section.settings.subheading }}</p>
