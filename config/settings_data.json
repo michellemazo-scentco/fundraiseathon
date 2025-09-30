@@ -368,8 +368,6 @@
     }
   },
   "platform_customizations": {
-    "custom_css": [
-      "/* Define the animation */@keyframes scroll-left {0% {transform: translateX(100%); /* Start off the right side */ } 100% {transform: translateX(-100%); /* Move off the left side */ }}"
-    ]
+    "custom_css": []
   }
 }

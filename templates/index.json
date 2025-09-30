@@ -31,7 +31,7 @@
       ],
       "settings": {
         "custom_liquid": "<div class=\"pointed-border\">test</div>",
-        "color_scheme": "scheme-4",
+        "color_scheme": "scheme-4742bebe-4397-4ae6-9687-035118945fe0",
         "padding_top": 0,
         "padding_bottom": 52
       }
@@ -42,38 +42,26 @@
         "heading_R6JNVc": {
           "type": "heading",
           "settings": {
-            "heading": "Talk about your brand",
+            "heading": "All your fundraisers, one clean view.",
             "heading_size": "h1"
           }
         },
         "text_XDiEgB": {
           "type": "text",
           "settings": {
-            "text": "<p>Share information about your brand with your customers. Describe a product, make announcements, or welcome customers to your store.</p>"
-          }
-        },
-        "button_fdGXHK": {
-          "type": "button",
-          "settings": {
-            "button_label": "Button label",
-            "button_link": "",
-            "button_style_secondary": false,
-            "button_label_2": "",
-            "button_link_2": "",
-            "button_style_secondary_2": false
+            "text": "<p>Track donations in real time, manage multiple fundraisers, send announcements and keep everything organized without the paperwork. All while parents donate and share through a simple app.</p>"
           }
         }
       },
       "block_order": [
         "heading_R6JNVc",
-        "text_XDiEgB",
-        "button_fdGXHK"
+        "text_XDiEgB"
       ],
       "name": "t:sections.rich-text.presets.name",
       "settings": {
         "desktop_content_position": "center",
-        "content_alignment": "center",
-        "color_scheme": "scheme-1",
+        "content_alignment": "left",
+        "color_scheme": "scheme-4742bebe-4397-4ae6-9687-035118945fe0",
         "full_width": true,
         "padding_top": 40,
         "padding_bottom": 52
