@@ -266,9 +266,17 @@
 <script>
   document.addEventListener("DOMContentLoaded", function() {
     const highlight = document.getElementById("highlighted-text");
-    highlight.addEventListener("mouseenter", function() {
-      highlight.classList.add("active");
-    });
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          highlight.classList.add("active");
+          observer.unobserve(highlight);
+        }
+      });
+    }, { threshold: 0.5 });
+
+    observer.observe(highlight);
   });
 </script>
 
