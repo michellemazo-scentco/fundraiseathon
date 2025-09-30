@@ -150,23 +150,44 @@
   font-size: 42px;
   font-weight: 800px;
   margin-bottom: 20px;
+  cursor: pointer;
 }
 
 .highlight-bg {
   position: absolute;
   bottom: 0;
   left: 0;
-  width: 100%;
+  width: 0%;
   height: 50%;
   background: #fdddb9;
   z-index: 1;
   transform: translateY(5px);
+  transition: width 0.4s ease;
 }
 
 .highlight-text {
   position: relative;
   z-index: 2;
   color: #1F2443;
+  transition: color 0.3s ease;
+}
+
+/* Hover effect */
+.highlighted-text-wrapper:hover .highlight-bg {
+  width: 100%;
+}
+
+.highlighted-text-wrapper:hover .highlight-text {
+  color: #000;
+}
+
+/* Permanent active state */
+.highlighted-text-wrapper.active .highlight-bg {
+  width: 100%;
+}
+
+.highlighted-text-wrapper.active .highlight-text {
+  color: #000;
 }
 
 .hero-content p {
@@ -247,4 +268,13 @@
   }
 }
 </style>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function() {
+    const highlight = document.getElementById("highlighted-text");
+    highlight.addEventListener("mouseenter", function() {
+      highlight.classList.add("active");
+    });
+  });
+</script>
 
