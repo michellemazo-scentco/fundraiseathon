@@ -11,6 +11,7 @@
   "sections": {
     "hero_THbkFB": {
       "type": "hero",
+      "custom_css": [],
       "name": "Hero Landing Section",
       "settings": {
         "hero_image": "shopify://shop_images/Frame_463.png",
@@ -35,18 +36,70 @@
         "padding_bottom": 52
       }
     },
-    "custom_liquid_JMY9bA": {
-      "type": "custom-liquid",
-      "custom_css": [
-        ".scrolling-banner {width: 100%; overflow: hidden; background-color: #007baf; padding: 10px 0; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); white-space: nowrap;}",
-        ".scrolling-text {display: inline-block; animation: scroll-left 15s linear infinite; font-size: 18px; font-weight: bold; color: white;}",
-        ".scrolling-text span {display: inline-block; margin: 0 50px; padding: 0 15px;}"
+    "rich_text_8pUh6L": {
+      "type": "rich-text",
+      "blocks": {
+        "heading_R6JNVc": {
+          "type": "heading",
+          "settings": {
+            "heading": "Talk about your brand",
+            "heading_size": "h1"
+          }
+        },
+        "text_XDiEgB": {
+          "type": "text",
+          "settings": {
+            "text": "<p>Share information about your brand with your customers. Describe a product, make announcements, or welcome customers to your store.</p>"
+          }
+        },
+        "button_fdGXHK": {
+          "type": "button",
+          "settings": {
+            "button_label": "Button label",
+            "button_link": "",
+            "button_style_secondary": false,
+            "button_label_2": "",
+            "button_link_2": "",
+            "button_style_secondary_2": false
+          }
+        }
+      },
+      "block_order": [
+        "heading_R6JNVc",
+        "text_XDiEgB",
+        "button_fdGXHK"
+      ],
+      "name": "t:sections.rich-text.presets.name",
+      "settings": {
+        "desktop_content_position": "center",
+        "content_alignment": "center",
+        "color_scheme": "",
+        "full_width": true,
+        "padding_top": 40,
+        "padding_bottom": 52
+      }
+    },
+    "rich_text_DegUFh": {
+      "type": "rich-text",
+      "blocks": {
+        "heading_phnRCW": {
+          "type": "heading",
+          "settings": {
+            "heading": "Schools are raising funds while having fun",
+            "heading_size": "h0"
+          }
+        }
+      },
+      "block_order": [
+        "heading_phnRCW"
       ],
       "settings": {
-        "custom_liquid": "<div class=\"scrolling-banner\">\n  <div class=\"scrolling-text\">\n    <span>READ-A-THON</span>\n    <span>RUN-A-THON</span>\n    <span>SING-A-THON</span>\n    <span>CODE-A-THON</span>\n    <span>JUMP-A-THON</span>\n    <span>SKATE-A-THON</span>\n    <span>DANCE-A-THON</span>\n  </div>\n</div>",
-        "color_scheme": "",
-        "padding_top": 0,
-        "padding_bottom": 0
+        "desktop_content_position": "center",
+        "content_alignment": "center",
+        "color_scheme": "scheme-2",
+        "full_width": true,
+        "padding_top": 68,
+        "padding_bottom": 52
       }
     },
     "rich_text_79BCzY": {
@@ -76,27 +129,18 @@
       "type": "how-it-works-timeline",
       "settings": {}
     },
-    "rich_text_DegUFh": {
-      "type": "rich-text",
-      "blocks": {
-        "heading_phnRCW": {
-          "type": "heading",
-          "settings": {
-            "heading": "Schools are raising funds while having fun",
-            "heading_size": "h0"
-          }
-        }
-      },
-      "block_order": [
-        "heading_phnRCW"
+    "custom_liquid_JMY9bA": {
+      "type": "custom-liquid",
+      "custom_css": [
+        ".scrolling-banner {width: 100%; overflow: hidden; background-color: #007baf; padding: 10px 0; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); white-space: nowrap;}",
+        ".scrolling-text {display: inline-block; animation: scroll-left 15s linear infinite; font-size: 18px; font-weight: bold; color: white;}",
+        ".scrolling-text span {display: inline-block; margin: 0 50px; padding: 0 15px;}"
       ],
       "settings": {
-        "desktop_content_position": "center",
-        "content_alignment": "center",
-        "color_scheme": "scheme-2",
-        "full_width": true,
-        "padding_top": 68,
-        "padding_bottom": 52
+        "custom_liquid": "<div class=\"scrolling-banner\">\n  <div class=\"scrolling-text\">\n    <span>READ-A-THON</span>\n    <span>RUN-A-THON</span>\n    <span>SING-A-THON</span>\n    <span>CODE-A-THON</span>\n    <span>JUMP-A-THON</span>\n    <span>SKATE-A-THON</span>\n    <span>DANCE-A-THON</span>\n  </div>\n</div>",
+        "color_scheme": "",
+        "padding_top": 0,
+        "padding_bottom": 0
       }
     },
     "multirow_Xz9ymk": {
@@ -162,10 +206,11 @@
   "order": [
     "hero_THbkFB",
     "custom_liquid_X9PMTN",
-    "custom_liquid_JMY9bA",
+    "rich_text_8pUh6L",
+    "rich_text_DegUFh",
     "rich_text_79BCzY",
     "how-it-works-timeline",
-    "rich_text_DegUFh",
+    "custom_liquid_JMY9bA",
     "multirow_Xz9ymk",
     "contact_form_mKKEYf"
   ]
