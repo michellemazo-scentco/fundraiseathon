@@ -70,11 +70,11 @@
       <a href="{{ section.settings.primary_button_url }}" class="btn btn-primary">{{ section.settings.primary_button_text }}</a>
       <a href="{{ section.settings.secondary_button_url }}" class="btn btn-secondary">{{ section.settings.secondary_button_text }}</a>
     </div>
-    <div class="hero-image-wrapper hero-right">
+  </div>
+  <div class="hero-image-wrapper hero-right">
     {% if section.settings.hero_image %}
       <img src="{{ section.settings.hero_image | image_url: width: 800 }}" alt="Hero Image">
     {% endif %}
-  </div>
   </div>
 
 </div>
