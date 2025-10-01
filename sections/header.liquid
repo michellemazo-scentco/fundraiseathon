@@ -69,9 +69,10 @@
     flex: 2;                 
     display: flex;
     align-items: center;     
-    justify-content: space-between; 
+     
     height: 100%;
-    padding: 0;              
+    padding: 0;       
+    border: 1px solid black;        
   
   }
 
@@ -177,7 +178,6 @@
 
 {%- style -%}
   .section-header {
-    border: 1px solid black; 
     position: sticky; /* Safari fix */
     margin-bottom: {{ section.settings.margin_bottom | times: 0.75 | round: 0 }}px;
   }
