@@ -170,20 +170,25 @@
 
   transform: scaleX(0);
   transform-origin: left;
-  transition: transform 0.8s ease;
+  animation: highlight-swipe 0.8s ease forwards;
+  animation-delay: 0.8s; /* delay after page load */
 }
 
 .highlight-text {
   position: relative;
   z-index: 2;
   color: #1F2443;
-  transition: color 0.3s ease;
 }
 
-/* On hover, animate in */
-/* Active state triggered by scroll */
-.highlighted-text-wrapper.active .highlight-bg {
-  transform: scaleX(1);
+/* Keyframes */
+@keyframes highlight-swipe {
+  from { transform: scaleX(0); }
+  to { transform: scaleX(1); }
+}
+
+@keyframes text-color {
+  from { color: #1c1c3c; }
+  to { color: #000; }
 }
 
 
