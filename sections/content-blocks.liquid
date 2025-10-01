@@ -125,14 +125,18 @@
   z-index: 2;
 }
 
-.gradient-overlay {
+
+
+.gradient-overlay::before {
+  content: "";
   position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(to bottom right, var(--gradient-color), rgba(49, 32, 32, 0));
-  z-index: 1;
-  border-radius: 12px;
+  top: 10%;
+  left: -20%;
+  width: 140%;
+  height: 140%;
+  background: radial-gradient(circle at center, #ffdca7 0%, #ffe9c7 50%, transparent 100%);
+  z-index: -1;
+  border-radius: 50%;
+  filter: blur(40px);
 }
 </style>
