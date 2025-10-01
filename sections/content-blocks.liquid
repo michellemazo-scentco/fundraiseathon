@@ -130,15 +130,21 @@
 }
 
 .image-wrapper::before {
+  .image-wrapper::before {
   content: "";
   position: absolute;
-  top: -20%;
-  left: -20%;
-  width: 140%;
+  top: -30%;
+  left: -10%;
+  width: 160%;
   height: 140%;
-  background: radial-gradient(circle at center, var(--gradient-color) 0%, transparent 80%);
+  background: radial-gradient(
+    ellipse at 30% 40%, 
+    var(--gradient-color) 0%, 
+    transparent 70%
+  );
   z-index: 1;
   filter: blur(60px);
   border-radius: 50%;
+}
 }
 </style>
