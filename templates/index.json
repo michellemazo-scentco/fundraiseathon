@@ -24,6 +24,14 @@
         "secondary_button_url": ""
       }
     },
+    "rich_text_image_6z6gBx": {
+      "type": "rich-text-image",
+      "name": "Rich Text with Image",
+      "settings": {
+        "heading": "All your fundrasiers, one clean view.",
+        "body_text": "<p>Track donations in real time, manage multiple fundraisers, send announcements and keep everything organized without the paperwork. All while parents donate and share through a simple app.</p>"
+      }
+    },
     "rich_text_8pUh6L": {
       "type": "rich-text",
       "blocks": {
@@ -181,6 +189,7 @@
   },
   "order": [
     "hero_THbkFB",
+    "rich_text_image_6z6gBx",
     "rich_text_8pUh6L",
     "rich_text_DegUFh",
     "rich_text_79BCzY",
