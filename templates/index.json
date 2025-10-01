@@ -33,6 +33,64 @@
         "image": "shopify://shop_images/Frame_471.png"
       }
     },
+    "content_blocks_nfcJij": {
+      "type": "content-blocks",
+      "blocks": {
+        "content_block_WnqneG": {
+          "type": "content_block",
+          "settings": {
+            "heading": "1. Set up your Fundraiser",
+            "text": "Once your School Admin account is created, enter your fundraiser details and goal. From the dashboard, you can manage your fundraiser, track donations in real time, and view analytics to monitor progress.",
+            "image": "shopify://shop_images/Monitor_XDR.png",
+            "gradient_color": "#000000"
+          }
+        },
+        "content_block_aRCnKN": {
+          "type": "content_block",
+          "settings": {
+            "heading": "2. Parents donate with one click",
+            "text": "Parents will download the Fundraise-a-thon App from the app store. Making donations is easy with credit cards, Apple Pay, Google Pay and Paypal.",
+            "gradient_color": "#000000"
+          }
+        },
+        "content_block_Bm9Egi": {
+          "type": "content_block",
+          "settings": {
+            "heading": "Feature TitleParents earn Amazon rewards with every donation",
+            "text": "Parents earn rewards as they give. For every $50 donated, whether parents    or friends and family, they receive $5 in Amazon rewards for up to $50. This makes it easy and motivating to keep the donations flowing.",
+            "gradient_color": "#000000"
+          }
+        },
+        "content_block_8bFeJC": {
+          "type": "content_block",
+          "settings": {
+            "heading": "4. Expert Support Every Step of the Way",
+            "text": "You’re never on your own. From sign-up to collecting your funds, our team provides dedicated customer service to guide you, answer questions, and make your fundraiser smooth and successful.",
+            "gradient_color": "#000000"
+          }
+        },
+        "content_block_JTTzbH": {
+          "type": "content_block",
+          "settings": {
+            "heading": "5. 85% of Every Dollar Goes Back to Your School",
+            "text": "At the end of your fundraiser, you will receive your funds with 85% of what you earned! The 15% portion of each donation helps cover payment processing fees and the operating costs of maintaining our platform, ensuring secure transactions and protecting donor data.",
+            "image": "shopify://shop_images/Monitor_XDR.png",
+            "gradient_color": "#000000"
+          }
+        }
+      },
+      "block_order": [
+        "content_block_WnqneG",
+        "content_block_aRCnKN",
+        "content_block_Bm9Egi",
+        "content_block_8bFeJC",
+        "content_block_JTTzbH"
+      ],
+      "name": "Alternating Image + Text",
+      "settings": {
+        "main_heading": "How it Works"
+      }
+    },
     "image_with_text_w6aRem": {
       "type": "image-with-text",
       "blocks": {
@@ -95,6 +153,7 @@
   "order": [
     "hero_THbkFB",
     "rich_text_image_6z6gBx",
+    "content_blocks_nfcJij",
     "image_with_text_w6aRem",
     "how-it-works-timeline"
   ]
