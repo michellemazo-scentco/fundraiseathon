@@ -67,7 +67,8 @@
       "custom_css": [
         "h2 {font-family: \"Poppins\", sans-serif; font-size: 42px; font-weight: 800; padding: 0; margin: 0;}",
         "p {font-size: 20px; font-family: \"Roboto\", sans-serif; padding: 0; margin: 0;}",
-        "img {width: 100%; height: auto; object-fit: contain; height: 300px;}"
+        "img {width: 100%; height: auto; object-fit: contain; height: 300px;}",
+        ".button{border-radius: 15px;}"
       ],
       "name": "t:sections.image-with-text.presets.name",
       "settings": {
@@ -82,8 +83,8 @@
         "color_scheme": "scheme-588df859-28d1-47c2-b0d1-4b5f486f8154",
         "image_behavior": "none",
         "mobile_content_alignment": "left",
-        "padding_top": 36,
-        "padding_bottom": 36
+        "padding_top": 0,
+        "padding_bottom": 0
       }
     },
     "rich_text_DegUFh": {
