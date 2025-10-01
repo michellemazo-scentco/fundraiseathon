@@ -33,6 +33,58 @@
         "image": "shopify://shop_images/Frame_471.png"
       }
     },
+    "image_with_text_w6aRem": {
+      "type": "image-with-text",
+      "blocks": {
+        "heading_aiPmMW": {
+          "type": "heading",
+          "settings": {
+            "heading": "Ready to Get Started?",
+            "heading_size": "h1"
+          }
+        },
+        "text_NHgYkT": {
+          "type": "text",
+          "settings": {
+            "text": "<p>Sign up today and launch your school fundraiser in minutes—simple setup, instant tracking, and no extra hassle</p>",
+            "text_style": "body"
+          }
+        },
+        "button_NJLinH": {
+          "type": "button",
+          "settings": {
+            "button_label": "Start Fundraising",
+            "button_link": "",
+            "button_style_secondary": false
+          }
+        }
+      },
+      "block_order": [
+        "heading_aiPmMW",
+        "text_NHgYkT",
+        "button_NJLinH"
+      ],
+      "custom_css": [
+        "h2 {font-family: \"Poppins\", sans-serif; font-size: 42px; font-weight: 800;}",
+        "p {font-size: 20px; font-family: 'Roboto', sans-serif;}"
+      ],
+      "name": "t:sections.image-with-text.presets.name",
+      "settings": {
+        "image": "shopify://shop_images/Group.png",
+        "height": "small",
+        "desktop_image_width": "small",
+        "layout": "text_first",
+        "desktop_content_position": "top",
+        "desktop_content_alignment": "left",
+        "content_layout": "no-overlap",
+        "section_color_scheme": "scheme-588df859-28d1-47c2-b0d1-4b5f486f8154",
+        "color_scheme": "scheme-588df859-28d1-47c2-b0d1-4b5f486f8154",
+        "image_behavior": "none",
+        "mobile_content_alignment": "left",
+        "padding_top": 36,
+        "padding_bottom": 36
+      }
+    },
     "rich_text_DegUFh": {
       "type": "rich-text",
       "blocks": {
@@ -160,6 +212,7 @@
   "order": [
     "hero_THbkFB",
     "rich_text_image_6z6gBx",
+    "image_with_text_w6aRem",
     "rich_text_DegUFh",
     "rich_text_79BCzY",
     "how-it-works-timeline",
