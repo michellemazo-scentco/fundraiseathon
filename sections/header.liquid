@@ -127,7 +127,7 @@
   .header__icons {
     display: flex;
     align-items: center;
-    
+    gap: 12px;
   }
 
   /* School Admin CTA button */
@@ -177,6 +177,7 @@
 
 {%- style -%}
   .section-header {
+    border: 1px solid black; 
     position: sticky; /* Safari fix */
     margin-bottom: {{ section.settings.margin_bottom | times: 0.75 | round: 0 }}px;
   }
