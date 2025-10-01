@@ -38,27 +38,28 @@
     }
   {%- endif -%}
 
+  /* Floating pill wrapper */
   .header-wrapper {
     top: 20px;
     z-index: 1000;
     position: sticky;
-    max-width: 1200px;
+    margin: 30px auto 0 auto;
+    max-width: 1200px;       /* pill width */
     border-radius: 15px;
     background-color: white;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
     transition: all 0.3s ease-in-out;
-    margin-top: 30px;
-    height: 80px; 
+
+    height: 80px;            /* control nav height */
     display: flex; 
     align-items: center;
-    padding: 0 2rem;
+
+    padding: 0 2rem;         /* reduced left/right padding */
   }
-
-
 
   @media screen and (min-width: 990px) {
     .header-wrapper {
-      padding: 1rem 2rem;
+      padding: 0 2rem; /* keep consistent on desktop */
     }
   }
 
@@ -68,12 +69,24 @@
     }
   }
 
+  /* Internal header layout */
+  .header {
+    flex: 1;                 /* stretch full width inside wrapper */
+    display: flex;
+    align-items: center;     /* vertical centering */
+    justify-content: space-between; /* logo left, menu center, icons right */
+    height: 100%;
+    padding: 0;              /* no extra padding, wrapper handles spacing */
+  }
+
+  /* Menu drawer alignment */
   .menu-drawer-container {
     display: flex;
     justify-content: center;
     align-items: center;
   }
 
+  /* Inline nav menu */
   .list-menu {
     list-style: none;
     padding: 0;
@@ -112,23 +125,23 @@
     }
   }
 
-  /* Keep the icons group on the far right and nicely spaced */
+  /* Icons group on far right */
   .header__icons {
     display: flex;
     align-items: center;
     gap: 12px;
-    margin-left: auto; /* ensures the whole group sits at the far right */
+    margin-left: auto; /* ensures icons (CTA) stay far right */
   }
 
-  /* Pill orange CTA */
+  /* School Admin CTA button */
   .nav-cta-button {
     display: inline-flex;
     align-items: center;
     gap: 0.5rem;
-    padding: 10px 10px;
+    padding: 10px 14px;
     border-radius: 5px;
     background: #E1831B;           /* orange */
-    color: #fff !important;         /* ensure text stays white */
+    color: #fff !important;        /* ensure text stays white */
     text-decoration: none;
     line-height: 1;
     border: 0;
@@ -137,6 +150,7 @@
     white-space: nowrap;
     font-family: 'Roboto', sans-serif;
     font-size: 16px;
+    font-weight: 600;
   }
 
   .nav-cta-button:hover { 
@@ -150,7 +164,7 @@
     box-shadow: none;
   }
 
-  /* Tame the SVG icon size from the theme’s partial */
+  /* Tame the SVG icon size */
   .nav-cta-button svg {
     width: 18px;
     height: 18px;
@@ -159,35 +173,17 @@
     stroke: currentColor;
   }
 
-  /* Optional: compact on small screens */
+  /* Optional: compact button on small screens */
   @media (max-width: 749px) {
     .nav-cta-button { padding: 0.5rem 0.9rem; }
     .nav-cta-label { font-size: 0.95rem; }
   }
-
 </style>
 
 {%- style -%}
-  .header {
-    flex: 1;                 /* stretch full width inside wrapper */
-  display: flex;
-  align-items: center;     /* vertical centering */
-  justify-content: space-between; /* logo left, menu center, icons right */
-  height: 100%;
-  padding: 0;              /* 
-    }
-
   .section-header {
-    position: sticky; /* This is for fixing a Safari z-index issue. PR #2147 */
+    position: sticky; /* Safari fix */
     margin-bottom: {{ section.settings.margin_bottom | times: 0.75 | round: 0 }}px;
-  }
-
-
-  @media screen and (min-width: 990px) {
-    .header {
-      padding-top: {{ section.settings.padding_top }}px;
-      padding-bottom: {{ section.settings.padding_bottom }}px;
-    }
   }
 {%- endstyle -%}
 
