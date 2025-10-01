@@ -87,139 +87,15 @@
         "padding_bottom": 0
       }
     },
-    "rich_text_DegUFh": {
-      "type": "rich-text",
-      "blocks": {
-        "heading_phnRCW": {
-          "type": "heading",
-          "settings": {
-            "heading": "Schools are raising funds while having fun",
-            "heading_size": "h0"
-          }
-        }
-      },
-      "block_order": [
-        "heading_phnRCW"
-      ],
-      "settings": {
-        "desktop_content_position": "center",
-        "content_alignment": "center",
-        "color_scheme": "scheme-2",
-        "full_width": true,
-        "padding_top": 68,
-        "padding_bottom": 52
-      }
-    },
-    "rich_text_79BCzY": {
-      "type": "rich-text",
-      "blocks": {
-        "heading_dpXQA3": {
-          "type": "heading",
-          "settings": {
-            "heading": "How it works",
-            "heading_size": "h0"
-          }
-        }
-      },
-      "block_order": [
-        "heading_dpXQA3"
-      ],
-      "settings": {
-        "desktop_content_position": "center",
-        "content_alignment": "center",
-        "color_scheme": "",
-        "full_width": true,
-        "padding_top": 40,
-        "padding_bottom": 52
-      }
-    },
     "how-it-works-timeline": {
       "type": "how-it-works-timeline",
       "settings": {}
-    },
-    "custom_liquid_JMY9bA": {
-      "type": "custom-liquid",
-      "custom_css": [
-        ".scrolling-banner {width: 100%; overflow: hidden; background-color: #007baf; padding: 10px 0; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); white-space: nowrap;}",
-        ".scrolling-text {display: inline-block; animation: scroll-left 15s linear infinite; font-size: 18px; font-weight: bold; color: white;}",
-        ".scrolling-text span {display: inline-block; margin: 0 50px; padding: 0 15px;}"
-      ],
-      "settings": {
-        "custom_liquid": "<div class=\"scrolling-banner\">\n  <div class=\"scrolling-text\">\n    <span>READ-A-THON</span>\n    <span>RUN-A-THON</span>\n    <span>SING-A-THON</span>\n    <span>CODE-A-THON</span>\n    <span>JUMP-A-THON</span>\n    <span>SKATE-A-THON</span>\n    <span>DANCE-A-THON</span>\n  </div>\n</div>",
-        "color_scheme": "",
-        "padding_top": 0,
-        "padding_bottom": 0
-      }
-    },
-    "multirow_Xz9ymk": {
-      "type": "multirow",
-      "blocks": {
-        "row_hggDXh": {
-          "type": "row",
-          "settings": {
-            "image": "shopify://shop_images/Group_186_1e3cd93d-1a22-408a-b3ed-087da56d79d1.png",
-            "caption": "Raised $24,688",
-            "heading": "Fairview Elementary",
-            "text": "<p>“We loved Fundraise-A-Thon so much! It was super easy to use and the customer service team was AWESOME”</p>",
-            "button_label": "",
-            "button_link": ""
-          }
-        },
-        "row_hDfRi7": {
-          "type": "row",
-          "settings": {
-            "image": "shopify://shop_images/Group_185.png",
-            "caption": "Raised $21,765",
-            "heading": "Sunflower Preschool",
-            "text": "<p>“The kids had a blast during our fundraiser and the teachers thought it was a breeze! 10/10 would do it again”</p>",
-            "button_label": "",
-            "button_link": ""
-          }
-        }
-      },
-      "block_order": [
-        "row_hggDXh",
-        "row_hDfRi7"
-      ],
-      "custom_css": [
-        "img {object-fit: contain;}"
-      ],
-      "settings": {
-        "image_height": "small",
-        "desktop_image_width": "small",
-        "heading_size": "h1",
-        "text_style": "body",
-        "button_style": "secondary",
-        "desktop_content_position": "middle",
-        "desktop_content_alignment": "left",
-        "image_layout": "align-left",
-        "section_color_scheme": "scheme-2",
-        "row_color_scheme": "scheme-2",
-        "mobile_content_alignment": "left",
-        "padding_top": 36,
-        "padding_bottom": 36
-      }
-    },
-    "contact_form_mKKEYf": {
-      "type": "contact-form",
-      "settings": {
-        "heading": "Contact us",
-        "heading_size": "h1",
-        "color_scheme": "scheme-1",
-        "padding_top": 36,
-        "padding_bottom": 36
-      }
     }
   },
   "order": [
     "hero_THbkFB",
     "rich_text_image_6z6gBx",
     "image_with_text_w6aRem",
-    "rich_text_DegUFh",
-    "rich_text_79BCzY",
-    "how-it-works-timeline",
-    "custom_liquid_JMY9bA",
-    "multirow_Xz9ymk",
-    "contact_form_mKKEYf"
+    "how-it-works-timeline"
   ]
 }
