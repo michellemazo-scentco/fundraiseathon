@@ -1,0 +1,72 @@
+{% schema %}
+{
+  "name": "Rich Text with Image",
+  "tag": "section",
+  "class": "rich-text-with-image",
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Your Heading Here"
+    },
+    {
+      "type": "richtext",
+      "id": "body_text",
+      "label": "Body Text",
+      "default": "<p>This is some rich body text.</p>"
+    },
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Image"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Rich Text with Image"
+    }
+  ]
+}
+{% endschema %}
+
+<section class="rich-text-with-image-section">
+  <div class="page-width text-center">
+    {% if section.settings.heading != blank %}
+      <h2>{{ section.settings.heading }}</h2>
+    {% endif %}
+
+    {% if section.settings.body_text != blank %}
+      <div class="rte">{{ section.settings.body_text }}</div>
+    {% endif %}
+
+    {% if section.settings.image %}
+      <div class="image-wrapper">
+        <img src="{{ section.settings.image | image_url: width: 1200 }}" alt="{{ section.settings.heading | escape }}" loading="lazy">
+      </div>
+    {% endif %}
+  </div>
+</section>
+
+<style>
+  .rich-text-with-image-section {
+    padding: 40px 0;
+  }
+
+  .rich-text-with-image-section h2 {
+    margin-bottom: 20px;
+    font-size: 2rem;
+  }
+
+  .rich-text-with-image-section .rte {
+    margin-bottom: 30px;
+    max-width: 700px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .rich-text-with-image-section .image-wrapper img {
+    max-width: 100%;
+    height: auto;
+  }
+</style>
