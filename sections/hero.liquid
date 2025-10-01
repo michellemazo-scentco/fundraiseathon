@@ -76,7 +76,12 @@
       <img src="{{ section.settings.hero_image | image_url: width: 800 }}" alt="Hero Image">
     {% endif %}
   </div>
-  <div class="hero-bottom-curve"></div>
+  <div class="hero-bottom-curve">
+    <svg viewBox="0 0 1440 120" xmlns="http://www.w3.org/2000/svg">
+      <path d="M0,0 C480,120 960,0 1440,120 L1440,0 L0,0 Z" fill="#ffffff"/>
+    </svg>
+  </div>
+
 </div>
 
 <style>
@@ -223,16 +228,19 @@
 
 .hero-bottom-curve {
   position: absolute;
-  bottom: -50px;
-  left: 50%;
-  transform: translateX(-50%);
+  bottom: -1px;
+  left: 0;
   width: 100%;
-  height: 100px;
-  background: #eaf4fb;
-  border-bottom-left-radius: 100% 50px;
-  border-bottom-right-radius: 100% 50px;
-  z-index: 0;
+  overflow: hidden;
+  line-height: 0;
 }
+
+.hero-bottom-curve svg {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
 
 .btn-primary:hover {
   background-color: #e67e00; /* darker orange */
