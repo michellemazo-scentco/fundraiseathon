@@ -57,32 +57,32 @@
   ]
 }
 {% endschema %}
-<div class="hero=page">
-<div class="hero-landing-container">
-  <div class="hero-content hero-left">
-    <h1>{{ section.settings.headline }}</h1>
-    <div class="highlighted-text-wrapper" id="highlighted-text">
-      <span class="highlight-bg"></span>
-      <span class="highlight-text">{{ section.settings.highlight_text }}</span>
+<div class="hero-page">
+  <div class="hero-landing-container">
+    <div class="hero-content hero-left">
+      <h1>{{ section.settings.headline }}</h1>
+      <div class="highlighted-text-wrapper" id="highlighted-text">
+        <span class="highlight-bg"></span>
+        <span class="highlight-text">{{ section.settings.highlight_text }}</span>
+      </div>
+      <p>{{ section.settings.subheading }}</p>
+      <div class="hero-buttons">
+        <a href="{{ section.settings.primary_button_url }}" class="btn btn-primary">{{ section.settings.primary_button_text }}</a>
+        <a href="{{ section.settings.secondary_button_url }}" class="btn btn-secondary">{{ section.settings.secondary_button_text }}</a>
+      </div>
     </div>
-    <p>{{ section.settings.subheading }}</p>
-    <div class="hero-buttons">
-      <a href="{{ section.settings.primary_button_url }}" class="btn btn-primary">{{ section.settings.primary_button_text }}</a>
-      <a href="{{ section.settings.secondary_button_url }}" class="btn btn-secondary">{{ section.settings.secondary_button_text }}</a>
+    <div class="hero-image-wrapper hero-right">
+      {% if section.settings.hero_image %}
+        <img src="{{ section.settings.hero_image | image_url: width: 800 }}" alt="Hero Image">
+      {% endif %}
     </div>
-  </div>
-  <div class="hero-image-wrapper hero-right">
-    {% if section.settings.hero_image %}
-      <img src="{{ section.settings.hero_image | image_url: width: 800 }}" alt="Hero Image">
-    {% endif %}
-  </div>
 
-</div>
-<div class="hero-bottom-curve">
-    <svg viewBox="0 0 1440 120" xmlns="http://www.w3.org/2000/svg">
-      <path d="M0,0 C480,120 960,0 1440,120 L1440,0 L0,0 Z" fill="#EAF3FB"/>
-    </svg>
-</div>
+  </div>
+  <div class="hero-bottom-curve">
+      <svg viewBox="0 0 1440 120" xmlns="http://www.w3.org/2000/svg">
+        <path d="M0,0 C480,120 960,0 1440,120 L1440,0 L0,0 Z" fill="#EAF3FB"/>
+      </svg>
+  </div>
 </div>
 
 <style>
