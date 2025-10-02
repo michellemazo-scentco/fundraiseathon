@@ -213,9 +213,12 @@
     const nextBtn = container.querySelector('[data-carousel-next]');
     let currentIndex = 1;
 
+    const totalCards = cards.length;
+    const visibleCards = 3;
+
     function updateCarousel() {
-      const cardWidth = cards[0].offsetWidth + 16;
-      const offset = (currentIndex - 1) * cardWidth;
+      const cardWidth = cards[0].offsetWidth + 16; // includes margin
+      const offset = Math.max(0, (currentIndex - 1) * cardWidth);
       track.style.transform = `translateX(-${offset}px)`;
 
       cards.forEach((card, index) => {
@@ -227,15 +230,13 @@
       });
     }
 
-    prevBtn.addEventListener('click', () => {
-      currentIndex = Math.max(0, currentIndex - 1);
+    function goTo(index) {
+      currentIndex = (index + totalCards) % totalCards;
       updateCarousel();
-    });
+    }
 
-    nextBtn.addEventListener('click', () => {
-      currentIndex = Math.min(cards.length - 1, currentIndex + 1);
-      updateCarousel();
-    });
+    prevBtn.addEventListener('click', () => goTo(currentIndex - 1));
+    nextBtn.addEventListener('click', () => goTo(currentIndex + 1));
 
     dots.forEach(dot => {
       dot.addEventListener('click', () => {
@@ -244,8 +245,30 @@
       });
     });
 
+    // Auto-slide every 5 seconds
+    let autoSlide = true;
+    let interval = setInterval(() => {
+      if (autoSlide) goTo(currentIndex + 1);
+    }, 5000);
+
+    container.addEventListener('mouseenter', () => autoSlide = false);
+    container.addEventListener('mouseleave', () => autoSlide = true);
+
+    // Swipe support
+    let startX = 0;
+    container.addEventListener('touchstart', e => {
+      startX = e.touches[0].clientX;
+    });
+
+    container.addEventListener('touchend', e => {
+      let deltaX = e.changedTouches[0].clientX - startX;
+      if (deltaX > 50) goTo(currentIndex - 1);
+      if (deltaX < -50) goTo(currentIndex + 1);
+    });
+
     window.addEventListener('resize', updateCarousel);
     updateCarousel();
   })();
 </script>
 {% endjavascript %}
+

@@ -190,6 +190,15 @@
             "school_logo": "shopify://shop_images/Group_186_1e3cd93d-1a22-408a-b3ed-087da56d79d1.png"
           }
         },
+        "review_Q6pFnt": {
+          "type": "review",
+          "settings": {
+            "title": "",
+            "body": "",
+            "reviewer": "",
+            "school": ""
+          }
+        },
         "review_pBVxFG": {
           "type": "review",
           "settings": {
@@ -204,6 +213,7 @@
         "review_Pw78TA",
         "review_bjXYxz",
         "review_CYDYeJ",
+        "review_Q6pFnt",
         "review_pBVxFG"
       ],
       "name": "Reviews Carousel",
