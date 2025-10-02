@@ -57,7 +57,7 @@
   ]
 }
 {% endschema %}
-
+<div class="hero=page">
 <div class="hero-landing-container">
   <div class="hero-content hero-left">
     <h1>{{ section.settings.headline }}</h1>
@@ -83,8 +83,12 @@
       <path d="M0,0 C480,120 960,0 1440,120 L1440,0 L0,0 Z" fill="#EAF3FB"/>
     </svg>
 </div>
+</div>
 
 <style>
+.hero-page{
+  overflow: hidden;
+}
 .hero-landing-container {
   position: relative;
   background: #EAF3FB;
@@ -93,7 +97,7 @@
   justify-content: space-between;
   align-items: center;
   padding: 80px 5%;
-  overflow: hidden;
+  overflow: visible;
 }
 
 .hero-left {
