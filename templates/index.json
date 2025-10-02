@@ -50,6 +50,7 @@
           "settings": {
             "heading": "2. Parents donate with one click",
             "text": "Parents will download the Fundraise-a-thon App from the app store. Making donations is easy with credit cards, Apple Pay, Google Pay and Paypal.",
+            "image": "shopify://shop_images/Monitor_XDR.png",
             "gradient_color": "#000000"
           }
         },
