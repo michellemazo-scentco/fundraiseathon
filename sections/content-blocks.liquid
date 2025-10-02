@@ -112,7 +112,8 @@
 }
 
 .alternating-section .text-content {
-  flex: 1 1 45%;
+  flex: 1 1 50%;
+  min-width: 300px
 }
 
 .text-content h3{
@@ -129,7 +130,8 @@
 }
 
 .alternating-section .image-content {
-  flex: 1 1 45%;
+  flex: 1 1 50%;
+  max-width: 500px;
 }
 
 .image-content {
@@ -156,6 +158,10 @@
   pointer-events: none;
 }
 .image-wrapper img {
+  width: 100%;      /* scales fluidly within .image-content */
+  height: auto;     /* keeps aspect ratio */
+  display: block;
+  border-radius: 12px;
   position: relative;
   z-index: 2;
 }
