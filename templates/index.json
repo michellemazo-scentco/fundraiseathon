@@ -152,11 +152,6 @@
         "padding_bottom": 0
       }
     },
-    "how-it-works-timeline": {
-      "type": "how-it-works-timeline",
-      "disabled": true,
-      "settings": {}
-    },
     "reviews_czKQgj": {
       "type": "reviews",
       "blocks": {
@@ -221,6 +216,11 @@
         "review_heading": "What Schools Are Saying",
         "review_body": "Real stories from admins and parents who made fundraising easier with our platform."
       }
+    },
+    "how-it-works-timeline": {
+      "type": "how-it-works-timeline",
+      "disabled": true,
+      "settings": {}
     }
   },
   "order": [
@@ -228,7 +228,7 @@
     "rich_text_image_6z6gBx",
     "content_blocks_nfcJij",
     "image_with_text_w6aRem",
-    "how-it-works-timeline",
-    "reviews_czKQgj"
+    "reviews_czKQgj",
+    "how-it-works-timeline"
   ]
 }
