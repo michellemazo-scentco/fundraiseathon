@@ -46,7 +46,6 @@
 {% endschema %}
 
 {% stylesheet %}
-<style>
   .review-carousel-container {
     position: relative;
     overflow: hidden;
@@ -150,7 +149,22 @@
     font-size: 1.5rem;
     cursor: pointer;
   }
-</style>
+  .carousel-navigation {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.arrow-btn {
+  background: none;
+  border: none;
+  font-size: 1.75rem;
+  cursor: pointer;
+  color: #007aff;
+  padding: 0 0.5rem;
+}
 {% endstylesheet %}
 
 <div class="review-carousel-container" data-reviews-carousel>
@@ -173,15 +187,17 @@
     {% endfor %}
   </div>
 
-  <div class="carousel-controls">
-    <button class="arrow-btn" data-carousel-prev>&larr;</button>
-    <button class="arrow-btn" data-carousel-next>&rarr;</button>
-  </div>
+  <div class="carousel-navigation">
+  <button class="arrow-btn" data-carousel-prev>&larr;</button>
+  
   <div class="carousel-dots">
     {% for block in section.blocks %}
       <span class="{% if forloop.index == 2 %}active{% endif %}" data-dot-index="{{ forloop.index0 }}"></span>
     {% endfor %}
   </div>
+
+  <button class="arrow-btn" data-carousel-next>&rarr;</button>
+</div>
 </div>
 
 {% javascript %}
