@@ -156,6 +156,58 @@
       "type": "how-it-works-timeline",
       "disabled": true,
       "settings": {}
+    },
+    "reviews_czKQgj": {
+      "type": "reviews",
+      "blocks": {
+        "review_Pw78TA": {
+          "type": "review",
+          "settings": {
+            "title": "Goodbye Paperwork",
+            "body": "“No more chasing envelopes or managing cash. The whole process was organized, transparent, and stress-free. We’ll definitely be using this again next year”",
+            "reviewer": "Kaaren T., Teacher",
+            "school": "Santee School District",
+            "school_logo": "shopify://shop_images/Group_185.png"
+          }
+        },
+        "review_bjXYxz": {
+          "type": "review",
+          "settings": {
+            "title": "So Easy to Manage",
+            "body": "“The dashboard made everything so easy. I could track donations in real time and send quick updates to parents without a single spreadsheet”",
+            "reviewer": "Sarah L., PTO President",
+            "school": "Mira Mesa School District",
+            "school_logo": "shopify://shop_images/Group_186_1e3cd93d-1a22-408a-b3ed-087da56d79d1.png"
+          }
+        },
+        "review_CYDYeJ": {
+          "type": "review",
+          "settings": {
+            "title": "Parents Loved It",
+            "body": "“Parents loved how simple the app was. They could donate in seconds and share the fundraiser link with grandparents and friends. We raised more in two weeks than our last three fundraisers combined!”",
+            "reviewer": "David M., Principal",
+            "school": "Mira Mesa School District",
+            "school_logo": "shopify://shop_images/Group_186_1e3cd93d-1a22-408a-b3ed-087da56d79d1.png"
+          }
+        },
+        "review_pBVxFG": {
+          "type": "review",
+          "settings": {
+            "title": "",
+            "body": "",
+            "reviewer": "",
+            "school": ""
+          }
+        }
+      },
+      "block_order": [
+        "review_Pw78TA",
+        "review_bjXYxz",
+        "review_CYDYeJ",
+        "review_pBVxFG"
+      ],
+      "name": "Reviews Carousel",
+      "settings": {}
     }
   },
   "order": [
@@ -163,6 +215,7 @@
     "rich_text_image_6z6gBx",
     "content_blocks_nfcJij",
     "image_with_text_w6aRem",
-    "how-it-works-timeline"
+    "how-it-works-timeline",
+    "reviews_czKQgj"
   ]
 }
