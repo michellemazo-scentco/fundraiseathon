@@ -38,35 +38,21 @@
           "default": "#000000"
         },
         {
-          "type": "text",
-          "id": "tag_1_text",
-          "label": "Tag 1 Text"
+          "type": "image_picker",
+          "id": "tag_icon_1",
+          "label": "Tag Icon 1"
         },
         {
           "type": "image_picker",
-          "id": "tag_1_icon",
-          "label": "Tag 1 Icon"
-        },
-        {
-          "type": "text",
-          "id": "tag_2_text",
-          "label": "Tag 2 Text"
+          "id": "tag_icon_2",
+          "label": "Tag Icon 2"
         },
         {
           "type": "image_picker",
-          "id": "tag_2_icon",
-          "label": "Tag 2 Icon"
-        },
-        {
-          "type": "text",
-          "id": "tag_3_text",
-          "label": "Tag 3 Text"
-        },
-        {
-          "type": "image_picker",
-          "id": "tag_3_icon",
-          "label": "Tag 3 Icon"
+          "id": "tag_icon_3",
+          "label": "Tag Icon 3"
         }
+
       ]
     }
   ],
@@ -92,36 +78,26 @@
         <div class="text-content">
           <h3>{{ block.settings.heading }}</h3>
           <p>{{ block.settings.text }}</p>
-          {% assign tags = '' %}
-
-            <div class="tags-wrapper">
-              {% if block.settings.tag_1_text != blank %}
-                <div class="tag">
-                  {% if block.settings.tag_1_icon != blank %}
-                    <img src="{{ block.settings.tag_1_icon | img_url: '40x40' }}" alt="Tag Icon" class="tag-icon" />
-                  {% endif %}
-                  <span>{{ block.settings.tag_1_text }}</span>
-                </div>
-              {% endif %}
-
-              {% if block.settings.tag_2_text != blank %}
-                <div class="tag">
-                  {% if block.settings.tag_2_icon != blank %}
-                    <img src="{{ block.settings.tag_2_icon | img_url: '40x40' }}" alt="Tag Icon" class="tag-icon" />
-                  {% endif %}
-                  <span>{{ block.settings.tag_2_text }}</span>
-                </div>
-              {% endif %}
-
-              {% if block.settings.tag_3_text != blank %}
-                <div class="tag">
-                  {% if block.settings.tag_3_icon != blank %}
-                    <img src="{{ block.settings.tag_3_icon | img_url: '40x40' }}" alt="Tag Icon" class="tag-icon" />
-                  {% endif %}
-                  <span>{{ block.settings.tag_3_text }}</span>
-                </div>
-              {% endif %}
+       <div class="tags-wrapper">
+          {% if block.settings.tag_icon_1 != blank %}
+            <div class="tag">
+              <img src="{{ block.settings.tag_icon_1 | img_url: '40x40' }}" alt="Tag Icon 1" class="tag-icon" />
             </div>
+          {% endif %}
+
+          {% if block.settings.tag_icon_2 != blank %}
+            <div class="tag">
+              <img src="{{ block.settings.tag_icon_2 | img_url: '40x40' }}" alt="Tag Icon 2" class="tag-icon" />
+            </div>
+          {% endif %}
+
+          {% if block.settings.tag_icon_3 != blank %}
+            <div class="tag">
+              <img src="{{ block.settings.tag_icon_3 | img_url: '40x40' }}" alt="Tag Icon 3" class="tag-icon" />
+            </div>
+          {% endif %}
+        </div>
+
 
         </div>
 
