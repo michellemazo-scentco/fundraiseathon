@@ -1,0 +1,235 @@
+{% schema %}
+{
+  "name": "Reviews Carousel",
+  "settings": [],
+  "blocks": [
+    {
+      "type": "review",
+      "name": "Review",
+      "settings": [
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Review Title"
+        },
+        {
+          "type": "textarea",
+          "id": "body",
+          "label": "Review Body"
+        },
+        {
+          "type": "text",
+          "id": "reviewer",
+          "label": "Reviewer Name"
+        },
+        {
+          "type": "text",
+          "id": "school",
+          "label": "School Name"
+        },
+        {
+          "type": "image_picker",
+          "id": "school_logo",
+          "label": "School Logo"
+        }
+      ]
+    }
+  ],
+  "max_blocks": 15,
+  "presets": [
+    {
+      "name": "Reviews Carousel",
+      "category": "Testimonials"
+    }
+  ]
+}
+{% endschema %}
+
+{% stylesheet %}
+<style>
+  .review-carousel-container {
+    position: relative;
+    overflow: hidden;
+    width: 100%;
+  }
+
+  .review-track {
+    display: flex;
+    transition: transform 0.4s ease;
+  }
+
+  .review-card {
+    flex: 0 0 33.3333%;
+    padding: 1rem;
+    box-sizing: border-box;
+    border: 2px solid #ccc;
+    border-radius: 12px;
+    margin: 0 0.5rem;
+    text-align: center;
+    background: white;
+    transition: all 0.3s ease;
+  }
+
+  .review-card.active {
+    border-color: #007aff;
+    background-color: #e6f0ff;
+  }
+
+  .stars {
+    color: #007aff;
+    margin-bottom: 0.5rem;
+  }
+
+  .review-title {
+    font-weight: bold;
+    margin-bottom: 0.25rem;
+  }
+
+  .review-body {
+    font-size: 0.95rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .review-footer {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    margin-top: 1rem;
+  }
+
+  .school-logo {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+  }
+
+  .review-meta {
+    text-align: left;
+  }
+
+  .review-meta .name {
+    font-weight: bold;
+  }
+
+  .review-meta .school {
+    font-style: italic;
+    font-size: 0.85rem;
+  }
+
+  .carousel-controls {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 1rem;
+  }
+
+  .carousel-dots {
+    display: flex;
+    justify-content: center;
+    margin-top: 0.5rem;
+  }
+
+  .carousel-dots span {
+    width: 10px;
+    height: 10px;
+    background: #ccc;
+    border-radius: 50%;
+    margin: 0 4px;
+    cursor: pointer;
+  }
+
+  .carousel-dots span.active {
+    background: #007aff;
+  }
+
+  .arrow-btn {
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+  }
+</style>
+{% endstylesheet %}
+
+<div class="review-carousel-container" data-reviews-carousel>
+  <div class="review-track">
+    {% for block in section.blocks %}
+      <div class="review-card{% if forloop.index == 2 %} active{% endif %}">
+        <div class="stars">★★★★★</div>
+        <div class="review-title">{{ block.settings.title }}</div>
+        <div class="review-body">{{ block.settings.body }}</div>
+        <div class="review-footer">
+          {% if block.settings.school_logo %}
+            <img src="{{ block.settings.school_logo | img_url: '60x60' }}" class="school-logo" alt="{{ block.settings.school }}">
+          {% endif %}
+          <div class="review-meta">
+            <div class="name">{{ block.settings.reviewer }}</div>
+            <div class="school">{{ block.settings.school }}</div>
+          </div>
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+
+  <div class="carousel-controls">
+    <button class="arrow-btn" data-carousel-prev>&larr;</button>
+    <button class="arrow-btn" data-carousel-next>&rarr;</button>
+  </div>
+  <div class="carousel-dots">
+    {% for block in section.blocks %}
+      <span class="{% if forloop.index == 2 %}active{% endif %}" data-dot-index="{{ forloop.index0 }}"></span>
+    {% endfor %}
+  </div>
+</div>
+
+{% javascript %}
+<script>
+  (() => {
+    const container = document.querySelector('[data-reviews-carousel]');
+    if (!container) return;
+
+    const track = container.querySelector('.review-track');
+    const cards = container.querySelectorAll('.review-card');
+    const dots = container.querySelectorAll('.carousel-dots span');
+    const prevBtn = container.querySelector('[data-carousel-prev]');
+    const nextBtn = container.querySelector('[data-carousel-next]');
+    let currentIndex = 1;
+
+    function updateCarousel() {
+      const cardWidth = cards[0].offsetWidth + 16;
+      const offset = (currentIndex - 1) * cardWidth;
+      track.style.transform = `translateX(-${offset}px)`;
+
+      cards.forEach((card, index) => {
+        card.classList.toggle('active', index === currentIndex);
+      });
+
+      dots.forEach((dot, index) => {
+        dot.classList.toggle('active', index === currentIndex);
+      });
+    }
+
+    prevBtn.addEventListener('click', () => {
+      currentIndex = Math.max(0, currentIndex - 1);
+      updateCarousel();
+    });
+
+    nextBtn.addEventListener('click', () => {
+      currentIndex = Math.min(cards.length - 1, currentIndex + 1);
+      updateCarousel();
+    });
+
+    dots.forEach(dot => {
+      dot.addEventListener('click', () => {
+        currentIndex = parseInt(dot.dataset.dotIndex);
+        updateCarousel();
+      });
+    });
+
+    window.addEventListener('resize', updateCarousel);
+    updateCarousel();
+  })();
+</script>
+{% endjavascript %}
