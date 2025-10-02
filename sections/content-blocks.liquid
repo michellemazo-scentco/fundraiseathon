@@ -58,7 +58,7 @@
       {% assign index = forloop.index0 %}
       {% assign is_even = index | modulo: 2 %}
 
-      <div class="content-block{% unless is_even %} reverse{% endunless %}">
+      <div class="content-block{% if is_even == 1 %} reverse{% endif %}">
         <div class="text-content">
           <h3>{{ block.settings.heading }}</h3>
           <p>{{ block.settings.text }}</p>
