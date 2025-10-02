@@ -42,11 +42,7 @@
             "heading": "1. Set up your Fundraiser",
             "text": "Once your School Admin account is created, enter your fundraiser details and goal. From the dashboard, you can manage your fundraiser, track donations in real time, and view analytics to monitor progress.",
             "image": "shopify://shop_images/Frame_472.png",
-            "gradient_color": "#ffffff",
-            "tag_icon_1": "shopify://shop_images/Frame_478.png",
-            "tag_icon_2": "shopify://shop_images/Frame_479.png",
-            "tag_icon_3": "shopify://shop_images/Frame_477.png",
-            "tag_icon_4": "shopify://shop_images/Frame_480.png"
+            "gradient_color": "#ffffff"
           }
         },
         "content_block_aRCnKN": {
@@ -64,7 +60,11 @@
             "heading": "3. Parents earn Amazon rewards with every donation",
             "text": "Parents earn rewards as they give. For every $50 donated, whether parents    or friends and family, they receive $5 in Amazon rewards for up to $50. This makes it easy and motivating to keep the donations flowing.",
             "image": "shopify://shop_images/Frame_474.png",
-            "gradient_color": "#ffffff"
+            "gradient_color": "#ffffff",
+            "tag_icon_1": "shopify://shop_images/Frame_478.png",
+            "tag_icon_2": "shopify://shop_images/Frame_479.png",
+            "tag_icon_3": "shopify://shop_images/Frame_477.png",
+            "tag_icon_4": "shopify://shop_images/Frame_480.png"
           }
         },
         "content_block_8bFeJC": {
