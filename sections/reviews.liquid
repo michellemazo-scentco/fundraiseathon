@@ -1,7 +1,21 @@
 {% schema %}
 {
   "name": "Reviews Carousel",
-  "settings": [],
+  "settings": [
+    {
+      "type": "text",
+      "id": "review_heading",
+      "label": "Review Heading",
+      "default": "Our Features"
+    },
+    {
+      "type": "text",
+      "id": "review_body",
+      "label": "Review Section Body",
+      "default": "Default"
+    }
+
+  ],
   "blocks": [
     {
       "type": "review",
@@ -183,6 +197,8 @@
 {% endstylesheet %}
 
 <div class="review-carousel-container" data-reviews-carousel>
+   <h2 class="review-heading">{{ section.settings.main_heading }}</h2>
+
   <div class="review-track">
     {% for block in section.blocks %}
       <div class="review-card{% if forloop.index == 2 %} active{% endif %}">
