@@ -217,7 +217,10 @@
         "review_pBVxFG"
       ],
       "name": "Reviews Carousel",
-      "settings": {}
+      "settings": {
+        "review_heading": "What Schools Are Saying",
+        "review_body": "Real stories from admins and parents who made fundraising easier with our platform."
+      }
     }
   },
   "order": [
