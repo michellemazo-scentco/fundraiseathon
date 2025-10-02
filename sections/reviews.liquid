@@ -197,7 +197,8 @@
 {% endstylesheet %}
 
 <div class="review-carousel-container" data-reviews-carousel>
-   <h2 class="review-heading">{{ section.settings.main_heading }}</h2>
+   <h2 class="review-heading">{{ section.settings.review_heading }}</h2>
+   <p class="review-body">{{ section.settings.review_body }}</p>
 
   <div class="review-track">
     {% for block in section.blocks %}
