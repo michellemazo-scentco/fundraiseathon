@@ -92,6 +92,37 @@
         <div class="text-content">
           <h3>{{ block.settings.heading }}</h3>
           <p>{{ block.settings.text }}</p>
+          {% assign tags = '' %}
+
+            <div class="tags-wrapper">
+              {% if block.settings.tag_1_text != blank %}
+                <div class="tag">
+                  {% if block.settings.tag_1_icon != blank %}
+                    <img src="{{ block.settings.tag_1_icon | img_url: '40x40' }}" alt="Tag Icon" class="tag-icon" />
+                  {% endif %}
+                  <span>{{ block.settings.tag_1_text }}</span>
+                </div>
+              {% endif %}
+
+              {% if block.settings.tag_2_text != blank %}
+                <div class="tag">
+                  {% if block.settings.tag_2_icon != blank %}
+                    <img src="{{ block.settings.tag_2_icon | img_url: '40x40' }}" alt="Tag Icon" class="tag-icon" />
+                  {% endif %}
+                  <span>{{ block.settings.tag_2_text }}</span>
+                </div>
+              {% endif %}
+
+              {% if block.settings.tag_3_text != blank %}
+                <div class="tag">
+                  {% if block.settings.tag_3_icon != blank %}
+                    <img src="{{ block.settings.tag_3_icon | img_url: '40x40' }}" alt="Tag Icon" class="tag-icon" />
+                  {% endif %}
+                  <span>{{ block.settings.tag_3_text }}</span>
+                </div>
+              {% endif %}
+            </div>
+
         </div>
 
         <div class="image-content" style="--gradient-color: {{ block.settings.gradient_color }};">
