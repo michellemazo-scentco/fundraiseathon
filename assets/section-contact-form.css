@@ -3,19 +3,27 @@
 }
 
 .contact {
-  background-color: #C5F1FF;
-  box-shadow: 0px 0px 8px 0px rgba(0, 0, 0, 0.25);
-  padding: 6rem;
-  border-radius: 15px;
-  border: solid #C2C2C2 1px;
+  background: #fff;
+  padding: 30px;
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  max-width: 600px;
+  margin: 0 auto;
+  text-align: left;
 }
 
 .contactFormContainer {
-  padding: 4rem;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+  background: #e6f3ff;
+  padding: 60px 20px;
+  text-align: center;
 }
+
+.contactFormContainer h2 {
+  font-size: 24px;
+  font-weight: 600;
+  margin-bottom: 30px;
+}
+
 
 .field__input {
   background-color: white;
@@ -42,8 +50,53 @@
 }
 
 .contact .field {
-  margin-bottom: 1.5rem;
+  margin-bottom: 20px;
 }
+
+.contact .field__input,
+.contact .text-area {
+  width: 100%;
+  padding: 12px 16px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-size: 16px;
+  box-sizing: border-box;
+}
+
+.contact .field__label {
+  display: block;
+  margin-bottom: 6px;
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.contact__button .button {
+  background: #ff8c23;
+  color: white;
+  font-weight: 600;
+  padding: 14px;
+  width: 100%;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.contact__button .button:hover {
+  background: #e67e1f;
+}
+
+.contact-footer {
+  margin-top: 20px;
+  font-size: 14px;
+  text-align: center;
+}
+
+.contact-footer b {
+  font-weight: 700;
+  color: #000;
+}
+
 
 @media screen and (min-width: 750px) {
   .contact .field {
