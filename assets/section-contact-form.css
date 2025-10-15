@@ -69,9 +69,8 @@
   outline: none;
 }
 
-.text-area{
+.contact-input text-area{
   border: 1px solid #ccc;
-  border-radius: 15px;
 }
 
 
