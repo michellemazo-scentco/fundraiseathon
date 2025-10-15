@@ -1,0 +1,120 @@
+{% schema %}
+{
+  "name": "Info Cards Section",
+  "settings": [
+    {
+      "type": "text",
+      "id": "section_heading",
+      "label": "Section Heading",
+      "default": "Our Services"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "card",
+      "name": "Card",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Card Image"
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Card Title",
+          "default": "Card Title"
+        },
+        {
+          "type": "textarea",
+          "id": "text",
+          "label": "Card Description",
+          "default": "This is the description text for the card."
+        }
+      ]
+    }
+  ],
+  "max_blocks": 4,
+  "presets": [
+    {
+      "name": "Info Cards Section",
+      "category": "Custom",
+      "blocks": [
+        { "type": "card" },
+        { "type": "card" },
+        { "type": "card" },
+        { "type": "card" }
+      ]
+    }
+  ]
+}
+{% endschema %}
+
+<div class="info-cards-section">
+  <div class="container">
+    <h2 class="section-heading">{{ section.settings.section_heading }}</h2>
+    <div class="cards-grid">
+      {% for block in section.blocks %}
+        <div class="card">
+          {% if block.settings.image %}
+            <img src="{{ block.settings.image | image_url: width: 150 }}" alt="{{ block.settings.title | escape }}">
+          {% endif %}
+          <div class="card-content">
+            <h3>{{ block.settings.title }}</h3>
+            <p>{{ block.settings.text }}</p>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+
+<style>
+.info-cards-section {
+  padding: 60px 20px;
+  background-color: #f9f9f9;
+}
+.info-cards-section .section-heading {
+  text-align: center;
+  margin-bottom: 40px;
+}
+.cards-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 20px;
+}
+.card {
+  display: flex;
+  align-items: center;
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.1);
+}
+.card img {
+  width: 100px;
+  height: auto;
+  margin-right: 20px;
+  border-radius: 4px;
+}
+.card-content h3 {
+  margin: 0 0 10px;
+  font-size: 18px;
+}
+.card-content p {
+  margin: 0;
+  color: #666;
+}
+
+/* Responsive */
+@media (min-width: 768px) {
+  .cards-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+@media (min-width: 1024px) {
+  .cards-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+</style>
