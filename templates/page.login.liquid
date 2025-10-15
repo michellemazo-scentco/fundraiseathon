@@ -1,0 +1,169 @@
+{% layout none %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Login</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f6fc;
+      margin: 0;
+      padding: 0;
+    }
+    .form-wrapper {
+      display: flex;
+      min-height: 100vh;
+    }
+    .left {
+      width: 30%;
+      background: #2877C2;
+      color: white;
+      padding: 40px;
+      padding-top: 100px;
+      display: flex;
+      flex-direction: column;
+      align-items: left;
+      justify-content: space-between;
+    }
+    .left-header {
+      max-width: 500px;
+    }
+    .left-header h2 {
+      font-family: 'Poppins', sans-serif;
+      font-size: 32px;
+    }
+    .left-header p {
+      font-family: 'Roboto', sans-serif;
+      font-size: 18px;
+      font-weight: 200;
+    }
+    .signup-image {
+      display: flex;
+      width: 100%;
+      align-items: center;
+      justify-content: center;
+    }
+    .signup-image img {
+      width: 350px;
+    }
+    .right {
+      width: 60%;
+      padding: 80px 40px;
+      background: white;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    }
+    .login-container {
+      max-width: 400px;
+      width: 100%;
+    }
+    .signup-label {
+      font-size: 16px;
+      font-family: 'Roboto', sans-serif;
+      font-weight: 500;
+      color: #1F2443;
+      margin-bottom: 10px;
+      display: block;
+    }
+    .signup-field {
+      border: none;
+      border-bottom: 1px solid #ccc;
+      border-radius: 0;
+      background: transparent;
+      width: 100%;
+      padding: 10px 5px;
+      margin-bottom: 30px;
+      font-size: 16px;
+      font-family: 'Roboto', sans-serif;
+    }
+    .btn {
+      background: #f57c00;
+      color: white;
+      padding: 14px 20px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      width: 100%;
+      font-size: 16px;
+      margin-top: 10px;
+    }
+    .toggle-password {
+      position: absolute;
+      right: 10px;
+      top: 38px;
+      cursor: pointer;
+      font-size: 14px;
+      color: #666;
+    }
+    .password-wrapper {
+      position: relative;
+      width: 100%;
+    }
+    .signup-link {
+      margin-top: 20px;
+      text-align: center;
+      font-size: 14px;
+      font-family: 'Roboto', sans-serif;
+      color: #333;
+    }
+    .signup-link a {
+      color: #f57c00;
+      font-weight: bold;
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+  <div class="form-wrapper">
+    <!-- LEFT COLUMN -->
+    <div class="left">
+      <a href="/">
+        <img src="{{ 'white_logo.png' | file_url }}" alt="Logo" style="width:250px;">
+      </a>
+      <div class="left-header">
+        <h2>Smarter school fundraising, made simple</h2>
+        <p>Create your account and unlock all the tools you need to manage, track, and grow your school fundraiser.</p>
+      </div>
+      <div class="signup-image">
+        <img src="{{ 'Piggy.png' | file_url }}" alt="Mascot">
+      </div>
+    </div>
+
+    <!-- RIGHT COLUMN -->
+    <div class="right">
+      <div class="login-container">
+        <h2 style="color: #1F2443; margin-bottom: 30px;">Login</h2>
+
+        <label class="signup-label" for="email">Email*</label>
+        <input type="email" class="signup-field" id="email" name="email" placeholder="you@example.com" required>
+
+        <label class="signup-label" for="password">Password*</label>
+        <div class="password-wrapper">
+          <input type="password" class="signup-field" id="password" name="password" placeholder="Enter your password" required>
+          <span id="togglePassword" class="toggle-password">👁️</span>
+        </div>
+
+        <button class="btn" type="submit">Log In</button>
+
+        <div class="signup-link">
+          Don’t have an account yet? <a href="/pages/fundraiser-request">Sign up</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const togglePassword = document.getElementById("togglePassword");
+    const passwordInput = document.getElementById("password");
+
+    togglePassword.addEventListener("click", function () {
+      const type = passwordInput.getAttribute("type") === "password" ? "text" : "password";
+      passwordInput.setAttribute("type", type);
+      this.textContent = type === "password" ? "👁️" : "🙈";
+    });
+  </script>
+</body>
+</html>
