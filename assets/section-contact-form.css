@@ -64,6 +64,11 @@
   outline: none;
 }
 
+.contact_input::placeholder {
+  border-bottom-color: #999;
+  outline: none;
+}
+
 input, textarea, select {
   display: block;
   width: 100%;
