@@ -58,6 +58,7 @@
 
 .contact_input:focus{
   border: none;
+  border-bottom: 1px solid #ccc;
   border-bottom-color: #134c99;
   outline: none;
 }
