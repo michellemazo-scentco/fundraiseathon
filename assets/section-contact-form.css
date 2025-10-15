@@ -39,6 +39,9 @@
   border: none;
 }
 
+.field_label{
+  margin-bottom: 20px;
+}
 
 .contact_input {
   border: none;
