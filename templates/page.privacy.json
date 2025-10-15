@@ -11,76 +11,81 @@
   "sections": {
     "main": {
       "type": "main-page",
+      "disabled": true,
       "settings": {
         "padding_top": 28,
         "padding_bottom": 28
       }
     },
-    "featured_product_gwUBkF": {
-      "type": "featured-product",
+    "rich_text_qrPdaW": {
+      "type": "rich-text",
       "blocks": {
-        "text_GUe4Qw": {
-          "type": "text",
+        "heading_tD7zcR": {
+          "type": "heading",
           "settings": {
-            "text": "{{ section.settings.product.vendor }}",
-            "text_style": "uppercase"
-          }
-        },
-        "title_Jc47hk": {
-          "type": "title",
-          "settings": {
+            "heading": "Secure for Schools. Safe for Donors",
             "heading_size": "h1"
           }
         },
-        "price_fDJRkm": {
-          "type": "price",
-          "settings": {}
-        },
-        "variant_picker_kj8Vnc": {
-          "type": "variant_picker",
+        "text_GL7mQU": {
+          "type": "text",
           "settings": {
-            "picker_type": "button",
-            "swatch_shape": "circle"
-          }
-        },
-        "quantity_selector_nybV43": {
-          "type": "quantity_selector",
-          "settings": {}
-        },
-        "buy_buttons_zcKJhn": {
-          "type": "buy_buttons",
-          "settings": {
-            "show_dynamic_checkout": true,
-            "show_gift_card_recipient": true
-          }
-        },
-        "share_aLMrbA": {
-          "type": "share",
-          "settings": {
-            "share_label": "Share"
+            "text": "<p>Your information and contributions are always handled with care, so you can focus on supporting what matters most</p>"
           }
         }
       },
       "block_order": [
-        "text_GUe4Qw",
-        "title_Jc47hk",
-        "price_fDJRkm",
-        "variant_picker_kj8Vnc",
-        "quantity_selector_nybV43",
-        "buy_buttons_zcKJhn",
-        "share_aLMrbA"
+        "heading_tD7zcR",
+        "text_GL7mQU"
       ],
+      "name": "t:sections.rich-text.presets.name",
       "settings": {
-        "product": "anonymous-donation",
+        "desktop_content_position": "center",
+        "content_alignment": "center",
         "color_scheme": "",
-        "secondary_background": false,
-        "media_size": "medium",
-        "constrain_to_viewport": true,
-        "media_fit": "contain",
-        "media_position": "left",
-        "image_zoom": "lightbox",
-        "hide_variants": false,
-        "enable_video_looping": false,
+        "full_width": true,
+        "padding_top": 40,
+        "padding_bottom": 52
+      }
+    },
+    "image_with_text_exMYJf": {
+      "type": "image-with-text",
+      "blocks": {
+        "heading_jbtKbe": {
+          "type": "heading",
+          "settings": {
+            "heading": "Privacy Promise",
+            "heading_size": "h1"
+          }
+        },
+        "text_DUfpzy": {
+          "type": "text",
+          "settings": {
+            "text": "<ul><li><strong>We respect your privacy</strong> — your personal information is never sold or shared.</li><li><strong>No sensitive data stored</strong> — we don’t keep credit card numbers or payment details on our servers.</li><li><strong>Secure payments only</strong> — all transactions are encrypted and safely processed through trusted</li><li><strong>Protection first</strong> — our platform is designed with strict safeguards to keep your school community safe.</li></ul>",
+            "text_style": "body"
+          }
+        }
+      },
+      "block_order": [
+        "heading_jbtKbe",
+        "text_DUfpzy"
+      ],
+      "custom_css": [
+        "img {object-fit: contain;}"
+      ],
+      "name": "t:sections.image-with-text.presets.name",
+      "settings": {
+        "image": "shopify://shop_images/Group_f7cc14ec-3e11-4b69-85f5-0995c282f4e9.png",
+        "height": "adapt",
+        "desktop_image_width": "small",
+        "layout": "image_first",
+        "desktop_content_position": "top",
+        "desktop_content_alignment": "left",
+        "content_layout": "no-overlap",
+        "section_color_scheme": "",
+        "color_scheme": "",
+        "image_behavior": "none",
+        "mobile_content_alignment": "left",
         "padding_top": 36,
         "padding_bottom": 36
       }
@@ -88,6 +93,7 @@
   },
   "order": [
     "main",
-    "featured_product_gwUBkF"
+    "rich_text_qrPdaW",
+    "image_with_text_exMYJf"
   ]
 }
