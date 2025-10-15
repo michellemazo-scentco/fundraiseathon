@@ -69,7 +69,9 @@
   outline: none;
 }
 
-
+.contact-input textarea{
+  border: 1px solid #ccc;
+}
 
 
 .contact__button .button {
