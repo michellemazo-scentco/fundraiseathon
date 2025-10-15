@@ -41,7 +41,10 @@
 
 
 .field__input {
-  background-color: white;
+  border: none;
+  border-radius: none;
+  border-bottom: 1px solid black;
+
 }
 
 .contact-piggy {
