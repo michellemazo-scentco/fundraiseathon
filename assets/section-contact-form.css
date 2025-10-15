@@ -33,9 +33,10 @@
   font-family: 'Poppins', sans-serif;
 }
 
-.field{
+.contact_field{
   display: flex;
   flex-direction: column;
+  border: none;
 }
 
 
