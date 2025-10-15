@@ -224,6 +224,39 @@
     .address-group .form-row input {
       flex: 1;
     }
+
+    /* Thank You Section */
+    #thank-you-section {
+      display: none;
+      padding: 80px 40px;
+      background: white;
+      width: 100%;
+    }
+
+    #thank-you-section .thank-you-message {
+      max-width: 600px;
+    }
+
+    #thank-you-section h1 {
+      color: #1F2443;
+      font-size: 32px;
+      margin-bottom: 20px;
+    }
+
+    #thank-you-section p {
+      font-size: 18px;
+      font-family: 'Roboto', sans-serif;
+      line-height: 1.5;
+      margin-bottom: 40px;
+    }
+
+    #thank-you-section a.home-link {
+      font-size: 16px;
+      color: #f57c00;
+      text-decoration: underline;
+      font-weight: bold;
+    }
+
   </style>
 </head>
 <body>
@@ -389,7 +422,7 @@
 
         if (response.ok) {
           document.getElementById("form-section").style.display = "none";
-          document.getElementById("thank-you-section").style.display = "block";
+          document.getElementById("thank-you-section").style.display = "flex";
           form.reset();
         } else {
           formMessage.textContent = "There was an error submitting the form.";
