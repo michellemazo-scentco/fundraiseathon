@@ -81,6 +81,10 @@
   border-radius: 5px;
 }
 
+.text-area::placeholder{
+  margin-left: 5px;
+}
+
 
 .submit_button {
   background: #ff8c23;
