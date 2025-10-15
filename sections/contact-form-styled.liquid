@@ -1,0 +1,130 @@
+{% schema %}
+{
+  "name": "Styled Contact Form",
+  "tag": "section",
+  "class": "section styled-contact-form",
+  "settings": []
+}
+{% endschema %}
+
+<style>
+  .styled-contact-form {
+    background-color: #e6f3ff;
+    padding: 60px 20px;
+    text-align: center;
+  }
+
+  .styled-contact-form .form-wrapper {
+    background: #fff;
+    max-width: 500px;
+    margin: 0 auto;
+    padding: 40px 30px;
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    text-align: left;
+  }
+
+  .styled-contact-form h2 {
+    font-size: 22px;
+    font-weight: 700;
+    margin-bottom: 24px;
+    text-align: center;
+  }
+
+  .styled-contact-form label {
+    display: block;
+    margin-bottom: 6px;
+    font-weight: 600;
+    font-size: 14px;
+  }
+
+  .styled-contact-form input,
+  .styled-contact-form textarea {
+    width: 100%;
+    padding: 12px 14px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-size: 15px;
+    margin-bottom: 20px;
+    box-sizing: border-box;
+  }
+
+  .styled-contact-form textarea {
+    resize: vertical;
+    min-height: 100px;
+  }
+
+  .styled-contact-form .button-submit {
+    background-color: #ff8c23;
+    color: #fff;
+    font-weight: 600;
+    padding: 12px;
+    border: none;
+    width: 100%;
+    border-radius: 6px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+  }
+
+  .styled-contact-form .button-submit:hover {
+    background-color: #e67e1f;
+  }
+
+  .styled-contact-form .form-footer {
+    margin-top: 20px;
+    text-align: center;
+    font-size: 14px;
+  }
+
+  .styled-contact-form .form-footer b {
+    font-weight: 700;
+    color: #000;
+  }
+</style>
+
+<div class="styled-contact-form">
+  <h2>Fill out the form below to leave us a message!</h2>
+
+  <div class="form-wrapper">
+    {% form 'contact' %}
+      {% if form.posted_successfully? %}
+        <p class="form-success">{{ 'templates.contact.form.post_success' | t }}</p>
+      {% endif %}
+
+      <label for="ContactForm-name">Name<span style="color: red;">*</span></label>
+      <input
+        type="text"
+        id="ContactForm-name"
+        name="contact[name]"
+        required
+        placeholder="Jane Doe"
+        value="{{ form.name | escape }}"
+      >
+
+      <label for="ContactForm-email">Email<span style="color: red;">*</span></label>
+      <input
+        type="email"
+        id="ContactForm-email"
+        name="contact[email]"
+        required
+        placeholder="janedoe@email.com"
+        value="{{ form.email | escape }}"
+      >
+
+      <label for="ContactForm-message">Message<span style="color: red;">*</span></label>
+      <textarea
+        id="ContactForm-message"
+        name="contact[body]"
+        required
+        placeholder="Type message here..."
+      >{{ form.body | escape }}</textarea>
+
+      <button type="submit" class="button-submit">Submit Request</button>
+    {% endform %}
+  </div>
+
+  <div class="form-footer">
+    You can also email us directly at <b>customerservice@fundraise-a-thon.com</b>
+  </div>
+</div>
