@@ -69,18 +69,7 @@
   outline: none;
 }
 
-input, textarea, select {
-  display: block;
-  width: 100%;
-  padding: 10px;
-  border: none;
-  border-bottom: 1px solid #ccc;
-  border-radius: 0;
-  margin-bottom: 20px;
-  padding: 10px 5px;
-  background: transparent;
-  box-shadow: none;
-}
+
 
 
 .contact__button .button {
