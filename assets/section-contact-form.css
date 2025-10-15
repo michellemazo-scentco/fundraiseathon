@@ -18,6 +18,13 @@
   text-align: center;
 }
 
+.h0{
+  font-size: 32px;
+  font-weight: 600;
+  margin-bottom: 30px;
+  font-family: 'Poppins', sans-serif;
+}
+
 .contactFormContainer h2 {
   font-size: 32px;
   font-weight: 600;
