@@ -82,7 +82,8 @@
 }
 
 .text-area::placeholder{
-  margin-left: 5px;
+  padding-left: 5px;
+  padding-top: 5px;
 }
 
 
