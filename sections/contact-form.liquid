@@ -66,7 +66,22 @@
             placeholder="Jane Doe"
           >
         </div>
-        <div class="contact_field field--with-error">
+        <div class="contact_field">
+          <label class="field_label"> Phone </label>
+          <input
+            type="tel"
+            id="ContactForm-phone"
+            class="field__input"
+            autocomplete="tel"
+            name="contact[{{ 'templates.contact.form.phone' | t }}]"
+            pattern="[0-9\-]*"
+            value="{% if form.phone %}{{ form.phone }}{% elsif customer %}{{ customer.phone }}{% endif %}"
+            placeholder="{{ 'templates.contact.form.phone' | t }}"
+          >
+        </div>
+        
+      </div>
+      <div class="contact_field field--with-error">
           <label class="field_label"> Email </label>
           <input
             autocomplete="email"
@@ -95,22 +110,8 @@
             </small>
           {%- endif -%}
         </div>
-      </div>
       <div class="contact_field">
-        <label class="field_label"> Email </label>
-        <input
-          type="tel"
-          id="ContactForm-phone"
-          class="field__input"
-          autocomplete="tel"
-          name="contact[{{ 'templates.contact.form.phone' | t }}]"
-          pattern="[0-9\-]*"
-          value="{% if form.phone %}{{ form.phone }}{% elsif customer %}{{ customer.phone }}{% endif %}"
-          placeholder="{{ 'templates.contact.form.phone' | t }}"
-        >
-      </div>
-      <div class="contact_field">
-        <label class="field_label"> Email </label>
+        <label class="field_label"> Message </label>
         <textarea
           rows="10"
           id="ContactForm-body"
