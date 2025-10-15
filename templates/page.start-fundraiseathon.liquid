@@ -1,0 +1,388 @@
+{% layout none %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Fundraiser Request</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f6fc;
+      margin: 0;
+      padding: 0;
+    }
+    .form-wrapper {
+      display: flex;
+      min-height: 100vh;
+    }
+    .left {
+      width: 30%;
+      background: #2877C2;
+      color: white;
+      padding: 40px;
+      padding-top: 100px;
+      display: flex;
+      flex-direction: column;
+      align-items: left;
+      justify-content: space-between;
+    }
+
+    .left-header{
+      max-width: 500px;
+    }
+    .left-header h2{
+      font-family: 'Poppins', sans-serif;
+      font-size: 32px;
+    }
+
+    .left-header p{
+      font-family: 'Roboto', sans-serif;
+      font-size: 18px;
+      font-weight: 200;
+    }
+
+    .signup-image{
+      display: flex;
+      width: 100%;
+      align-items: center;
+      justify-content: center;
+
+    }
+
+    .signup-image img{
+      width: 350px;
+    }
+    
+    .right {
+      width: 60%;
+      padding: 40px;
+      background: white;
+    }
+    
+    .form-step {
+      display: none;
+    }
+    .form-header{
+      color: #1F2443;
+      margin-bottom: 50px;
+    }
+    .form-step.active {
+      display: block;
+    }
+    .signup-field {
+      border: none;
+      border-bottom: 1px solid #ccc;
+      border-radius: 0;
+      background: transparent;
+      margin-bottom: 50px;
+    }
+
+    .signup-label {
+      font-size: 16px;
+      font-family: 'Roboto', sans-serif;
+      font-weight: 500;
+      color: #1F2443;
+      margin-bottom: 20px;
+    }
+    input, textarea, select {
+      display: block;
+      width: 100%;
+      padding: 10px;
+      border: none;
+      border-bottom: 1px solid #ccc;
+      border-radius: 0;
+      margin-bottom: 20px;
+      padding: 10px 5px;
+      background: transparent;
+      box-shadow: none;
+    }
+
+    .signup-field:focus {
+      border-bottom-color: #134c99;
+      outline: none;
+    }
+
+    .signup-field::placeholder {
+      border-bottom-color: #999;
+      outline: none;
+    }
+    .btn {
+      background: #f57c00;
+      color: white;
+      padding: 14px 20px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      width: 100%;
+      font-size: 16px;
+      margin-top: 30px;
+    }
+
+    .btn-outline {
+      background: white;
+      color: #f57c00;
+      border: 2px solid #f57c00;
+      padding: 12px 20px;
+      border-radius: 4px;
+      cursor: pointer;
+      width: 100%;
+      font-size: 16px;
+    }
+
+    .form-buttons{
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+      margin-top: 30px;
+
+    }
+    .btn:disabled {
+      background: #ccc;
+    }
+    label {
+      font-weight: bold;
+    }
+
+    #fundraiser-form .checkbox-group {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  margin-top: 30px;
+  width: 100%;
+  max-width: 100%;
+}
+
+#fundraiser-form .checkbox-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  width: 100%;
+  font-family: 'Roboto', sans-serif;
+  color: #1F2443;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+#fundraiser-form .checkbox-item input[type="checkbox"] {
+  margin-top: 4px;
+  transform: scale(1.2) !important;
+  flex-shrink: 0;
+  accent-color: #2877C2; /* Optional: match your brand */
+}
+
+#fundraiser-form .checkbox-item label {
+  display: block;
+  flex: 1;
+  margin: 0;
+}
+
+#fundraiser-form .link {
+  color: #2877C2;
+  text-decoration: underline;
+}
+
+#fundraiser-form .required {
+  color: red;
+  margin-left: 2px;
+}
+
+#fundraiser-form input[type="checkbox"] {
+  all: unset;
+  appearance: checkbox;
+  width: 16px;
+  height: 16px;
+  margin-top: 4px;
+  accent-color: #2877C2;
+  display: inline-block;
+}
+
+
+    .address-group input[type="text"] {
+      border: none;
+      border-bottom: 1px solid #ccc;
+      border-radius: 0;
+      margin-bottom: 20px;
+      padding: 10px 5px;
+      background: transparent;
+      box-shadow: none;
+    }
+
+    .address-group input[type="text"]::placeholder {
+      color: #999;
+    }
+
+    .address-group input[type="text"]:focus {
+      border-bottom-color: #134c99;
+      outline: none;
+    }
+
+    .address-group .form-row {
+      display: flex;
+      gap: 10px;
+    }
+
+    .address-group .form-row input {
+      flex: 1;
+    }
+  </style>
+</head>
+<body>
+  <div class="form-wrapper">
+    <!-- LEFT COLUMN -->
+    <div class="left">
+      <img src="{{ 'white_logo.png' | file_url }}" alt="Logo" style="width:250px;">
+      <div class='left-header'>
+        <h2>Smarter school fundraising, made simple</h2>
+        <p>Create your account and unlock all the tools you need to manage, track, and grow your school fundraiser.</p>
+      </div>
+      <div class="signup-image">
+        <img src="{{ 'Piggy.png' | file_url }}" alt="Mascot">
+      </div>
+    </div>
+
+    <!-- RIGHT COLUMN -->
+    <div class="right">
+      <form id="fundraiser-form">
+        <!-- STEP 1 -->
+        <div class="form-step step-1 active">
+
+          <div class="form-header">
+            <h3>Fundraiser Account Request</h3>
+            <p>Fill out the information below to create a School Admin account and request a fundraiser.</p>
+          </div>
+
+          
+          <label class="signup-label">Name*</label>
+          <input class="signup-field" type="text" name="name" placeholder="Jane Doe"required>
+          
+          <label class="signup-label">Phone Number*</label>
+          <input class="signup-field" type="tel" name="phone" placeholder="000-000-0000" required>
+
+          <label class="signup-label">Email*</label>
+          <input class="signup-field" type="email" name="email" placeholder="janedoe@email.com" required>
+
+          <div class="address-group">
+            <label class="signup-label">School Address*</label>
+            <input type="text" name="street1" placeholder="Street 1" required>
+            <input type="text" name="street2" placeholder="Street 2">
+
+            <div class="form-row">
+                <input type="text" name="city" placeholder="City" required>
+                <input type="text" name="state" placeholder="State" required>
+                <input type="text" name="zip" placeholder="Zip" required>
+            </div>
+        </div>
+
+          <button type="button" class="btn" id="next-btn">Continue</button>
+        </div>
+
+        <!-- STEP 2 -->
+        <div class="form-step step-2">
+          <h3>Fundraiser Details</h3>
+          <label class="signup-label">Fundraiser Goal*</label>
+          <input class="signup-field" type="text" name="goal" required>
+
+          <label class="signup-label">School/Group Name*</label>
+          <input class="signup-field" type="text" name="group" required>
+
+          <label class="signup-label">Payment Method*</label>
+          <select class="signup-field" name="payment_method" required>
+            <option value="ACH">ACH</option>
+            <option value="Check">Check</option>
+          </select>
+
+          <label class="signup-label">Additional Comments</label>
+          <textarea name="comments" style="resize: none;"></textarea>
+
+          <div class="checkbox-group">
+            <div class="checkbox-item">
+              <input class="signup-checkbox" type="checkbox" name="terms" id="terms" required>
+              <label for="terms">
+                I agree to the <a href="#" id="view-terms" class="link">terms and conditions</a><span class="required">*</span>.
+              </label>
+            </div>
+
+            <div class="checkbox-item">
+              <input type="checkbox" name="marketing" id="marketing" checked>
+              <label for="marketing">
+                Yes, I would like to receive emails about special promotions and newsletters from Fundraise-a-thon and Scentco Fundraising. Fundraise-a-thon and Scentco Fundraising will not sell your information.
+              </label>
+            </div>
+          </div>
+
+
+
+          <div class="form-buttons">
+            <button type="submit" class="btn">Start Fundraiser</button>
+            <button type="button" class="btn-outline" id="back-btn">Back</button>
+        </div>
+        </div>
+      </form>
+      <div id="form-message" style="margin-top: 20px;"></div>
+    </div>
+  </div>
+  <div id="terms-modal" style="display:none; position: fixed; top:0; left:0; width:100%; height:100%; background-color: rgba(0,0,0,0.6); z-index: 1000; align-items: center; justify-content: center;">
+    <div style="background: white; padding: 30px; max-width: 600px; width: 90%; border-radius: 10px; position: relative;">
+      <h3>Terms and Conditions</h3>
+      <p style="max-height: 300px; overflow-y: auto;">
+        <!-- You can replace this with real terms -->
+        These are the sample terms and conditions for your fundraiser program. Please review the rules and compliance before agreeing.
+      </p>
+      <button id="close-terms" style="margin-top: 20px; background: #f57c00; color: white; border: none; padding: 10px 20px; border-radius: 4px; cursor: pointer;">Close</button>
+    </div>
+  </div>
+
+  <script>
+    const nextBtn = document.getElementById('next-btn');
+    const form = document.getElementById('fundraiser-form');
+    const formMessage = document.getElementById('form-message');
+
+    nextBtn.addEventListener('click', () => {
+      document.querySelector('.step-1').classList.remove('active');
+      document.querySelector('.step-2').classList.add('active');
+    });
+
+    const backBtn = document.getElementById('back-btn');
+
+    backBtn.addEventListener('click', () => {
+      document.querySelector('.step-2').classList.remove('active');
+      document.querySelector('.step-1').classList.add('active');
+    });
+
+    document.getElementById("view-terms").addEventListener("click", function (e) {
+      e.preventDefault();
+      document.getElementById("terms-modal").style.display = "flex";
+    });
+
+    document.getElementById("close-terms").addEventListener("click", function () {
+      document.getElementById("terms-modal").style.display = "none";
+    });
+
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const formData = new FormData(form);
+      const data = Object.fromEntries(formData.entries());
+
+      try {
+        // Replace with your Formspree or EmailJS endpoint
+        const response = await fetch('https://usebasin.com/f/a62323b3665e', {
+          method: 'POST',
+          headers: { 'Accept': 'application/json' },
+          body: formData
+        }); 
+
+        if (response.ok) {
+          formMessage.textContent = "Form submitted successfully! 🎉";
+          form.reset();
+        } else {
+          formMessage.textContent = "There was an error submitting the form.";
+        }
+      } catch (error) {
+        formMessage.textContent = "Something went wrong. Try again later.";
+      }
+    });
+  </script>
+</body>
+</html>
