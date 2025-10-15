@@ -69,47 +69,6 @@ input, textarea, select {
   box-shadow: none;
 }
 
-.contact-piggy {
-  width: 120px;
-  position: relative;
-  top: -17rem;
-  left: -30rem;
-}
-
-.contact-piggy>img {
-  width: 100%;
-  height: auto;
-}
-
-.contact .form__message {
-  align-items: flex-start;
-}
-
-.contact .icon-success {
-  margin-top: 0.2rem;
-}
-
-.contact .field {
-  margin-bottom: 20px;
-}
-
-.contact .field__input,
-.contact .text-area {
-  width: 100%;
-  padding: 12px 16px;
-  border: 1px solid #ddd;
-  border-radius: 6px;
-  font-size: 16px;
-  box-sizing: border-box;
-}
-
-.contact .field__label {
-  display: block;
-  margin-bottom: 6px;
-  font-weight: 600;
-  font-size: 14px;
-  color: #000;
-}
 
 .contact__button .button {
   background: #ff8c23;
