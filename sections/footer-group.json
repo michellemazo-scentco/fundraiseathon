@@ -29,25 +29,11 @@
             "menu": "site-navigation"
           }
         },
-        "link_list_Azjqpy": {
-          "type": "link_list",
-          "settings": {
-            "heading": "Make a Donation",
-            "menu": "make-a-donation"
-          }
-        },
         "link_list_e7qtNK": {
           "type": "link_list",
           "settings": {
             "heading": "Resources",
             "menu": "resources"
-          }
-        },
-        "link_list_MUTM6g": {
-          "type": "link_list",
-          "settings": {
-            "heading": "Support",
-            "menu": "support"
           }
         },
         "link_list_eQf7Bf": {
@@ -61,9 +47,7 @@
       "block_order": [
         "image_pAHgPw",
         "link_list_74amtj",
-        "link_list_Azjqpy",
         "link_list_e7qtNK",
-        "link_list_MUTM6g",
         "link_list_eQf7Bf"
       ],
       "settings": {
