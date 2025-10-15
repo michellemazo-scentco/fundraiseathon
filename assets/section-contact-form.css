@@ -74,6 +74,12 @@
   border-radius: 5px;
 }
 
+.text-area:focus{
+  border: 1px solid #ccc;
+  border-color: #134c99;
+  border-radius: 5px;
+}
+
 
 .contact__button .button {
   background: #ff8c23;
