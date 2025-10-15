@@ -244,82 +244,94 @@
 
     <!-- RIGHT COLUMN -->
     <div class="right">
-      <form id="fundraiser-form">
-        <!-- STEP 1 -->
-        <div class="form-step step-1 active">
+      <div id="form-section">
+        <form id="fundraiser-form">
+          <!-- STEP 1 -->
+          <div class="form-step step-1 active">
 
-          <div class="form-header">
-            <h3>Fundraiser Account Request</h3>
-            <p>Fill out the information below to create a School Admin account and request a fundraiser.</p>
+            <div class="form-header">
+              <h3>Fundraiser Account Request</h3>
+              <p>Fill out the information below to create a School Admin account and request a fundraiser.</p>
+            </div>
+
+            
+            <label class="signup-label">Name*</label>
+            <input class="signup-field" type="text" name="name" placeholder="Jane Doe"required>
+            
+            <label class="signup-label">Phone Number*</label>
+            <input class="signup-field" type="tel" name="phone" placeholder="000-000-0000" required>
+
+            <label class="signup-label">Email*</label>
+            <input class="signup-field" type="email" name="email" placeholder="janedoe@email.com" required>
+
+            <div class="address-group">
+              <label class="signup-label">School Address*</label>
+              <input type="text" name="street1" placeholder="Street 1" required>
+              <input type="text" name="street2" placeholder="Street 2">
+
+              <div class="form-row">
+                  <input type="text" name="city" placeholder="City" required>
+                  <input type="text" name="state" placeholder="State" required>
+                  <input type="text" name="zip" placeholder="Zip" required>
+              </div>
           </div>
 
-          
-          <label class="signup-label">Name*</label>
-          <input class="signup-field" type="text" name="name" placeholder="Jane Doe"required>
-          
-          <label class="signup-label">Phone Number*</label>
-          <input class="signup-field" type="tel" name="phone" placeholder="000-000-0000" required>
-
-          <label class="signup-label">Email*</label>
-          <input class="signup-field" type="email" name="email" placeholder="janedoe@email.com" required>
-
-          <div class="address-group">
-            <label class="signup-label">School Address*</label>
-            <input type="text" name="street1" placeholder="Street 1" required>
-            <input type="text" name="street2" placeholder="Street 2">
-
-            <div class="form-row">
-                <input type="text" name="city" placeholder="City" required>
-                <input type="text" name="state" placeholder="State" required>
-                <input type="text" name="zip" placeholder="Zip" required>
-            </div>
-        </div>
-
-          <button type="button" class="btn" id="next-btn">Continue</button>
-        </div>
-
-        <!-- STEP 2 -->
-        <div class="form-step step-2">
-          <h3>Fundraiser Details</h3>
-          <label class="signup-label">Fundraiser Goal*</label>
-          <input class="signup-field" type="text" name="goal" required>
-
-          <label class="signup-label">School/Group Name*</label>
-          <input class="signup-field" type="text" name="group" required>
-
-          <label class="signup-label">Payment Method*</label>
-          <select class="signup-field" name="payment_method" required>
-            <option value="ACH">ACH</option>
-            <option value="Check">Check</option>
-          </select>
-
-          <label class="signup-label">Additional Comments</label>
-          <textarea name="comments" style="resize: none;"></textarea>
-
-          <div class="checkbox-group">
-            <div class="checkbox-item">
-              <input class="signup-checkbox" type="checkbox" name="terms" id="terms" required>
-              <label for="terms">
-                I agree to the <a href="#" id="view-terms" class="link">terms and conditions</a><span class="required">*</span>.
-              </label>
-            </div>
-
-            <div class="checkbox-item">
-              <input type="checkbox" name="marketing" id="marketing" checked>
-              <label for="marketing">
-                Yes, I would like to receive emails about special promotions and newsletters from Fundraise-a-thon and Scentco Fundraising. Fundraise-a-thon and Scentco Fundraising will not sell your information.
-              </label>
-            </div>
+            <button type="button" class="btn" id="next-btn">Continue</button>
           </div>
 
+          <!-- STEP 2 -->
+          <div class="form-step step-2">
+            <h3>Fundraiser Details</h3>
+            <label class="signup-label">Fundraiser Goal*</label>
+            <input class="signup-field" type="text" name="goal" required>
+
+            <label class="signup-label">School/Group Name*</label>
+            <input class="signup-field" type="text" name="group" required>
+
+            <label class="signup-label">Payment Method*</label>
+            <select class="signup-field" name="payment_method" required>
+              <option value="ACH">ACH</option>
+              <option value="Check">Check</option>
+            </select>
+
+            <label class="signup-label">Additional Comments</label>
+            <textarea name="comments" style="resize: none;"></textarea>
+
+            <div class="checkbox-group">
+              <div class="checkbox-item">
+                <input class="signup-checkbox" type="checkbox" name="terms" id="terms" required>
+                <label for="terms">
+                  I agree to the <a href="#" id="view-terms" class="link">terms and conditions</a><span class="required">*</span>.
+                </label>
+              </div>
+
+              <div class="checkbox-item">
+                <input type="checkbox" name="marketing" id="marketing" checked>
+                <label for="marketing">
+                  Yes, I would like to receive emails about special promotions and newsletters from Fundraise-a-thon and Scentco Fundraising. Fundraise-a-thon and Scentco Fundraising will not sell your information.
+                </label>
+              </div>
+            </div>
 
 
-          <div class="form-buttons">
-            <button type="submit" class="btn">Start Fundraiser</button>
-            <button type="button" class="btn-outline" id="back-btn">Back</button>
-        </div>
-        </div>
-      </form>
+
+            <div class="form-buttons">
+              <button type="submit" class="btn">Start Fundraiser</button>
+              <button type="button" class="btn-outline" id="back-btn">Back</button>
+          </div>
+          </div>
+        </form>
+    </div>
+    <div id="thank-you-section" style="display: none;">
+      <div style="max-width: 600px;">
+        <h1 style="color: #1F2443; font-size: 32px; margin-bottom: 20px;">Thank you for signing up!</h1>
+        <p style="font-size: 18px; font-family: 'Roboto', sans-serif; line-height: 1.5; margin-bottom: 40px;">
+          Our Customer Service team will be in touch soon with your school admin and fundraiser details.
+          We look forward to fundraising with you!
+        </p>
+        <a href="/" style="font-size: 16px; color: #f57c00; text-decoration: underline; font-weight: bold;">← Back to Home</a>
+      </div>
+    </div>
       <div id="form-message" style="margin-top: 20px;"></div>
     </div>
   </div>
