@@ -21,7 +21,7 @@
       "type": "contact-form",
       "name": "Custom Contact Form",
       "settings": {
-        "heading": "Start your fundraiser today!",
+        "heading": "",
         "heading_size": "h1",
         "color_scheme": "scheme-1",
         "padding_top": 36,
