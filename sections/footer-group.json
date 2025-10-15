@@ -18,7 +18,7 @@
           "type": "image",
           "settings": {
             "image": "shopify://shop_images/white_logo.png",
-            "image_width": 285,
+            "image_width": 270,
             "alignment": ""
           }
         },
@@ -35,12 +35,36 @@
             "heading": "Make a Donation",
             "menu": "make-a-donation"
           }
+        },
+        "link_list_e7qtNK": {
+          "type": "link_list",
+          "settings": {
+            "heading": "Resources",
+            "menu": "resources"
+          }
+        },
+        "link_list_MUTM6g": {
+          "type": "link_list",
+          "settings": {
+            "heading": "Support",
+            "menu": "support"
+          }
+        },
+        "link_list_eQf7Bf": {
+          "type": "link_list",
+          "settings": {
+            "heading": "Quick links",
+            "menu": "scentco-sites"
+          }
         }
       },
       "block_order": [
         "image_pAHgPw",
         "link_list_74amtj",
-        "link_list_Azjqpy"
+        "link_list_Azjqpy",
+        "link_list_e7qtNK",
+        "link_list_MUTM6g",
+        "link_list_eQf7Bf"
       ],
       "settings": {
         "color_scheme": "scheme-4742bebe-4397-4ae6-9687-035118945fe0",
