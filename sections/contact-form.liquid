@@ -96,7 +96,8 @@
           {%- endif -%}
         </div>
       </div>
-      <div class="field">
+      <div class="contact_field">
+        <label class="field_label"> Email </label>
         <input
           type="tel"
           id="ContactForm-phone"
@@ -107,9 +108,9 @@
           value="{% if form.phone %}{{ form.phone }}{% elsif customer %}{{ customer.phone }}{% endif %}"
           placeholder="{{ 'templates.contact.form.phone' | t }}"
         >
-        <label class="field__label" for="ContactForm-phone">{{ 'templates.contact.form.phone' | t }}</label>
       </div>
-      <div class="field">
+      <div class="contact_field">
+        <label class="field_label"> Email </label>
         <textarea
           rows="10"
           id="ContactForm-body"
@@ -119,9 +120,6 @@
         >
           {{- form.body -}}
         </textarea>
-        <label class="form__label field__label" for="ContactForm-body">
-          {{- 'templates.contact.form.comment' | t -}}
-        </label>
       </div>
       <div class="contact__button">
         <button type="submit" class="button">
