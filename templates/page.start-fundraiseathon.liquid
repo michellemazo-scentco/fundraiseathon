@@ -228,27 +228,16 @@
     /* Thank You Section */
     #thank-you-section {
       display: none;
-        visibility: hidden;
-        opacity: 0;
-        pointer-events: none;
-        height: 0 !important;
-        overflow: hidden;
-        position: absolute;
-        top: 0;
-        left: 0;
+      background: white;
+      width: 100%;
+      padding: 40px;
+      
+      /* Center content */
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100%;
     }
-
-    #thank-you-section * {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-}
-
-#thank-you-section li::marker,
-#thank-you-section::before,
-#thank-you-section::after {
-  content: none !important;
-}
 
     #thank-you-section .thank-you-message {
       max-width: 600px;
@@ -375,12 +364,6 @@
         </form>
         <div id="form-message" style="margin-top: 20px;"></div>
     </div>
-    <div id="form-section">
-  <form id="fundraiser-form">
-    ...
-  </form>
-  <div id="form-message" style="margin-top: 20px;"></div>
-</div>
 
     <!-- Thank You Section (Initially Hidden) -->
     <div id="thank-you-section" style="display: none;">
@@ -450,13 +433,8 @@
 
         if (response.ok) {
           document.getElementById("form-section").style.display = "none";
-          
-          const thankYou = document.getElementById("thank-you-section");
-          thankYou.style.display = "flex";
-          thankYou.style.visibility = "visible";
-          thankYou.style.opacity = "1";
-          thankYou.style.pointerEvents = "auto";
-          thankYou.style.height = "auto";
+          document.getElementById("thank-you-section").style.display = "flex";
+          form.reset();
         } else {
           formMessage.textContent = "There was an error submitting the form.";
         }
