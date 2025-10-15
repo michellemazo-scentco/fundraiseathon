@@ -55,7 +55,7 @@
       {%- endif -%}
       <div class="contact__fields">
         <div class="contact_field">
-          <label class="field_label"> Name </label>
+          <label class="field_label"> Name* </label>
           <input
             class="contact_input"
             autocomplete="name"
@@ -67,7 +67,7 @@
           >
         </div>
         <div class="contact_field">
-          <label class="field_label"> Phone </label>
+          <label class="field_label"> Phone* </label>
           <input
             type="tel"
             id="ContactForm-phone"
@@ -83,9 +83,9 @@
         
       </div>
       <div class="contact_field field--with-error">
-          <label class="field_label"> Email </label>
+          <label class="field_label"> Email* </label>
           <input
-            autocomplete="email"
+            autocomplete="email*"
             type="email"
             id="ContactForm-email"
             class="contact_input"
@@ -113,7 +113,7 @@
           {%- endif -%}
         </div>
       <div class="contact_field">
-        <label class="field_label"> Message </label>
+        <label class="field_label"> Message* </label>
         <textarea
           rows="10"
           id="ContactForm-body"
