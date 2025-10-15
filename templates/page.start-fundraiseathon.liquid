@@ -388,7 +388,8 @@
         }); 
 
         if (response.ok) {
-          formMessage.textContent = "Form submitted successfully! 🎉";
+          document.getElementById("form-section").style.display = "none";
+          document.getElementById("thank-you-section").style.display = "block";
           form.reset();
         } else {
           formMessage.textContent = "There was an error submitting the form.";
