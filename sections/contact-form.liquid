@@ -12,26 +12,43 @@
       padding-bottom: {{ section.settings.padding_bottom }}px;
     }
   }
+
+  .contact__fields {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+
+  @media screen and (min-width: 750px) {
+    .contact__fields {
+      grid-template-columns: repeat(2, 1fr);
+      grid-column-gap: 2rem;
+    }
+    .contact__fields .full-width {
+      grid-column: span 2;
+    }
+  }
 {%- endstyle -%}
 
 <div class="color-{{ section.settings.color_scheme }} gradient contactFormContainer">
   <h2 class="h0">Start your fundraiser today!</h2>
   <br>
+
   <div class="contact page-width page-width--narrow section-{{ section.id }}-padding">
     {%- if section.settings.heading != blank -%}
-      <h2 class="title title-wrapper--no-top-margin inline-richtext {{ section.settings.heading_size }}{% if settings.animations_reveal_on_scroll %} scroll-trigger animate--slide-in{% endif %}">
+      <h2 class="title title-wrapper--no-top-margin inline-richtext {{ section.settings.heading_size }}">
         {{ section.settings.heading }}
       </h2>
     {%- else -%}
       <h2 class="visually-hidden">{{ 'templates.contact.form.title' | t }}</h2>
     {%- endif -%}
+
     {%- liquid
       assign contact_form_class = 'isolate'
-      if settings.animations_reveal_on_scroll
-        assign contact_form_class = 'isolate scroll-trigger animate--slide-in'
-      endif
     -%}
+
     {%- form 'contact', id: 'ContactForm', class: contact_form_class -%}
+
       {%- if form.posted_successfully? -%}
         <h2 class="form-status form-status-list form__message" tabindex="-1" autofocus>
           {% render 'icon-success' %}
@@ -44,22 +61,18 @@
             {{ 'templates.contact.form.error_heading' | t }}
           </h2>
         </div>
-        <ul class="form-status-list caption-large" role="list">
-          <li>
-            <a href="#ContactForm-email" class="link">
-              {{ form.errors.translated_fields.email | capitalize }}
-              {{ form.errors.messages.email }}
-            </a>
-          </li>
-        </ul>
       {%- endif -%}
+
+      <!-- Contact Fields Grid -->
       <div class="contact__fields">
+        <!-- Name -->
         <div class="field">
           <label class="field__label" for="ContactForm-name">
             {{ 'templates.contact.form.name' | t }}<span style="color:red">*</span>
           </label>
           <input
             class="field__input"
+            autocomplete="name"
             type="text"
             id="ContactForm-name"
             name="contact[{{ 'templates.contact.form.name' | t }}]"
@@ -68,7 +81,28 @@
             placeholder="Jane Doe"
           >
         </div>
-        <div class="field field--with-error">
+
+        <!-- Phone -->
+        <div class="field">
+          <label class="field__label" for="ContactForm-phone">
+            {{ 'templates.contact.form.phone' | t }}
+          </label>
+          <input
+            type="tel"
+            id="ContactForm-phone"
+            class="field__input"
+            autocomplete="tel"
+            name="contact[{{ 'templates.contact.form.phone' | t }}]"
+            value="{% if form.phone %}{{ form.phone }}{% elsif customer %}{{ customer.phone }}{% endif %}"
+            placeholder="(123) 456-7890"
+          >
+        </div>
+
+        <!-- Email -->
+        <div class="field full-width">
+          <label class="field__label" for="ContactForm-email">
+            {{ 'templates.contact.form.email' | t }}<span style="color:red">*</span>
+          </label>
           <input
             autocomplete="email"
             type="email"
@@ -77,17 +111,13 @@
             name="contact[email]"
             spellcheck="false"
             autocapitalize="off"
+            required
             value="{% if form.email %}{{ form.email }}{% elsif customer %}{{ customer.email }}{% endif %}"
-            aria-required="true"
+            placeholder="janedoe@email.com"
             {% if form.errors contains 'email' %}
               aria-invalid="true"
               aria-describedby="ContactForm-email-error"
             {% endif %}
-            placeholder="{{ 'templates.contact.form.email' | t }}"
-          >
-          <label class="field__label" for="ContactForm-email">
-            {{- 'templates.contact.form.email' | t }}
-            <span aria-hidden="true">*</span></label
           >
           {%- if form.errors contains 'email' -%}
             <small class="contact__field-error" id="ContactForm-email-error">
@@ -101,41 +131,33 @@
           {%- endif -%}
         </div>
       </div>
+
+      <!-- Message -->
       <div class="field">
-        <input
-          type="tel"
-          id="ContactForm-phone"
-          class="field__input"
-          autocomplete="tel"
-          name="contact[{{ 'templates.contact.form.phone' | t }}]"
-          pattern="[0-9\-]*"
-          value="{% if form.phone %}{{ form.phone }}{% elsif customer %}{{ customer.phone }}{% endif %}"
-          placeholder="{{ 'templates.contact.form.phone' | t }}"
-        >
-        <label class="field__label" for="ContactForm-phone">{{ 'templates.contact.form.phone' | t }}</label>
-      </div>
-      <div class="field">
+        <label class="field__label" for="ContactForm-body">
+          {{ 'templates.contact.form.comment' | t }}<span style="color:red">*</span>
+        </label>
         <textarea
-          rows="10"
+          rows="6"
           id="ContactForm-body"
           class="text-area field__input"
           name="contact[{{ 'templates.contact.form.comment' | t }}]"
-          placeholder="{{ 'templates.contact.form.comment' | t }}"
-        >
-          {{- form.body -}}
-        </textarea>
-        <label class="form__label field__label" for="ContactForm-body">
-          {{- 'templates.contact.form.comment' | t -}}
-        </label>
+          required
+          placeholder="Type message here..."
+        >{{- form.body -}}</textarea>
       </div>
+
+      <!-- Submit Button -->
       <div class="contact__button">
         <button type="submit" class="button">
-          {{ 'templates.contact.form.send' | t }}
+          Submit Request
         </button>
       </div>
+
     {%- endform -%}
   </div>
-  {% comment %} piggy artwork on leftside {% endcomment %}
+
+  <!-- Piggy Image -->
   <div class="contact-piggy">
     <img
       src="https://cdn.shopify.com/s/files/1/0745/8694/7905/files/Asset_37_1.png?v=1729295608"
@@ -143,69 +165,43 @@
       width="1500"
       height="1500"
       loading="lazy"
-      sizes="
-        (min-width: 1200px) 550px,
-        (min-width: 750px) calc((100vw - 130px) / 2), calc((100vw - 50px) / 2)
-      "
     >
   </div>
-    <div class="contact-footer">
+
+  <!-- Footer Message -->
+  <div class="contact-footer">
     You can also email us directly at <b>customerservice@fundraise-a-thon.com</b>
   </div>
 </div>
 
 {% schema %}
 {
-  "name": "t:sections.contact-form.name",
+  "name": "Custom Contact Form",
   "tag": "section",
   "class": "section",
-  "disabled_on": {
-    "groups": ["header", "footer"]
-  },
   "settings": [
     {
       "type": "inline_richtext",
       "id": "heading",
-      "default": "t:sections.contact-form.settings.title.default",
-      "label": "t:sections.contact-form.settings.title.label"
+      "default": "Start your fundraiser today!",
+      "label": "Heading"
     },
     {
       "type": "select",
       "id": "heading_size",
       "options": [
-        {
-          "value": "h2",
-          "label": "t:sections.all.heading_size.options__1.label"
-        },
-        {
-          "value": "h1",
-          "label": "t:sections.all.heading_size.options__2.label"
-        },
-        {
-          "value": "h0",
-          "label": "t:sections.all.heading_size.options__3.label"
-        },
-        {
-          "value": "hxl",
-          "label": "t:sections.all.heading_size.options__4.label"
-        },
-        {
-          "value": "hxxl",
-          "label": "t:sections.all.heading_size.options__5.label"
-        }
+        { "value": "h2", "label": "Medium" },
+        { "value": "h1", "label": "Large" },
+        { "value": "h0", "label": "Extra large" }
       ],
       "default": "h1",
-      "label": "t:sections.all.heading_size.label"
+      "label": "Heading size"
     },
     {
       "type": "color_scheme",
       "id": "color_scheme",
-      "label": "t:sections.all.colors.label",
+      "label": "Color scheme",
       "default": "scheme-1"
-    },
-    {
-      "type": "header",
-      "content": "t:sections.all.padding.section_padding_heading"
     },
     {
       "type": "range",
@@ -214,7 +210,7 @@
       "max": 100,
       "step": 4,
       "unit": "px",
-      "label": "t:sections.all.padding.padding_top",
+      "label": "Top padding",
       "default": 36
     },
     {
@@ -224,14 +220,15 @@
       "max": 100,
       "step": 4,
       "unit": "px",
-      "label": "t:sections.all.padding.padding_bottom",
+      "label": "Bottom padding",
       "default": 36
     }
   ],
   "presets": [
     {
-      "name": "t:sections.contact-form.presets.name"
+      "name": "Custom Contact Form"
     }
   ]
 }
 {% endschema %}
+
