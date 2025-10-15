@@ -50,6 +50,9 @@
         "link_list_e7qtNK",
         "link_list_eQf7Bf"
       ],
+      "custom_css": [
+        "h3{}"
+      ],
       "settings": {
         "color_scheme": "scheme-4742bebe-4397-4ae6-9687-035118945fe0",
         "newsletter_enable": false,
