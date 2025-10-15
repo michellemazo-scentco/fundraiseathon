@@ -77,6 +77,7 @@
             pattern="[0-9\-]*"
             value="{% if form.phone %}{{ form.phone }}{% elsif customer %}{{ customer.phone }}{% endif %}"
             placeholder="{{ 'templates.contact.form.phone' | t }}"
+            required
           >
         </div>
         
@@ -98,6 +99,7 @@
               aria-describedby="ContactForm-email-error"
             {% endif %}
             placeholder="{{ 'templates.contact.form.email' | t }}"
+            required
           >
           {%- if form.errors contains 'email' -%}
             <small class="contact__field-error" id="ContactForm-email-error">
@@ -118,6 +120,7 @@
           class="text-area contact_input"
           name="contact[{{ 'templates.contact.form.comment' | t }}]"
           placeholder="{{ 'templates.contact.form.comment' | t }}"
+          required
         >
           {{- form.body -}}
         </textarea>
