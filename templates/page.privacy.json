@@ -38,6 +38,10 @@
         "heading_tD7zcR",
         "text_GL7mQU"
       ],
+      "custom_css": [
+        "h2 {font-family: \"Poppins\", sans-serif; font-size: 32px;}",
+        "p {font-family: \"Roboto\", sans-serif; font-size: 18px;}"
+      ],
       "name": "t:sections.rich-text.presets.name",
       "settings": {
         "desktop_content_position": "center",
@@ -71,7 +75,9 @@
         "text_DUfpzy"
       ],
       "custom_css": [
-        "img {object-fit: contain;}"
+        "img {object-fit: contain;}",
+        "h2 {font-family: \"Poppins\", sans-serif; font-size: 32px;}",
+        "p {font-family: \"Roboto\", sans-serif; font-size: 18px;}"
       ],
       "name": "t:sections.image-with-text.presets.name",
       "settings": {
@@ -88,6 +94,53 @@
         "mobile_content_alignment": "left",
         "padding_top": 36,
         "padding_bottom": 36
+      }
+    },
+    "info_cards_P7aR3D": {
+      "type": "info-cards",
+      "blocks": {
+        "card_kPWFnB": {
+          "type": "card",
+          "settings": {
+            "image": "shopify://shop_images/Frame_439.png",
+            "title": "Verified Fundraisers",
+            "text": "We verify the identity of individuals and schools"
+          }
+        },
+        "card_Mt6YNB": {
+          "type": "card",
+          "settings": {
+            "image": "shopify://shop_images/Frame_441.png",
+            "title": "End-to-end Encryption",
+            "text": "We secure all information in end-to-end encryption"
+          }
+        },
+        "card_xK9bcc": {
+          "type": "card",
+          "settings": {
+            "image": "shopify://shop_images/Frame_443.png",
+            "title": "Stripe Radar",
+            "text": "Stripe, a PCI-compliant processor, securely handles all payments and keeps transactions safe"
+          }
+        },
+        "card_bhwJdD": {
+          "type": "card",
+          "settings": {
+            "image": "shopify://shop_images/Frame_445.png",
+            "title": "WCAG Compliant",
+            "text": "Our platform follows WCAG accessibility standards, ensuring fundraising is usable for everyone."
+          }
+        }
+      },
+      "block_order": [
+        "card_kPWFnB",
+        "card_Mt6YNB",
+        "card_xK9bcc",
+        "card_bhwJdD"
+      ],
+      "name": "Info Cards Section",
+      "settings": {
+        "section_heading": "Safety and Accessibility on Fundraise-a-thon"
       }
     },
     "rich_text_LrtX6k": {
@@ -123,6 +176,10 @@
         "text_M7nL7K",
         "button_APrPKh"
       ],
+      "custom_css": [
+        "h2{font-family: 'Poppins', sans-serif; font-size: 32px;}",
+        "p{font-family: 'Roboto', sans-serif; font-size: 18px;}"
+      ],
       "name": "t:sections.rich-text.presets.name",
       "settings": {
         "desktop_content_position": "center",
@@ -138,6 +195,7 @@
     "main",
     "rich_text_qrPdaW",
     "image_with_text_exMYJf",
+    "info_cards_P7aR3D",
     "rich_text_LrtX6k"
   ]
 }
