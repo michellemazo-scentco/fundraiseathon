@@ -105,14 +105,11 @@
 
 .contact-footer {
   margin-top: 20px;
-  font-size: 14px;
+  font-size: 20px;
   text-align: center;
+  color: #1F2443;
 }
 
-.contact-footer b {
-  font-weight: 700;
-  color: #000;
-}
 
 .contact__fields .full-width {
   grid-column: span 2;
