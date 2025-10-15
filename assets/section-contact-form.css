@@ -23,6 +23,7 @@
   font-weight: 600;
   margin-bottom: 30px;
   font-family: 'Poppins', sans-serif;
+  box-shadow: none;
 }
 
 .contactFormContainer h2 {
