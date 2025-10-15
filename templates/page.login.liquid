@@ -140,21 +140,28 @@
 
         <label class="signup-label" for="email">Email*</label>
         <input type="email" class="signup-field" id="email" name="email" placeholder="you@example.com" required>
-
         <label class="signup-label" for="password">Password*</label>
         <div class="password-wrapper">
-          <input type="password" class="signup-field" id="password" name="password" placeholder="Enter your password" required>
-          <button id="togglePassword" type="button" class="toggle-password" aria-label="Toggle password visibility">
-            <!-- Eye Open SVG (default visible) -->
+        <input
+            type="password"
+            class="signup-field"
+            id="password"
+            name="password"
+            placeholder="Enter your password"
+            required
+        />
+        <button type="button" id="togglePassword" class="toggle-password" aria-label="Toggle password visibility">
+            <!-- Eye Open (default) -->
             <svg id="eye-open" xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="#666" viewBox="0 0 24 24">
-                <path d="M12 5c-7.633 0-10 7-10 7s2.367 7 10 7 10-7 10-7-2.367-7-10-7zm0 12c-2.761 0-5-2.239-5-5s2.239-5 
-                5-5 5 2.239 5 5-2.239 5-5 5zm0-8c-1.657 0-3 1.343-3 3s1.343 3 3 3 
-                3-1.343 3-3-1.343-3-3-3z"/>
+            <path d="M12 5c-7.633 0-10 7-10 7s2.367 7 10 7 10-7 10-7-2.367-7-10-7zm0 
+            12c-2.761 0-5-2.239-5-5s2.239-5 5-5 
+            5 2.239 5 5-2.239 5-5 5zm0-8c-1.657 0-3 1.343-3 
+            3s1.343 3 3 3 3-1.343 3-3-1.343-3-3-3z"/>
             </svg>
 
             <!-- Eye Slash (hidden) -->
             <svg id="eye-closed" xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="#666" viewBox="0 0 24 24" style="display: none;">
-                <path d="M2 5.27l2.28 2.28c-1.76 1.4-3.13 3.19-4.28 5.45 
+            <path d="M2 5.27l2.28 2.28c-1.76 1.4-3.13 3.19-4.28 5.45 
                 2.76 5.31 7.41 8 11.99 8 1.93 0 3.79-.47 5.44-1.32l2.3 2.3 
                 1.27-1.27L3.27 4 2 5.27zM7.1 9.37l1.49 1.49c-.05.2-.09.41-.09.64 
                 0 1.66 1.34 3 3 3 .22 0 .43-.04.64-.09l1.49 1.49c-.64.32-1.35.51-2.13.51-2.21 0-4-1.79-4-4 
@@ -163,7 +170,8 @@
                 0-5.52-4.48-10-10-10-2.5 0-4.77.91-6.54 2.42l1.48 1.48c1.3-1.11 3.01-1.9 5.06-1.9z"/>
             </svg>
         </button>
-        </div>
+    </div>
+
 
         <button class="btn" type="submit">Log In</button>
 
