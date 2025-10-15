@@ -74,17 +74,13 @@
   border: 1px solid #ccc;
   border-radius: 5px;
   margin: 0px;
+  padding 5px;
 }
 
 .text-area:focus{
   border: 1px solid #ccc;
   border-color: #134c99;
   border-radius: 5px;
-}
-
-.text-area::placeholder{
-  padding-left: 5px;
-  padding-top: 5px;
 }
 
 
@@ -109,9 +105,13 @@
 
 .contact-footer {
   margin-top: 20px;
-  font-size: 20px;
+  font-size: 14px;
   text-align: center;
-  color: #1F2443;
+}
+
+.contact-footer b {
+  font-weight: 700;
+  color: #000;
 }
 
 .contact__fields .full-width {
