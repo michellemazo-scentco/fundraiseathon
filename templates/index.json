@@ -19,7 +19,7 @@
         "highlight_text": "Share, donate, grow",
         "subheading": "One dashboard for schools. One app for parents. Simple tracking for every dollar.",
         "primary_button_text": "Start Fundraising",
-        "primary_button_url": "",
+        "primary_button_url": "shopify://pages/start-a-fundraiser",
         "secondary_button_text": "Learn More",
         "secondary_button_url": ""
       }
@@ -58,7 +58,7 @@
           "type": "content_block",
           "settings": {
             "heading": "3. Parents earn Amazon rewards with every donation",
-            "text": "Parents earn rewards as they give. For every $50 donated, whether parents    or friends and family, they receive $5 in Amazon rewards for up to $50. This makes it easy and motivating to keep the donations flowing.",
+            "text": "For every $50 donated, the parent earns $5 in amazon e-gift cards, for up to a total of $50 in e-gift cards per fundraiser!",
             "image": "shopify://shop_images/Frame_474.png",
             "gradient_color": "#ffffff",
             "tag_icon_1": "shopify://shop_images/Frame_478.png",
@@ -71,7 +71,7 @@
           "type": "content_block",
           "settings": {
             "heading": "4. Expert Support Every Step of the Way",
-            "text": "You’re never on your own. From sign-up to collecting your funds, our team provides dedicated customer service to guide you, answer questions, and make your fundraiser smooth and successful.",
+            "text": "You’re never on your own. From sign-up to collecting your funds, our team is here to help guide you, answer questions, and make your fundraiser smooth and successful.",
             "image": "shopify://shop_images/Frame_475_9f99f95a-3f61-4bf4-8fc1-2a159fee07a5.png",
             "gradient_color": "#ffffff"
           }
@@ -80,7 +80,7 @@
           "type": "content_block",
           "settings": {
             "heading": "5. 85% of Every Dollar Goes Back to Your School",
-            "text": "At the end of your fundraiser, you will receive your funds with 85% of what you earned! The 15% portion of each donation helps cover payment processing fees and the operating costs of maintaining our platform, ensuring secure transactions and protecting donor data.",
+            "text": "At the end of your fundraiser, you will receive 85% of all the money you raised! The 15% portion of each donation helps cover payment processing fees and the operating costs of maintaining our platform, ensuring secure transactions and protecting donor data.",
             "image": "shopify://shop_images/Frame_461.png",
             "gradient_color": "#ffffff"
           }
