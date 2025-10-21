@@ -362,12 +362,15 @@
 
           <!-- STEP 2 -->
           <div class="form-step step-2">
-            <h3>Fundraiser Details</h3>
+            <div class="form-header">
+              <h3>Fundraiser Account Request</h3>
+              <p>Fill out the information below to create a <span style='font-weight: bold;'>School Admin</span> account and <span style='font-weight: bold;'>request a fundraiser.</span></p>
+            </div>
             <label class="signup-label">Fundraiser Goal*</label>
-            <input class="signup-field" type="text" name="goal" required>
+            <input class="signup-field" type="text" name="goal" placeholder="$10,000" required>
 
             <label class="signup-label">School/Group Name*</label>
-            <input class="signup-field" type="text" name="group" required>
+            <input class="signup-field" type="text" name="group" placeholder="Smith Elementary" required>
 
             <label class="signup-label">Payment Method*</label>
             <select class="signup-field" name="payment_method" required>
@@ -376,7 +379,7 @@
             </select>
 
             <label class="signup-label">Additional Comments</label>
-            <textarea name="comments" style="resize: none;"></textarea>
+            <textarea name="comments" placeholder="start typing here..." style="resize: none;"></textarea>
 
             <div class="checkbox-group">
               <div class="checkbox-item">
