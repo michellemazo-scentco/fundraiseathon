@@ -342,15 +342,15 @@ Wheel with right-side pointer; labels curved on-path, outward-facing, up to 2 li
     /* Right-side triangle picker – TIP at rim */
     .wp-pointer{
       position: absolute;
-      top: 50%;
-      left: calc(100% - var(--wp-pointer-size) + var(--wp-pointer-offset));
-      transform: translateY(-50%);
-      width: 0; height: 0;
-      border-top:  calc(var(--wp-pointer-size) * .6) solid transparent;
-      border-bottom: calc(var(--wp-pointer-size) * .6) solid transparent;
-      border-right: var(--wp-pointer-size) solid var(--wp-accent);
-      filter: drop-shadow(0 2px 2px rgba(0,0,0,.25));
-      z-index: 4;
+  top: 50%;
+  right: calc(0px - var(--wp-pointer-offset)); /* 0 = tip exactly on rim; negative overlaps */
+  transform: translateY(-50%);
+  width: 0; height: 0;
+  border-top:    calc(var(--wp-pointer-size) * .6) solid transparent;
+  border-bottom: calc(var(--wp-pointer-size) * .6) solid transparent;
+  border-left:   var(--wp-pointer-size) solid var(--wp-accent); /* ⬅ points left */
+  filter: drop-shadow(0 2px 2px rgba(0,0,0,.25));
+  z-index: 10; /* above SVG */ 
     }
 
     /* Rim */
