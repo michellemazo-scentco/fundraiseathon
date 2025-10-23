@@ -264,8 +264,11 @@
         "option_EBGAkx",
         "option_Lr6bba"
       ],
+      "disabled": true,
       "name": "Spinning Wheel",
       "settings": {
+        "heading": "What should you choose?",
+        "subheading": "Spin the wheel to decide.",
         "spin_label": "Spin",
         "respin_label": "Respin",
         "result_heading_template": "You should choose {word}",
