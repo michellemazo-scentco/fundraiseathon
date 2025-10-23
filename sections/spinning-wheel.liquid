@@ -149,16 +149,22 @@ Radial labels, full circle, top triangle picker touching rim.
           svg.insertBefore(path, svg.firstChild);
 
           // Radial label: start near center, extend outward along the slice mid-angle
-          const mid = start + sliceAngle / 2;
-          const text = mk('text');
-          text.setAttribute('class', 'wp-label');
-          text.setAttribute('text-anchor', 'start');
-          text.setAttribute('dominant-baseline', 'middle');
-          text.setAttribute('transform', `rotate(${mid})`);
-          text.setAttribute('x', String(innerLabelRadius));
-          text.setAttribute('y', '0');
-          text.textContent = options[i].label;
-          svg.appendChild(text);
+          // inside for (let i = 0; i < n; i++) { ... }
+            const mid = start + sliceAngle / 2;
+
+            // Centered radius between inner text start and near the rim
+            const labelRadius = (34 + (radius - 18)) / 2; // 34 = inner start; 18 = rim padding
+
+            const text = mk('text');
+            text.setAttribute('class', 'wp-label');
+            text.setAttribute('text-anchor', 'start');
+            text.setAttribute('dominant-baseline', 'middle');
+            text.setAttribute('transform', `rotate(${mid})`);
+            text.setAttribute('x', String(labelRadius));
+            text.setAttribute('y', '0');
+            text.textContent = options[i].label;
+            svg.appendChild(text);
+
         }
       }
       buildWheel();
