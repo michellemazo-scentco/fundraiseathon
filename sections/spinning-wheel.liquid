@@ -360,12 +360,16 @@ Wheel with right-side SVG wedge pointer; curved labels (up to 2 lines), outward-
     }
     .wp-pointer-svg{
       width: calc(var(--wp-pointer-size, 30px) * 1.9);
-      height: calc(var(--wp-pointer-size, 30px) * 1.2);
-      filter: drop-shadow(0 2px 2px rgba(0,0,0,.25));
-      display: block;
+  height: calc(var(--wp-pointer-size, 30px) * 1.2);
+  filter: drop-shadow(0 2px 2px rgba(0,0,0,.25));
+  display: block;
     }
-    .wp-pointer-back  { fill: #9CA3AF; } /* gray backplate */
-    .wp-pointer-front { fill: #ffffff; stroke: var(--wp-pointer-color, #6B7280); stroke-width: 2; }
+    .wp-pointer-back,
+    .wp-pointer-front{
+        stroke-linejoin: round;          /* round the vertices */
+        stroke-linecap: round;
+        vector-effect: non-scaling-stroke; /* keep stroke width when resized */
+    }
 
     /* Rim */
     .wp-rim { fill: none; stroke: #E6F0FF; stroke-width: 8; }
