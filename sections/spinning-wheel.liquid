@@ -1,6 +1,6 @@
 {% comment %}
 File: sections/wheel-picker.liquid
-Wheel with blue slices, visible labels (toggleable), left; content/result, right.
+Radial labels, full circle, top triangle picker touching rim.
 {% endcomment %}
 
 <section id="wheel-picker-{{ section.id }}" class="wheel-picker-section {% unless section.settings.show_labels_on_wheel %}wp-hide-labels{% endunless %}" style="
@@ -13,24 +13,25 @@ Wheel with blue slices, visible labels (toggleable), left; content/result, right
       <!-- LEFT: Wheel -->
       <div class="wp-left">
         <div class="wp-wheel-wrapper">
+          <!-- picker triangle (fixed) -->
           <div class="wp-pointer" aria-hidden="true"></div>
 
-          <!-- soft background shadow -->
-          <svg class="wp-shadow-plate" viewBox="-115 -115 230 230" aria-hidden="true">
+          <!-- soft shadow behind wheel -->
+          <svg class="wp-shadow-plate" viewBox="-125 -125 250 250" aria-hidden="true">
             <defs>
               <radialGradient id="wp-shadow-grad-{{ section.id }}" cx="50%" cy="40%" r="70%">
                 <stop offset="0%" stop-color="rgba(0,0,0,0.06)"/>
                 <stop offset="100%" stop-color="rgba(0,0,0,0.0)"/>
               </radialGradient>
             </defs>
-            <circle r="110" fill="url(#wp-shadow-grad-{{ section.id }})"></circle>
+            <circle r="118" fill="url(#wp-shadow-grad-{{ section.id }})"></circle>
           </svg>
 
           <!-- main wheel (rotates) -->
-          <svg class="wp-wheel" viewBox="-110 -110 220 220" role="img" aria-label="Selection wheel">
+          <svg class="wp-wheel" viewBox="-120 -120 240 240" role="img" aria-label="Selection wheel">
             <!-- slices/labels injected by JS -->
-            <circle class="wp-rim" r="106"></circle>
-            <circle class="wp-rim-glow" r="108"></circle>
+            <circle class="wp-rim" r="112"></circle>
+            <circle class="wp-rim-glow" r="115"></circle>
           </svg>
 
           <!-- center cap -->
@@ -108,22 +109,24 @@ Wheel with blue slices, visible labels (toggleable), left; content/result, right
       const btnSpin = root.querySelector('[data-role="spin"]');
       const btnRespin = root.querySelector('[data-role="respin"]');
 
-      if (n < 2) {
-        btnSpin.disabled = true;
-        btnSpin.textContent = 'Add at least 2 options';
-      }
+      if (n < 2) { btnSpin.disabled = true; btnSpin.textContent = 'Add at least 2 options'; }
 
       const blues = ['#E3F2FD','#BBDEFB','#90CAF9','#64B5F6','#42A5F5','#1E88E5'];
-      const radius = 100;
+
+      const radius = 108;              // safe within viewBox
+      const innerLabelRadius = 34;     // why: start near center and point outward
       const sliceAngle = 360 / (n || 1);
 
-      function polar(cx, cy, r, deg) {
+      const NS = 'http://www.w3.org/2000/svg';
+      const mk = (tag) => document.createElementNS(NS, tag);
+
+      function polar(r, deg) {
         const rad = (deg - 90) * Math.PI / 180;
-        return { x: cx + r * Math.cos(rad), y: cy + r * Math.sin(rad) };
+        return { x: r * Math.cos(rad), y: r * Math.sin(rad) };
       }
       function slicePath(startDeg, endDeg, r) {
-        const start = polar(0,0,r, endDeg);
-        const end = polar(0,0,r, startDeg);
+        const start = polar(r, endDeg);
+        const end = polar(r, startDeg);
         const largeArc = endDeg - startDeg <= 180 ? 0 : 1;
         return `M 0 0 L ${start.x} ${start.y} A ${r} ${r} 0 ${largeArc} 0 ${end.x} ${end.y} Z`;
       }
@@ -135,37 +138,37 @@ Wheel with blue slices, visible labels (toggleable), left; content/result, right
           const start = i * sliceAngle;
           const end = (i + 1) * sliceAngle;
 
-          const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+          const path = mk('path');
           path.setAttribute('d', slicePath(start, end, radius));
           path.setAttribute('class', 'wp-slice');
-          const color = blues[i % blues.length];
-          path.setAttribute('fill', color);
+          path.setAttribute('fill', blues[i % blues.length]);
           path.setAttribute('stroke', '#ffffff');
           path.setAttribute('stroke-width', '1');
           svg.insertBefore(path, svg.firstChild);
 
-          // Visible label
+          // Radial label: start near center, extend outward along the slice mid-angle
           const mid = start + sliceAngle / 2;
-          const pos = polar(0,0,radius * 0.62, mid);
-          const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
-          text.setAttribute('x', String(pos.x));
-          text.setAttribute('y', String(pos.y));
+          const text = mk('text');
           text.setAttribute('class', 'wp-label');
-          text.setAttribute('text-anchor', 'middle');
+          text.setAttribute('text-anchor', 'start');
           text.setAttribute('dominant-baseline', 'middle');
+          text.setAttribute('transform', `rotate(${mid})`);
+          text.setAttribute('x', String(innerLabelRadius));
+          text.setAttribute('y', '0');
           text.textContent = options[i].label;
           svg.appendChild(text);
         }
       }
       buildWheel();
 
+      // Spin logic
       let spinning = false;
       let currentRotation = 0;
       const fullTurns = 6;
 
       function indexFromRotation(rotDeg) {
         const norm = ((rotDeg % 360) + 360) % 360;
-        const hitDeg = (0 - norm + 360) % 360;
+        const hitDeg = (0 - norm + 360) % 360; // pointer at 0°
         return Math.floor(hitDeg / sliceAngle) % n;
       }
       function setPanels(showResult) {
@@ -222,7 +225,7 @@ Wheel with blue slices, visible labels (toggleable), left; content/result, right
           spinning = false;
         };
 
-        const timeoutId = setTimeout(() => { if (spinning) onEnd(); }, spinMs + 80);
+        const timeoutId = setTimeout(() => { if (spinning) onEnd(); }, spinMs + 100);
         svg.addEventListener('transitionend', () => { clearTimeout(timeoutId); onEnd(); }, { once: true });
       }
 
@@ -242,35 +245,43 @@ Wheel with blue slices, visible labels (toggleable), left; content/result, right
 
     /* LEFT */
     .wp-left { display: grid; place-items: center; }
-    .wp-wheel-wrapper { position: relative; width: min(88vw, 420px); aspect-ratio: 1 / 1; }
-    .wp-shadow-plate { position: absolute; inset: 0; width: 100%; height: 100%; }
-    .wp-wheel { position: relative; width: 100%; height: 100%; transform: rotate(0deg); will-change: transform; }
-    .wp-pointer {
-      position: absolute; top: -10px; left: 50%; transform: translateX(-50%);
-      width: 0; height: 0; border-left: 13px solid transparent; border-right: 13px solid transparent;
-      border-bottom: 20px solid #1E88E5; filter: drop-shadow(0 2px 2px rgba(0,0,0,.25));
+    .wp-wheel-wrapper { position: relative; width: min(88vw, 440px); aspect-ratio: 1 / 1; }
+    .wp-shadow-plate, .wp-wheel { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
+
+    /* Triangle picker – tip sits on the rim */
+    .wp-pointer{
+      --size: 28px; /* change size if needed */
+      position: absolute;
+      left: 50%;
+      top: calc(0px - var(--size) + 4px); /* 4px nudge so tip touches rim */
+      transform: translateX(-50%);
+      width: 0; height: 0;
+      border-left: calc(var(--size) * .6) solid transparent;
+      border-right: calc(var(--size) * .6) solid transparent;
+      border-bottom: var(--size) solid var(--wp-accent);
+      filter: drop-shadow(0 2px 2px rgba(0,0,0,.25));
+      z-index: 2;
     }
 
+    /* Rim */
     .wp-rim { fill: none; stroke: #E6F0FF; stroke-width: 8; }
-    .wp-rim-glow { fill: none; stroke: rgba(30,136,229,.2); stroke-width: 12; }
+    .wp-rim-glow { fill: none; stroke: rgba(30,136,229,.18); stroke-width: 8; }
 
     /* Slices & labels */
     .wp-slice { transition: filter .2s ease; }
     .wp-wheel:hover .wp-slice { filter: brightness(1.02); }
 
-    .wp-label {
+    .wp-label{
       font-size: 12px;
       font-weight: 700;
-      fill: #0a2540;                 /* dark blue text */
-      paint-order: stroke;           /* why: ensure white outline is under fill for contrast */
+      fill: #0a2540;
+      paint-order: stroke;    /* why: keep outline under text for contrast */
       stroke: #ffffff;
       stroke-width: 2px;
       letter-spacing: .2px;
       user-select: none;
       pointer-events: none;
     }
-
-    /* Hide labels when toggle is off */
     .wp-hide-labels .wp-label { display: none; }
 
     /* Center cap */
@@ -312,12 +323,7 @@ Wheel with blue slices, visible labels (toggleable), left; content/result, right
       { "type": "text", "id": "spin_label", "label": "Spin button label", "default": "Spin" },
       { "type": "text", "id": "respin_label", "label": "Respin button label", "default": "Respin" },
       { "type": "text", "id": "result_heading_template", "label": "Result heading template (use {word})", "default": "You should choose {word}" },
-      {
-        "type": "range",
-        "id": "spin_duration_ms",
-        "label": "Spin duration (ms)",
-        "min": 300, "max": 5000, "step": 100, "default": 2200, "unit": "ms"
-      },
+      { "type": "range", "id": "spin_duration_ms", "label": "Spin duration (ms)", "min": 300, "max": 5000, "step": 100, "default": 2200, "unit": "ms" },
       { "type": "checkbox", "id": "show_labels_on_wheel", "label": "Show labels on wheel", "default": true },
       { "type": "color", "id": "bg_color", "label": "Background color", "default": "#ffffff" },
       { "type": "color", "id": "text_color", "label": "Text color", "default": "#1f2937" },
