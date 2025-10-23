@@ -1,6 +1,6 @@
 {% comment %}
 File: sections/wheel-picker.liquid
-Wheel with right-side pointer; labels centered at wedge centroid.
+Wheel with right-side pointer; labels curved on-path, outward-facing, up to 2 lines.
 {% endcomment %}
 
 <section id="wheel-picker-{{ section.id }}" class="wheel-picker-section {% unless section.settings.show_labels_on_wheel %}wp-hide-labels{% endunless %}" style="
@@ -9,7 +9,6 @@ Wheel with right-side pointer; labels centered at wedge centroid.
   --wp-accent: {{ section.settings.accent_color }};
   --wp-pointer-size: {{ section.settings.pointer_size }}px;
   --wp-pointer-offset: {{ section.settings.pointer_offset }}px;
-  --wp-label-radius: {{ section.settings.label_radius | default: 42 }}px; /* kept for future */
   --wp-label-font: {{ section.settings.label_font_size | default: 14 }}px;
 ">
   <div class="wp-container">
@@ -33,7 +32,7 @@ Wheel with right-side pointer; labels centered at wedge centroid.
 
           <!-- Wheel (rotates) -->
           <svg class="wp-wheel" viewBox="-120 -120 240 240" role="img" aria-label="Selection wheel">
-            <!-- slices/labels injected by JS -->
+            <!-- dynamic <defs>, slices & labels injected by JS -->
             <circle class="wp-rim" r="112"></circle>
             <circle class="wp-rim-glow" r="115"></circle>
           </svg>
@@ -127,38 +126,25 @@ Wheel with right-side pointer; labels centered at wedge centroid.
 
       const radius = 108;      // wheel radius inside viewBox
       const CAP_R = 26;        // center cap radius (SVG units)
-      const PAD_IN = 6;        // label padding from cap
-      const PAD_OUT = 18;      // label padding from rim
+      const PAD_IN = 8;        // inner padding from cap
+      const PAD_OUT = 16;      // outer padding from rim
+      const ANG_PAD = 6;       // angular padding each side (deg) for text paths
       const sliceAngle = 360 / (n || 1);
 
       const NS = 'http://www.w3.org/2000/svg';
       const mk = (tag) => document.createElementNS(NS, tag);
 
-      // --- label geometry helpers ---
-      const DEG2RAD = Math.PI / 180;
-
-      function pxToSvgUnits(px) {
-        const vbWidth = 240; // viewBox width (-120..120)
-        const w = svg.clientWidth || svg.getBoundingClientRect().width || 1;
-        return px * (vbWidth / w);
-      }
-
-      const pointerSizePx   = parseFloat(style.getPropertyValue('--wp-pointer-size')) || 28;
-      const pointerHeightPx = pointerSizePx * 1.2; // approximate vertical span
-      const labelClearanceSvg = pxToSvgUnits(Math.max(8, pointerHeightPx * 0.55));
-
-      // Centroid radius for annular sector (inner r1, outer r2, angle theta radians)
-      function annularSectorCentroidRadius(r1, r2, theta) {
-        const eps = 1e-6;
-        const k = (Math.pow(r2,3) - Math.pow(r1,3)) / Math.max(eps, (Math.pow(r2,2) - Math.pow(r1,2)));
-        const s = Math.sin(theta/2) / Math.max(eps, (theta/2));
-        return (2/3) * k * s;
-      }
-      // -------------------------------------
-
+      // Helpers
       function polar(r, deg) {
         const rad = (deg - 90) * Math.PI / 180;
         return { x: r * Math.cos(rad), y: r * Math.sin(rad) };
+      }
+      function arcPath(r, startDeg, endDeg) {
+        const s = polar(r, startDeg);
+        const e = polar(r, endDeg);
+        const largeArc = (endDeg - startDeg) % 360 > 180 ? 1 : 0;
+        // sweep-flag=1 -> clockwise; text faces outward consistently
+        return `M ${s.x} ${s.y} A ${r} ${r} 0 ${largeArc} 1 ${e.x} ${e.y}`;
       }
       function slicePath(startDeg, endDeg, r) {
         const start = polar(r, endDeg);
@@ -166,9 +152,36 @@ Wheel with right-side pointer; labels centered at wedge centroid.
         const largeArc = endDeg - startDeg <= 180 ? 0 : 1;
         return `M 0 0 L ${start.x} ${start.y} A ${r} ${r} 0 ${largeArc} 0 ${end.x} ${end.y} Z`;
       }
+      // rough “two-line” splitter: balances words across two lines
+      function splitTwoLines(label) {
+        const words = label.trim().split(/\s+/);
+        if (words.length <= 1) return [label, null];
+        let bestIdx = 1, bestDiff = Infinity;
+        const total = words.join('').length;
+        for (let i = 1; i < words.length; i++) {
+          const left = words.slice(0, i).join('').length;
+          const diff = Math.abs(total/2 - left);
+          if (diff < bestDiff) { bestDiff = diff; bestIdx = i; }
+        }
+        return [words.slice(0, bestIdx).join(' '), words.slice(bestIdx).join(' ')];
+      }
+
+      function pxToSvgUnits(px) {
+        const vbWidth = 240; // viewBox width (-120..120)
+        const w = svg.clientWidth || svg.getBoundingClientRect().width || 1;
+        return px * (vbWidth / w);
+      }
+      const pointerSizePx   = parseFloat(style.getPropertyValue('--wp-pointer-size')) || 28;
+      const pointerHeightPx = pointerSizePx * 1.2; // approximate vertical span
+      const labelClearanceSvg = pxToSvgUnits(Math.max(8, pointerHeightPx * 0.55));
 
       function buildWheel() {
-        [...svg.querySelectorAll('.wp-slice, .wp-label')].forEach(n => n.remove());
+        // clear slices, labels, and any old defs
+        svg.querySelectorAll('.wp-slice, .wp-label, defs').forEach(n => n.remove());
+
+        // one <defs> to host all text paths
+        const defs = mk('defs');
+        svg.prepend(defs);
 
         for (let i = 0; i < n; i++) {
           const start = i * sliceAngle;
@@ -183,35 +196,56 @@ Wheel with right-side pointer; labels centered at wedge centroid.
           path.setAttribute('stroke-width', '1');
           svg.insertBefore(path, svg.firstChild);
 
-          // Label at wedge centroid along mid-ray
-          const mid = start + sliceAngle / 2;
+          // Two concentric arcs for 2 text lines
+          const rOuterText = radius - PAD_OUT - labelClearanceSvg; // closer to rim, but avoids triangle
+          const rInnerText = Math.max(CAP_R + PAD_IN + 10, rOuterText - 14); // a bit inward
 
-          const r1 = CAP_R + PAD_IN;
-          const r2 = radius - PAD_OUT - labelClearanceSvg;
-          const theta = sliceAngle * DEG2RAD;
-          const rLabel = annularSectorCentroidRadius(r1, r2, theta);
+          const arcStart = start + ANG_PAD;
+          const arcEnd   = end   - ANG_PAD;
 
-          const flip = mid > 90 && mid < 270;
-          const rotation = flip ? mid + 180 : mid;
-          const x = flip ? -rLabel : rLabel;
+          const id1 = `wp-arc1-{{ section.id }}-${i}`;
+          const id2 = `wp-arc2-{{ section.id }}-${i}`;
 
-          // Fit font to chord length at rLabel
-          const chordLen = 2 * rLabel * Math.sin(theta / 2);
-          const approxCharWidth = 0.6;
-          const maxPxByChord = Math.max(10, Math.floor(chordLen / (Math.max(1, options[i].label.length) * approxCharWidth)));
-          const fontPx = Math.min(baseFontPx, maxPxByChord);
+          const arc1 = mk('path'); arc1.setAttribute('id', id1);
+          arc1.setAttribute('d', arcPath(rOuterText, arcStart, arcEnd));
+          defs.appendChild(arc1);
 
-          const text = mk('text');
-          text.setAttribute('class', 'wp-label');
-          text.setAttribute('text-anchor', 'middle');
-          text.setAttribute('dominant-baseline', 'middle');
-          text.setAttribute('alignment-baseline', 'middle');
-          text.setAttribute('transform', `rotate(${rotation})`);
-          text.setAttribute('x', String(x));
-          text.setAttribute('y', '0');
-          text.setAttribute('font-size', String(fontPx));
-          text.textContent = options[i].label;
-          svg.appendChild(text);
+          const arc2 = mk('path'); arc2.setAttribute('id', id2);
+          arc2.setAttribute('d', arcPath(rInnerText, arcStart, arcEnd));
+          defs.appendChild(arc2);
+
+          // Split into up to 2 lines
+          const [line1, line2] = splitTwoLines(options[i].label);
+
+          // Render line 1 on outer arc
+          const text1 = mk('text');
+          text1.setAttribute('class', 'wp-label');
+          text1.setAttribute('text-anchor', 'middle');
+          text1.setAttribute('dominant-baseline', 'middle');
+          text1.setAttribute('alignment-baseline', 'middle');
+          text1.setAttribute('font-size', String(baseFontPx));
+          const tp1 = mk('textPath');
+          tp1.setAttributeNS('http://www.w3.org/1999/xlink','xlink:href', `#${id1}`);
+          tp1.setAttribute('startOffset', '50%'); // center on arc
+          tp1.textContent = line1;
+          text1.appendChild(tp1);
+          svg.appendChild(text1);
+
+          // Render line 2 (if any) on inner arc
+          if (line2) {
+            const text2 = mk('text');
+            text2.setAttribute('class', 'wp-label');
+            text2.setAttribute('text-anchor', 'middle');
+            text2.setAttribute('dominant-baseline', 'middle');
+            text2.setAttribute('alignment-baseline', 'middle');
+            text2.setAttribute('font-size', String(baseFontPx));
+            const tp2 = mk('textPath');
+            tp2.setAttributeNS('http://www.w3.org/1999/xlink','xlink:href', `#${id2}`);
+            tp2.setAttribute('startOffset', '50%');
+            tp2.textContent = line2;
+            text2.appendChild(tp2);
+            svg.appendChild(text2);
+          }
         }
       }
       buildWheel();
@@ -385,7 +419,6 @@ Wheel with right-side pointer; labels centered at wedge centroid.
       { "type": "color", "id": "accent_color", "label": "Accent color (buttons/pointer)", "default": "#1E88E5" },
       { "type": "range", "id": "pointer_size", "label": "Pointer size", "min": 16, "max": 48, "step": 1, "default": 28 },
       { "type": "range", "id": "pointer_offset", "label": "Pointer tip offset", "min": -20, "max": 20, "step": 1, "default": 0 },
-      { "type": "range", "id": "label_radius", "label": "Label radius (legacy, not used in centroid mode)", "min": 24, "max": 70, "step": 1, "default": 42 },
       { "type": "range", "id": "label_font_size", "label": "Label font size (px)", "min": 10, "max": 28, "step": 1, "default": 14 }
     ],
     "blocks": [
@@ -401,7 +434,7 @@ Wheel with right-side pointer; labels centered at wedge centroid.
     ],
     "presets": [
       {
-        "name": "Wheel Picker (Blue)",
+        "name": "Wheel Picker (Curved labels)",
         "category": "Interactive",
         "blocks": [
           { "type": "option", "settings": { "label": "Option 1" } },
@@ -415,7 +448,6 @@ Wheel with right-side pointer; labels centered at wedge centroid.
   }
   {% endschema %}
 </section>
-
 
 
 
