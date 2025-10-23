@@ -266,8 +266,6 @@
       ],
       "name": "Spinning Wheel",
       "settings": {
-        "heading": "What should you choose?",
-        "subheading": "Try your luck and win something!",
         "spin_label": "Spin",
         "respin_label": "Respin",
         "result_heading_template": "You should choose {word}",
@@ -277,8 +275,8 @@
         "text_color": "#1f2937",
         "accent_color": "#111827",
         "pointer_color": "#1f2443",
-        "pointer_size": 30,
-        "pointer_offset": 19,
+        "pointer_size": 24,
+        "pointer_offset": -20,
         "label_font_size": 12
       }
     }
