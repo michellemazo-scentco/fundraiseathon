@@ -112,6 +112,8 @@ Radial labels, full circle, top triangle picker touching rim.
       const btnSpin = root.querySelector('[data-role="spin"]');
       const btnRespin = root.querySelector('[data-role="respin"]');
       const labelRadiusPx = parseFloat(getComputedStyle(root).getPropertyValue('--wp-label-radius')) || 42;
+      const POINTER_DEG = 90; // pointer at right (0 = top)
+
 
       if (n < 2) { btnSpin.disabled = true; btnSpin.textContent = 'Add at least 2 options'; }
 
@@ -152,16 +154,16 @@ Radial labels, full circle, top triangle picker touching rim.
 
           // Radial label: start near center, extend outward along the slice mid-angle
           const mid = start + sliceAngle / 2;
-
             const text = mk('text');
             text.setAttribute('class', 'wp-label');
-            text.setAttribute('text-anchor', 'middle');          // center the word on the ray
+            text.setAttribute('text-anchor', 'middle');       // center on the ray
             text.setAttribute('dominant-baseline', 'middle');
-            text.setAttribute('transform', `rotate(${mid})`);    // align to slice center angle
-            text.setAttribute('x', String(labelRadiusPx));       // close to middle circle
+            text.setAttribute('transform', `rotate(${mid})`);
+            text.setAttribute('x', String(labelRadiusPx));    // e.g., 42px from center
             text.setAttribute('y', '0');
             text.textContent = options[i].label;
             svg.appendChild(text);
+
 
         }
       }
@@ -172,11 +174,12 @@ Radial labels, full circle, top triangle picker touching rim.
       let currentRotation = 0;
       const fullTurns = 6;
 
-      function indexFromRotation(rotDeg) {
+     function indexFromRotation(rotDeg) {
         const norm = ((rotDeg % 360) + 360) % 360;
-        const hitDeg = (0 - norm + 360) % 360; // pointer at 0°
+        const hitDeg = (POINTER_DEG - norm + 360) % 360;
         return Math.floor(hitDeg / sliceAngle) % n;
-      }
+    }
+
       function setPanels(showResult) {
         panelInitial.hidden = !!showResult;
         panelResult.hidden  = !showResult;
@@ -194,7 +197,7 @@ Radial labels, full circle, top triangle picker touching rim.
         const targetIndex = Math.floor(Math.random() * n);
         const targetCenterDeg = (targetIndex * sliceAngle) + sliceAngle / 2;
         const jitter = Math.random() * 8 - 4;
-        const delta = fullTurns * 360 + targetCenterDeg + jitter;
+        const delta = fullTurns * 360 + (targetCenterDeg - POINTER_DEG) + jitter;
         const nextRotation = currentRotation + delta;
 
         svg.style.transition = `transform ${spinMs}ms cubic-bezier(0.12, 0.65, 0, 1)`;
@@ -254,19 +257,22 @@ Radial labels, full circle, top triangle picker touching rim.
     .wp-wheel-wrapper { position: relative; width: min(88vw, 440px); aspect-ratio: 1 / 1; }
     .wp-shadow-plate, .wp-wheel { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
 
-    /* Triangle picker – tip sits on the rim */
+   
+    /* Right-side triangle picker – tip touches the rim */
     .wp-pointer{
         position: absolute;
-        left: 50%;
-        top: calc(0px - var(--wp-pointer-size) + var(--wp-pointer-offset));
-        transform: translateX(-50%);
+        top: 50%;
+        left: calc(100% - var(--wp-pointer-offset)); /* nudge inward/outward */
+        transform: translateY(-50%);
         width: 0; height: 0;
-        border-left: calc(var(--wp-pointer-size) * .6) solid transparent;
-        border-right: calc(var(--wp-pointer-size) * .6) solid transparent;
-        border-bottom: var(--wp-pointer-size) solid var(--wp-accent);
+        border-top:  calc(var(--wp-pointer-size) * .6) solid transparent;
+        border-bottom: calc(var(--wp-pointer-size) * .6) solid transparent;
+        border-right: var(--wp-pointer-size) solid var(--wp-accent); /* points right */
         filter: drop-shadow(0 2px 2px rgba(0,0,0,.25));
         z-index: 2;
-        }
+    }
+
+
 
     /* Rim */
     .wp-rim { fill: none; stroke: #E6F0FF; stroke-width: 8; }
