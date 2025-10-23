@@ -224,18 +224,57 @@
     },
     "spinning_wheel_WzTd6i": {
       "type": "spinning-wheel",
+      "blocks": {
+        "option_bWYPzn": {
+          "type": "option",
+          "settings": {
+            "label": "Read-a-thon",
+            "image": "shopify://shop_images/Asset_4_4x_dad1e52c-11d9-4fd5-ae80-733f20c23de6.png"
+          }
+        },
+        "option_PX3wqx": {
+          "type": "option",
+          "settings": {
+            "label": "Bake-a-thon"
+          }
+        },
+        "option_cyYCXg": {
+          "type": "option",
+          "settings": {
+            "label": "Skate-a-thon"
+          }
+        },
+        "option_EBGAkx": {
+          "type": "option",
+          "settings": {
+            "label": "Run-a-thon"
+          }
+        },
+        "option_Lr6bba": {
+          "type": "option",
+          "settings": {
+            "label": "Draw-a-thon"
+          }
+        }
+      },
+      "block_order": [
+        "option_bWYPzn",
+        "option_PX3wqx",
+        "option_cyYCXg",
+        "option_EBGAkx",
+        "option_Lr6bba"
+      ],
       "name": "Spinning Wheel",
       "settings": {
-        "main_heading": "Spin the Wheel!",
+        "heading": "What should you choose?",
         "subheading": "Try your luck and win something!",
-        "option_1_label": "Read-a-thon",
-        "option_1_image": "shopify://shop_images/Asset_5_4x_ade18be7-7b08-411b-916d-a3f14ed6f01e.png",
-        "option_2_label": "Bake-a-thon",
-        "option_2_image": "shopify://shop_images/Asset_4_4x_dad1e52c-11d9-4fd5-ae80-733f20c23de6.png",
-        "option_3_label": "Draw-a-thon",
-        "option_3_image": "shopify://shop_images/Asset_8_4x_29fb23a4-6c75-4f98-b9b7-b5bf1fc723c0.png",
-        "option_4_label": "Run-a-thon",
-        "option_5_label": "Skate-a-thon"
+        "spin_label": "Spin",
+        "respin_label": "Respin",
+        "result_heading_template": "You should choose {word}",
+        "spin_duration_ms": 2200,
+        "bg_color": "#ffffff",
+        "text_color": "#1f2937",
+        "accent_color": "#111827"
       }
     }
   },
