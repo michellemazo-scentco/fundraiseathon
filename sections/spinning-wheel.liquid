@@ -1,6 +1,6 @@
 {% comment %}
 File: sections/wheel-picker.liquid
-Wheel with right-side pointer; labels curved on-path, outward-facing, up to 2 lines.
+Wheel with right-side pointer; labels curved (up to 2 lines), outward-facing.
 {% endcomment %}
 
 <section id="wheel-picker-{{ section.id }}" class="wheel-picker-section {% unless section.settings.show_labels_on_wheel %}wp-hide-labels{% endunless %}" style="
@@ -9,6 +9,7 @@ Wheel with right-side pointer; labels curved on-path, outward-facing, up to 2 li
   --wp-accent: {{ section.settings.accent_color }};
   --wp-pointer-size: {{ section.settings.pointer_size }}px;
   --wp-pointer-offset: {{ section.settings.pointer_offset }}px;
+  --wp-pointer-color: {{ section.settings.pointer_color }};
   --wp-label-font: {{ section.settings.label_font_size | default: 14 }}px;
 ">
   <div class="wp-container">
@@ -16,7 +17,6 @@ Wheel with right-side pointer; labels curved on-path, outward-facing, up to 2 li
       <!-- LEFT: Wheel -->
       <div class="wp-left">
         <div class="wp-wheel-wrapper">
-
           <!-- Soft shadow -->
           <svg class="wp-shadow-plate" viewBox="-125 -125 250 250" aria-hidden="true">
             <defs>
@@ -48,12 +48,13 @@ Wheel with right-side pointer; labels curved on-path, outward-facing, up to 2 li
               <circle r="26" fill="none" stroke="rgba(0,0,0,.06)" stroke-width="1" />
             </svg>
           </div>
+
+          <!-- Right-side triangle picker (tip at rim) -->
+          <div class="wp-pointer" aria-hidden="true"></div>
         </div>
+
         <p class="visually-hidden" aria-live="polite" aria-atomic="true" id="wp-live-{{ section.id }}"></p>
       </div>
-
-      <!-- Right-side triangle picker (tip at rim) -->
-          <div class="wp-pointer" aria-hidden="true"></div>
 
       <!-- RIGHT: Content -->
       <div class="wp-right">
@@ -143,7 +144,7 @@ Wheel with right-side pointer; labels curved on-path, outward-facing, up to 2 li
       function arcPath(r, startDeg, endDeg) {
         const s = polar(r, startDeg);
         const e = polar(r, endDeg);
-        const largeArc = (endDeg - startDeg) % 360 > 180 ? 1 : 0;
+        const largeArc = ((endDeg - startDeg + 360) % 360) > 180 ? 1 : 0;
         // sweep-flag=1 -> clockwise; text faces outward consistently
         return `M ${s.x} ${s.y} A ${r} ${r} 0 ${largeArc} 1 ${e.x} ${e.y}`;
       }
@@ -153,7 +154,7 @@ Wheel with right-side pointer; labels curved on-path, outward-facing, up to 2 li
         const largeArc = endDeg - startDeg <= 180 ? 0 : 1;
         return `M 0 0 L ${start.x} ${start.y} A ${r} ${r} 0 ${largeArc} 0 ${end.x} ${end.y} Z`;
       }
-      // rough “two-line” splitter: balances words across two lines
+      // rough two-line splitter
       function splitTwoLines(label) {
         const words = label.trim().split(/\s+/);
         if (words.length <= 1) return [label, null];
@@ -198,7 +199,7 @@ Wheel with right-side pointer; labels curved on-path, outward-facing, up to 2 li
           svg.insertBefore(path, svg.firstChild);
 
           // Two concentric arcs for 2 text lines
-          const rOuterText = radius - PAD_OUT - labelClearanceSvg; // closer to rim, but avoids triangle
+          const rOuterText = radius - PAD_OUT - labelClearanceSvg; // near rim, avoid pointer
           const rInnerText = Math.max(CAP_R + PAD_IN + 10, rOuterText - 14); // a bit inward
 
           const arcStart = start + ANG_PAD;
@@ -336,21 +337,26 @@ Wheel with right-side pointer; labels curved on-path, outward-facing, up to 2 li
 
     /* LEFT */
     .wp-left { display: grid; place-items: center; }
-    .wp-wheel-wrapper { position: relative; width: min(88vw, 440px); aspect-ratio: 1 / 1; }
+    .wp-wheel-wrapper {
+      position: relative;
+      width: min(88vw, 440px);
+      aspect-ratio: 1 / 1;
+      overflow: visible; /* ensure pointer is visible outside */
+    }
     .wp-shadow-plate, .wp-wheel { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
 
-    /* Right-side triangle picker – TIP at rim */
+    /* Right-side triangle picker – tip at rim, pointing LEFT */
     .wp-pointer{
       position: absolute;
-  top: 50%;
-  right: calc(0px - var(--wp-pointer-offset)); /* 0 = tip exactly on rim; negative overlaps */
-  transform: translateY(-50%);
-  width: 0; height: 0;
-  border-top:    calc(var(--wp-pointer-size) * .6) solid transparent;
-  border-bottom: calc(var(--wp-pointer-size) * .6) solid transparent;
-  border-left:   var(--wp-pointer-size) solid var(--wp-accent); /* ⬅ points left */
-  filter: drop-shadow(0 2px 2px rgba(0,0,0,.25));
-  z-index: 10; /* above SVG */ 
+      top: 50%;
+      right: calc(0px - var(--wp-pointer-offset)); /* 0 = tip exactly on rim; negative overlaps */
+      transform: translateY(-50%);
+      width: 0; height: 0;
+      border-top:    calc(var(--wp-pointer-size) * .6) solid transparent;
+      border-bottom: calc(var(--wp-pointer-size) * .6) solid transparent;
+      border-left:   var(--wp-pointer-size) solid var(--wp-pointer-color, var(--wp-accent));
+      filter: drop-shadow(0 2px 2px rgba(0,0,0,.25));
+      z-index: 10; /* above SVG */
     }
 
     /* Rim */
@@ -417,7 +423,8 @@ Wheel with right-side pointer; labels curved on-path, outward-facing, up to 2 li
       { "type": "checkbox", "id": "show_labels_on_wheel", "label": "Show labels on wheel", "default": true },
       { "type": "color", "id": "bg_color", "label": "Background color", "default": "#ffffff" },
       { "type": "color", "id": "text_color", "label": "Text color", "default": "#1f2937" },
-      { "type": "color", "id": "accent_color", "label": "Accent color (buttons/pointer)", "default": "#1E88E5" },
+      { "type": "color", "id": "accent_color", "label": "Accent color (buttons)", "default": "#1E88E5" },
+      { "type": "color", "id": "pointer_color", "label": "Pointer color (triangle)", "default": "#EF4444" },
       { "type": "range", "id": "pointer_size", "label": "Pointer size", "min": 16, "max": 48, "step": 1, "default": 28 },
       { "type": "range", "id": "pointer_offset", "label": "Pointer tip offset", "min": -20, "max": 20, "step": 1, "default": 0 },
       { "type": "range", "id": "label_font_size", "label": "Label font size (px)", "min": 10, "max": 28, "step": 1, "default": 14 }
@@ -449,6 +456,3 @@ Wheel with right-side pointer; labels curved on-path, outward-facing, up to 2 li
   }
   {% endschema %}
 </section>
-
-
-
