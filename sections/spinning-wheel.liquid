@@ -356,8 +356,12 @@ Wheel with right-side pointer; labels curved (up to 2 lines), outward-facing.
       border-bottom: calc(var(--wp-pointer-size) * .6) solid transparent;
       border-left:   var(--wp-pointer-size) solid var(--wp-pointer-color, var(--wp-accent));
       filter: drop-shadow(0 2px 2px rgba(0,0,0,.25));
-      z-index: 10; /* above SVG */
+      z-index: 100; /* above SVG */
+      pointer-events: none; /* avoid capturing clicks */
     }
+
+    .wp-wheel-wrapper{ overflow: visible; position: relative; }
+.wp-shadow-plate, .wp-wheel{ overflow: visible; }
 
     /* Rim */
     .wp-rim { fill: none; stroke: #E6F0FF; stroke-width: 8; }
