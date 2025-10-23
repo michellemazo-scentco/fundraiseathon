@@ -279,7 +279,7 @@
         "pointer_size": 26,
         "pointer_offset": -8,
         "label_radius": 59,
-        "label_font_size": 25
+        "label_font_size": 12
       }
     }
   },

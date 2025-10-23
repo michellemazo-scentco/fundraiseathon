@@ -1,6 +1,6 @@
 {% comment %}
 File: sections/wheel-picker.liquid
-Interactive wheel: right-side pointer, blue wedges, centered radial labels.
+Wheel with right-side pointer; labels centered at wedge centroid.
 {% endcomment %}
 
 <section id="wheel-picker-{{ section.id }}" class="wheel-picker-section {% unless section.settings.show_labels_on_wheel %}wp-hide-labels{% endunless %}" style="
@@ -9,7 +9,7 @@ Interactive wheel: right-side pointer, blue wedges, centered radial labels.
   --wp-accent: {{ section.settings.accent_color }};
   --wp-pointer-size: {{ section.settings.pointer_size }}px;
   --wp-pointer-offset: {{ section.settings.pointer_offset }}px;
-  --wp-label-radius: {{ section.settings.label_radius | default: 42 }}px;
+  --wp-label-radius: {{ section.settings.label_radius | default: 42 }}px; /* kept for future */
   --wp-label-font: {{ section.settings.label_font_size | default: 14 }}px;
 ">
   <div class="wp-container">
@@ -17,10 +17,10 @@ Interactive wheel: right-side pointer, blue wedges, centered radial labels.
       <!-- LEFT: Wheel -->
       <div class="wp-left">
         <div class="wp-wheel-wrapper">
-          <!-- Right-side triangle picker -->
+          <!-- Right-side triangle picker (tip at rim) -->
           <div class="wp-pointer" aria-hidden="true"></div>
 
-          <!-- Soft shadow behind wheel -->
+          <!-- Soft shadow -->
           <svg class="wp-shadow-plate" viewBox="-125 -125 250 250" aria-hidden="true">
             <defs>
               <radialGradient id="wp-shadow-grad-{{ section.id }}" cx="50%" cy="40%" r="70%">
@@ -31,7 +31,7 @@ Interactive wheel: right-side pointer, blue wedges, centered radial labels.
             <circle r="118" fill="url(#wp-shadow-grad-{{ section.id }})"></circle>
           </svg>
 
-          <!-- Main wheel (rotates) -->
+          <!-- Wheel (rotates) -->
           <svg class="wp-wheel" viewBox="-120 -120 240 240" role="img" aria-label="Selection wheel">
             <!-- slices/labels injected by JS -->
             <circle class="wp-rim" r="112"></circle>
@@ -118,10 +118,8 @@ Interactive wheel: right-side pointer, blue wedges, centered radial labels.
 
       // ---- constants & computed styles ----
       const POINTER_DEG = 90; // pointer on the right
-
       const style = getComputedStyle(root);
-      const labelRadiusPx = parseFloat(style.getPropertyValue('--wp-label-radius')) || 42;
-      const baseFontPx    = parseFloat(style.getPropertyValue('--wp-label-font'))   || 14;
+      const baseFontPx = parseFloat(style.getPropertyValue('--wp-label-font')) || 14;
 
       if (n < 2) { btnSpin.disabled = true; btnSpin.textContent = 'Add at least 2 options'; }
 
@@ -133,31 +131,29 @@ Interactive wheel: right-side pointer, blue wedges, centered radial labels.
       const PAD_OUT = 18;      // label padding from rim
       const sliceAngle = 360 / (n || 1);
 
+      const NS = 'http://www.w3.org/2000/svg';
+      const mk = (tag) => document.createElementNS(NS, tag);
+
+      // --- label geometry helpers ---
       const DEG2RAD = Math.PI / 180;
 
-        // convert CSS px → SVG units for current wheel size
-        function pxToSvgUnits(px) {
+      function pxToSvgUnits(px) {
         const vbWidth = 240; // viewBox width (-120..120)
         const w = svg.clientWidth || svg.getBoundingClientRect().width || 1;
         return px * (vbWidth / w);
-        }
+      }
 
-        // pointer-aware clearance near the rim (keeps text off the triangle)
-        const pointerSizePx = parseFloat(style.getPropertyValue('--wp-pointer-size')) || 28;
-        // triangle vertical span ≈ 1.2x size (top+bottom borders)
-        const pointerHeightPx = pointerSizePx * 1.2;
-        const labelClearancePx = Math.max(8, pointerHeightPx * 0.55);
-        const labelClearanceSvg = pxToSvgUnits(labelClearancePx);
+      const pointerSizePx   = parseFloat(style.getPropertyValue('--wp-pointer-size')) || 28;
+      const pointerHeightPx = pointerSizePx * 1.2; // approximate vertical span
+      const labelClearanceSvg = pxToSvgUnits(Math.max(8, pointerHeightPx * 0.55));
 
-        // compute the *central* radius for labels between inner cap and rim (minus clearances)
-        function centralLabelRadius() {
-        const minR = CAP_R + PAD_IN;                     // inner limit (cap + padding)
-        const maxR = radius - PAD_OUT - labelClearanceSvg; // outer limit (rim - padding - triangle)
-        return (minR + Math.max(minR, maxR)) / 2;        // midpoint across the annulus
-        }
-
-      const NS = 'http://www.w3.org/2000/svg';
-      const mk = (tag) => document.createElementNS(NS, tag);
+      // Centroid radius for annular sector (inner r1, outer r2, angle theta radians)
+      function annularSectorCentroidRadius(r1, r2, theta) {
+        const eps = 1e-6;
+        const k = (Math.pow(r2,3) - Math.pow(r1,3)) / Math.max(eps, (Math.pow(r2,2) - Math.pow(r1,2)));
+        const s = Math.sin(theta/2) / Math.max(eps, (theta/2));
+        return (2/3) * k * s;
+      }
       // -------------------------------------
 
       function polar(r, deg) {
@@ -178,6 +174,7 @@ Interactive wheel: right-side pointer, blue wedges, centered radial labels.
           const start = i * sliceAngle;
           const end = (i + 1) * sliceAngle;
 
+          // Slice
           const path = mk('path');
           path.setAttribute('d', slicePath(start, end, radius));
           path.setAttribute('class', 'wp-slice');
@@ -186,39 +183,35 @@ Interactive wheel: right-side pointer, blue wedges, centered radial labels.
           path.setAttribute('stroke-width', '1');
           svg.insertBefore(path, svg.firstChild);
 
-          // Label centered on slice mid-angle, near hub, auto-upright
-          // Label centered on slice mid-angle, near hub, stays upright
-            // Label: centered in the slice AND aligned with the inward point (slice mid-ray)
-            const mid = start + sliceAngle / 2;
+          // Label at wedge centroid along mid-ray
+          const mid = start + sliceAngle / 2;
 
-            // radius centered between inner vertex and outer rim (with clearances)
-            const rLabel = centralLabelRadius();
+          const r1 = CAP_R + PAD_IN;
+          const r2 = radius - PAD_OUT - labelClearanceSvg;
+          const theta = sliceAngle * DEG2RAD;
+          const rLabel = annularSectorCentroidRadius(r1, r2, theta);
 
-            // auto-upright (flip left side so text reads upright)
-            const flip = mid > 90 && mid < 270;
-            const rotation = flip ? mid + 180 : mid;
-            const x = flip ? -rLabel : rLabel;
+          const flip = mid > 90 && mid < 270;
+          const rotation = flip ? mid + 180 : mid;
+          const x = flip ? -rLabel : rLabel;
 
-            // estimate a font size that fits within the slice arc at rLabel
-            const arcLen = (sliceAngle * DEG2RAD) * rLabel;        // available length along arc
-            const approxCharWidth = 0.6;                            // rough em-to-px width factor
-            const maxPxByArc = Math.max(10, Math.floor(arcLen / (Math.max(1, options[i].label.length) * approxCharWidth)));
-            const fontPx = Math.min(baseFontPx, maxPxByArc);        // clamp to requested slider value
+          // Fit font to chord length at rLabel
+          const chordLen = 2 * rLabel * Math.sin(theta / 2);
+          const approxCharWidth = 0.6;
+          const maxPxByChord = Math.max(10, Math.floor(chordLen / (Math.max(1, options[i].label.length) * approxCharWidth)));
+          const fontPx = Math.min(baseFontPx, maxPxByChord);
 
-            const text = mk('text');
-            text.setAttribute('class', 'wp-label');
-            text.setAttribute('text-anchor', 'middle');           // center on the ray
-            text.setAttribute('alignment-baseline', 'middle');
-            text.setAttribute('dominant-baseline', 'middle');
-            text.setAttribute('dy', '.35em');                      // cross-browser vertical tweak
-            text.setAttribute('transform', `rotate(${rotation})`);
-            text.setAttribute('x', String(x));
-            text.setAttribute('y', '0');
-            text.setAttribute('font-size', String(fontPx));
-            text.textContent = options[i].label;
-            svg.appendChild(text);
-
-
+          const text = mk('text');
+          text.setAttribute('class', 'wp-label');
+          text.setAttribute('text-anchor', 'middle');
+          text.setAttribute('dominant-baseline', 'middle');
+          text.setAttribute('alignment-baseline', 'middle');
+          text.setAttribute('transform', `rotate(${rotation})`);
+          text.setAttribute('x', String(x));
+          text.setAttribute('y', '0');
+          text.setAttribute('font-size', String(fontPx));
+          text.textContent = options[i].label;
+          svg.appendChild(text);
         }
       }
       buildWheel();
@@ -311,20 +304,18 @@ Interactive wheel: right-side pointer, blue wedges, centered radial labels.
     .wp-wheel-wrapper { position: relative; width: min(88vw, 440px); aspect-ratio: 1 / 1; }
     .wp-shadow-plate, .wp-wheel { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
 
-    /* Right-side triangle picker – tip touches the rim */
+    /* Right-side triangle picker – TIP at rim */
     .wp-pointer{
       position: absolute;
-        top: 50%;
-        /* place so the TIP sits at wrapper's right edge; offset nudges tip inward/outward */
-        left: calc(100% - var(--wp-pointer-size) + var(--wp-pointer-offset));
-        transform: translateY(-50%);
-        width: 0; height: 0;
-        border-top:  calc(var(--wp-pointer-size) * .6) solid transparent;
-        border-bottom: calc(var(--wp-pointer-size) * .6) solid transparent;
-        border-right: var(--wp-pointer-size) solid var(--wp-accent); /* points right */
-        filter: drop-shadow(0 2px 2px rgba(0,0,0,.25));
-        z-index: 4; /* ensure above SVG */
-        color: #000000;
+      top: 50%;
+      left: calc(100% - var(--wp-pointer-size) + var(--wp-pointer-offset));
+      transform: translateY(-50%);
+      width: 0; height: 0;
+      border-top:  calc(var(--wp-pointer-size) * .6) solid transparent;
+      border-bottom: calc(var(--wp-pointer-size) * .6) solid transparent;
+      border-right: var(--wp-pointer-size) solid var(--wp-accent);
+      filter: drop-shadow(0 2px 2px rgba(0,0,0,.25));
+      z-index: 4;
     }
 
     /* Rim */
@@ -339,7 +330,7 @@ Interactive wheel: right-side pointer, blue wedges, centered radial labels.
       font-size: var(--wp-label-font, 14px);
       font-weight: 700;
       fill: #0a2540;
-      paint-order: stroke;     /* why: white outline for legibility */
+      paint-order: stroke;
       stroke: #ffffff;
       stroke-width: 2px;
       letter-spacing: .2px;
@@ -393,8 +384,8 @@ Interactive wheel: right-side pointer, blue wedges, centered radial labels.
       { "type": "color", "id": "text_color", "label": "Text color", "default": "#1f2937" },
       { "type": "color", "id": "accent_color", "label": "Accent color (buttons/pointer)", "default": "#1E88E5" },
       { "type": "range", "id": "pointer_size", "label": "Pointer size", "min": 16, "max": 48, "step": 1, "default": 28 },
-      { "type": "range", "id": "pointer_offset", "label": "Pointer tip offset", "min": -20, "max": 20, "step": 1, "default": 4 },
-      { "type": "range", "id": "label_radius", "label": "Label radius (from center)", "min": 24, "max": 70, "step": 1, "default": 42 },
+      { "type": "range", "id": "pointer_offset", "label": "Pointer tip offset", "min": -20, "max": 20, "step": 1, "default": 0 },
+      { "type": "range", "id": "label_radius", "label": "Label radius (legacy, not used in centroid mode)", "min": 24, "max": 70, "step": 1, "default": 42 },
       { "type": "range", "id": "label_font_size", "label": "Label font size (px)", "min": 10, "max": 28, "step": 1, "default": 14 }
     ],
     "blocks": [
@@ -424,6 +415,7 @@ Interactive wheel: right-side pointer, blue wedges, centered radial labels.
   }
   {% endschema %}
 </section>
+
 
 
 
