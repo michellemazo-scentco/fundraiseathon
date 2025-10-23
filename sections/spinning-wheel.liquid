@@ -1,6 +1,6 @@
 {% comment %}
 File: sections/wheel-picker.liquid
-Wheel with right-side pointer; labels curved (up to 2 lines), outward-facing.
+Wheel with right-side SVG wedge pointer; curved labels (up to 2 lines), outward-facing.
 {% endcomment %}
 
 <section id="wheel-picker-{{ section.id }}" class="wheel-picker-section {% unless section.settings.show_labels_on_wheel %}wp-hide-labels{% endunless %}" style="
@@ -49,12 +49,15 @@ Wheel with right-side pointer; labels curved (up to 2 lines), outward-facing.
             </svg>
           </div>
 
-          <!-- Right-side triangle picker (tip at rim) -->
-          <div class="wp-pointer" aria-hidden="false"></div>
-          <svg class="wp-pointer-svg" width="0" height="0" viewBox="0 0 100 100" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
-                <polygon points="0,50 100,0 100,100" />
+          <!-- Right-side SVG wedge pointer (tip at rim) -->
+          <div class="wp-pointer" aria-hidden="true">
+            <svg class="wp-pointer-svg" viewBox="0 0 100 80" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
+              <!-- backplate -->
+              <polygon class="wp-pointer-back"  points="100,40 10,10 10,70"></polygon>
+              <!-- white face -->
+              <polygon class="wp-pointer-front" points="98,40 14,16 14,64"></polygon>
             </svg>
-            -->
+          </div>
         </div>
 
         <p class="visually-hidden" aria-live="polite" aria-atomic="true" id="wp-live-{{ section.id }}"></p>
@@ -154,9 +157,9 @@ Wheel with right-side pointer; labels curved (up to 2 lines), outward-facing.
       }
       function slicePath(startDeg, endDeg, r) {
         const start = polar(r, endDeg);
-        const end = polar(r, startDeg);
+        theEnd = polar(r, startDeg);
         const largeArc = endDeg - startDeg <= 180 ? 0 : 1;
-        return `M 0 0 L ${start.x} ${start.y} A ${r} ${r} 0 ${largeArc} 0 ${end.x} ${end.y} Z`;
+        return `M 0 0 L ${start.x} ${start.y} A ${r} ${r} 0 ${largeArc} 0 ${theEnd.x} ${theEnd.y} Z`;
       }
       // rough two-line splitter
       function splitTwoLines(label) {
@@ -345,41 +348,26 @@ Wheel with right-side pointer; labels curved (up to 2 lines), outward-facing.
       position: relative;
       width: min(88vw, 440px);
       aspect-ratio: 1 / 1;
-      overflow: visible; /* ensure pointer is visible outside */
+      overflow: visible; /* allow pointer to stick out */
     }
     .wp-shadow-plate, .wp-wheel { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
 
-    /* Right-side triangle picker – tip at rim, pointing LEFT */
+    /* Right-side SVG wedge pointer – tip at rim (right edge), pointing LEFT */
     .wp-pointer{
       position: absolute;
       top: 50%;
-      right: calc(0px - var(--wp-pointer-offset)); /* 0 = tip exactly on rim; negative overlaps */
+      right: calc(0px - (var(--wp-pointer-offset, 0px))); /* 0 = tip exactly on rim; negative overlaps */
       transform: translateY(-50%);
-      width: 20px; height: 20px;
-      border-top:    calc(var(--wp-pointer-size) * .6) solid transparent;
-      border-bottom: calc(var(--wp-pointer-size) * .6) solid transparent;
-      border-left:   var(--wp-pointer-size) solid var(--wp-pointer-color, var(--wp-accent));
-      filter: drop-shadow(0 2px 2px rgba(0,0,0,.25));
-      z-index: 100; /* above SVG */
-      pointer-events: none; /* avoid capturing clicks */
+      z-index: 100; pointer-events: none;
     }
-
     .wp-pointer-svg{
-        position: absolute;
-        inset: 0 auto 0 auto;           /* allow custom sizing below */
-        width: calc(var(--wp-pointer-size, 28px));      /* triangle width */
-        height: calc(var(--wp-pointer-size, 28px) * 1.2);/* visual height ~ 1.2x */
-        right: calc(0px - (var(--wp-pointer-offset, 0px)));
-        top: 50%; transform: translateY(-50%);
-        z-index: 100; pointer-events: none; display: none; /* default off */
+      width: calc(var(--wp-pointer-size, 30px) * 1.9);
+      height: calc(var(--wp-pointer-size, 30px) * 1.2);
+      filter: drop-shadow(0 2px 2px rgba(0,0,0,.25));
+      display: block;
     }
-    .wp-pointer-svg polygon{
-        fill: var(--wp-pointer-color, var(--wp-accent, #1E88E5));
-        filter: drop-shadow(0 2px 2px rgba(0,0,0,.25));
-    }
-    .wp-pointer.use-svg { border: 0; }              /* remove border triangle */
-    .wp-pointer.use-svg .wp-pointer-svg{ display: block; }
-
+    .wp-pointer-back  { fill: #9CA3AF; } /* gray backplate */
+    .wp-pointer-front { fill: #ffffff; stroke: var(--wp-pointer-color, #6B7280); stroke-width: 2; }
 
     /* Rim */
     .wp-rim { fill: none; stroke: #E6F0FF; stroke-width: 8; }
@@ -446,8 +434,8 @@ Wheel with right-side pointer; labels curved (up to 2 lines), outward-facing.
       { "type": "color", "id": "bg_color", "label": "Background color", "default": "#ffffff" },
       { "type": "color", "id": "text_color", "label": "Text color", "default": "#1f2937" },
       { "type": "color", "id": "accent_color", "label": "Accent color (buttons)", "default": "#1E88E5" },
-      { "type": "color", "id": "pointer_color", "label": "Pointer color (triangle)", "default": "#EF4444" },
-      { "type": "range", "id": "pointer_size", "label": "Pointer size", "min": 16, "max": 48, "step": 1, "default": 28 },
+      { "type": "color", "id": "pointer_color", "label": "Pointer border color", "default": "#6B7280" },
+      { "type": "range", "id": "pointer_size", "label": "Pointer size", "min": 16, "max": 48, "step": 1, "default": 30 },
       { "type": "range", "id": "pointer_offset", "label": "Pointer tip offset", "min": -20, "max": 20, "step": 1, "default": 0 },
       { "type": "range", "id": "label_font_size", "label": "Label font size (px)", "min": 10, "max": 28, "step": 1, "default": 14 }
     ],
@@ -464,7 +452,7 @@ Wheel with right-side pointer; labels curved (up to 2 lines), outward-facing.
     ],
     "presets": [
       {
-        "name": "Wheel Picker (Curved labels)",
+        "name": "Wheel Picker (Curved labels + wedge pointer)",
         "category": "Interactive",
         "blocks": [
           { "type": "option", "settings": { "label": "Option 1" } },
