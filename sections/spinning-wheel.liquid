@@ -7,6 +7,8 @@ Radial labels, full circle, top triangle picker touching rim.
   --wp-bg: {{ section.settings.bg_color }};
   --wp-text: {{ section.settings.text_color }};
   --wp-accent: {{ section.settings.accent_color }};
+   --wp-pointer-size: {{ section.settings.pointer_size }}px;
+  --wp-pointer-offset: {{ section.settings.pointer_offset }}px;
 ">
   <div class="wp-container">
     <div class="wp-grid">
@@ -250,18 +252,17 @@ Radial labels, full circle, top triangle picker touching rim.
 
     /* Triangle picker – tip sits on the rim */
     .wp-pointer{
-      --size: 28px; /* change size if needed */
-      position: absolute;
-      left: 50%;
-      top: calc(0px - var(--size) + 4px); /* 4px nudge so tip touches rim */
-      transform: translateX(-50%);
-      width: 0; height: 0;
-      border-left: calc(var(--size) * .6) solid transparent;
-      border-right: calc(var(--size) * .6) solid transparent;
-      border-bottom: var(--size) solid var(--wp-accent);
-      filter: drop-shadow(0 2px 2px rgba(0,0,0,.25));
-      z-index: 2;
-    }
+        position: absolute;
+        left: 50%;
+        top: calc(0px - var(--wp-pointer-size) + var(--wp-pointer-offset));
+        transform: translateX(-50%);
+        width: 0; height: 0;
+        border-left: calc(var(--wp-pointer-size) * .6) solid transparent;
+        border-right: calc(var(--wp-pointer-size) * .6) solid transparent;
+        border-bottom: var(--wp-pointer-size) solid var(--wp-accent);
+        filter: drop-shadow(0 2px 2px rgba(0,0,0,.25));
+        z-index: 2;
+        }
 
     /* Rim */
     .wp-rim { fill: none; stroke: #E6F0FF; stroke-width: 8; }
