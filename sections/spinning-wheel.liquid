@@ -12,11 +12,11 @@
       "type": "text",
       "id": "subheading",
       "label": "Subheading",
-      "default": "Try your luck and win something!"
+      "default": "Try your luck and see what you get!"
     },
     {
       "type": "header",
-      "content": "Wheel Options"
+      "content": "Options (Labels & Images)"
     },
     {
       "type": "text",
@@ -82,73 +82,53 @@
 }
 {% endschema %}
 
-<div class="spinning-wheel-section">
-  <div class="wheel-left">
-    <div class="wheel-container" id="wheel">
-      {% assign labels = '' | split: '' %}
-      {% assign labels = labels | push: section.settings.option_1_label %}
-      {% assign labels = labels | push: section.settings.option_2_label %}
-      {% assign labels = labels | push: section.settings.option_3_label %}
-      {% assign labels = labels | push: section.settings.option_4_label %}
-      {% assign labels = labels | push: section.settings.option_5_label %}
-
-      {% for label in labels %}
-        <div class="wheel-segment" style="transform: rotate({{ forloop.index0 | times: 72 }}deg)">
-          <span>{{ label }}</span>
-        </div>
-      {% endfor %}
-    </div>
+<div class="spinning-wheel-container">
+  <div class="canvas-wrapper">
+    <canvas id="wheel-canvas" width="400" height="400"></canvas>
+    <div class="wheel-pointer"></div>
   </div>
-
-  <div class="wheel-content">
+  <div class="wheel-info">
     <h2 id="wheel-header">{{ section.settings.main_heading }}</h2>
     <p id="wheel-subheader">{{ section.settings.subheading }}</p>
-
-    <div id="wheel-result-image" class="result-image hidden"></div>
-
-    <button id="spin-button">Spin</button>
+    <button id="spin-btn">Spin</button>
+    <div id="result-image" class="hidden"></div>
   </div>
 </div>
 
 <style>
-.spinning-wheel-section {
+.spinning-wheel-container {
   display: flex;
-  align-items: center;
-  justify-content: space-between;
   gap: 2rem;
+  align-items: center;
+  justify-content: center;
   padding: 2rem;
 }
-.wheel-left {
-  width: 300px;
-  height: 300px;
+.canvas-wrapper {
   position: relative;
+  width: 400px;
+  height: 400px;
 }
-.wheel-container {
-  width: 100%;
-  height: 100%;
-  border: 5px solid #333;
+#wheel-canvas {
   border-radius: 50%;
-  position: relative;
-  transition: transform 4s cubic-bezier(0.33, 1, 0.68, 1);
+  background: #f9f9f9;
 }
-.wheel-segment {
+.wheel-pointer {
   position: absolute;
-  width: 50%;
-  height: 50%;
-  top: 50%;
+  top: -10px;
   left: 50%;
-  transform-origin: 0% 0%;
+  transform: translateX(-50%);
+  width: 0;
+  height: 0;
+  border-left: 20px solid transparent;
+  border-right: 20px solid transparent;
+  border-bottom: 30px solid #333;
+  z-index: 10;
 }
-.wheel-segment span {
-  position: absolute;
-  left: 10px;
-  top: 10px;
-  font-size: 0.8rem;
+.wheel-info {
+  max-width: 400px;
+  text-align: center;
 }
-.wheel-content {
-  flex: 1;
-}
-#wheel-result-image {
+#result-image {
   margin-top: 1rem;
   width: 200px;
   height: 200px;
@@ -161,60 +141,99 @@
 </style>
 
 <script>
-document.addEventListener('DOMContentLoaded', function () {
-  const button = document.getElementById('spin-button');
-  const wheel = document.getElementById('wheel');
-  const header = document.getElementById('wheel-header');
-  const resultImage = document.getElementById('wheel-result-image');
+document.addEventListener("DOMContentLoaded", function () {
+  const canvas = document.getElementById("wheel-canvas");
+  const ctx = canvas.getContext("2d");
+  const spinBtn = document.getElementById("spin-btn");
+  const resultImage = document.getElementById("result-image");
+  const header = document.getElementById("wheel-header");
 
-  const options = [
-    {
-      label: {{ section.settings.option_1_label | json }},
-      image: {{ section.settings.option_1_image | image_url: width: 500 | json }}
-    },
-    {
-      label: {{ section.settings.option_2_label | json }},
-      image: {{ section.settings.option_2_image | image_url: width: 500 | json }}
-    },
-    {
-      label: {{ section.settings.option_3_label | json }},
-      image: {{ section.settings.option_3_image | image_url: width: 500 | json }}
-    },
-    {
-      label: {{ section.settings.option_4_label | json }},
-      image: {{ section.settings.option_4_image | image_url: width: 500 | json }}
-    },
-    {
-      label: {{ section.settings.option_5_label | json }},
-      image: {{ section.settings.option_5_image | image_url: width: 500 | json }}
-    }
+  const labels = [
+    {{ section.settings.option_1_label | json }},
+    {{ section.settings.option_2_label | json }},
+    {{ section.settings.option_3_label | json }},
+    {{ section.settings.option_4_label | json }},
+    {{ section.settings.option_5_label | json }}
   ];
 
+  const images = [
+    {{ section.settings.option_1_image | image_url: width: 600 | json }},
+    {{ section.settings.option_2_image | image_url: width: 600 | json }},
+    {{ section.settings.option_3_image | image_url: width: 600 | json }},
+    {{ section.settings.option_4_image | image_url: width: 600 | json }},
+    {{ section.settings.option_5_image | image_url: width: 600 | json }}
+  ];
+
+  const colors = ["#cce7ff", "#a9d5ff", "#86c2ff", "#62b0ff", "#3f9dff"];
+  const sliceCount = labels.length;
+  const sliceAngle = 2 * Math.PI / sliceCount;
+
+  let rotation = 0;
   let spinning = false;
-  let hasSpun = false;
 
-  button.addEventListener('click', () => {
-    if (spinning || hasSpun) return;
+  function drawWheel() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    for (let i = 0; i < sliceCount; i++) {
+      const angle = i * sliceAngle;
+      ctx.beginPath();
+      ctx.moveTo(200, 200);
+      ctx.arc(200, 200, 200, angle, angle + sliceAngle);
+      ctx.fillStyle = colors[i];
+      ctx.fill();
+      ctx.save();
+      ctx.translate(200, 200);
+      ctx.rotate(angle + sliceAngle / 2);
+      ctx.textAlign = "right";
+      ctx.fillStyle = "#fff";
+      ctx.font = "bold 16px Arial";
+      ctx.fillText(labels[i], 180, 10);
+      ctx.restore();
+    }
+  }
 
+  function spinWheel() {
+    if (spinning) return;
     spinning = true;
-    const selectedIndex = Math.floor(Math.random() * options.length);
-    const spins = 5;
-    const anglePerSegment = 360 / options.length;
-    const angle = 360 * spins + (selectedIndex * anglePerSegment) + anglePerSegment / 2;
 
-    wheel.style.transform = `rotate(${angle}deg)`;
+    const randRotation = Math.random() * 360 + 360 * 5;
+    const totalRotation = rotation + randRotation;
 
-    setTimeout(() => {
-      spinning = false;
-      hasSpun = true;
+    const duration = 5000;
+    const startTime = performance.now();
 
-      const selected = options[selectedIndex];
+    function animate(now) {
+      const elapsed = now - startTime;
+      if (elapsed < duration) {
+        const ease = 1 - Math.pow(1 - (elapsed / duration), 3); // easeOut
+        const currentRotation = rotation + (randRotation * ease);
+        drawRotatedWheel(currentRotation);
+        requestAnimationFrame(animate);
+      } else {
+        rotation = totalRotation % 360;
+        drawRotatedWheel(rotation);
+        const selectedIndex = sliceCount - Math.floor(((rotation % 360) / 360) * sliceCount) - 1;
+        header.textContent = `You got: ${labels[selectedIndex]}`;
+        resultImage.style.backgroundImage = `url(${images[selectedIndex]})`;
+        resultImage.classList.remove("hidden");
+        spinBtn.textContent = "Respin";
+        spinning = false;
+      }
+    }
 
-      header.textContent = `You got: ${selected.label}`;
-      resultImage.style.backgroundImage = `url(${selected.image})`;
-      resultImage.classList.remove('hidden');
-      button.textContent = "Respin";
-    }, 4000);
-  });
+    requestAnimationFrame(animate);
+  }
+
+  function drawRotatedWheel(deg) {
+    const angle = deg * Math.PI / 180;
+    ctx.save();
+    ctx.translate(200, 200);
+    ctx.rotate(angle);
+    ctx.translate(-200, -200);
+    drawWheel();
+    ctx.restore();
+  }
+
+  drawWheel();
+  spinBtn.addEventListener("click", spinWheel);
 });
 </script>
