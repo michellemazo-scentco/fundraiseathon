@@ -98,6 +98,7 @@
 <style>
 .spinning-wheel-container {
   display: flex;
+  flex-wrap: wrap;
   gap: 2rem;
   align-items: center;
   justify-content: center;
@@ -109,12 +110,12 @@
   height: 400px;
 }
 #wheel-canvas {
+  display: block;
   border-radius: 50%;
-  background: #f9f9f9;
 }
 .wheel-pointer {
   position: absolute;
-  top: -10px;
+  top: -15px;
   left: 50%;
   transform: translateX(-50%);
   width: 0;
@@ -164,54 +165,64 @@ document.addEventListener("DOMContentLoaded", function () {
     {{ section.settings.option_5_image | image_url: width: 600 | json }}
   ];
 
-  const colors = ["#cce7ff", "#a9d5ff", "#86c2ff", "#62b0ff", "#3f9dff"];
+  const colors = ["#cce7ff", "#a3d4f7", "#7ac2f0", "#52b0e8", "#299ee1"];
   const sliceCount = labels.length;
   const sliceAngle = 2 * Math.PI / sliceCount;
 
   let rotation = 0;
   let spinning = false;
 
-  function drawWheel() {
+  function drawWheel(rotationAngle = 0) {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.save();
+    ctx.translate(200, 200);
+    ctx.rotate(rotationAngle);
     for (let i = 0; i < sliceCount; i++) {
       const angle = i * sliceAngle;
       ctx.beginPath();
-      ctx.moveTo(200, 200);
-      ctx.arc(200, 200, 200, angle, angle + sliceAngle);
-      ctx.fillStyle = colors[i];
+      ctx.moveTo(0, 0);
+      ctx.arc(0, 0, 200, angle, angle + sliceAngle);
+      ctx.fillStyle = colors[i % colors.length];
       ctx.fill();
+      ctx.stroke();
+
+      // Add text
       ctx.save();
-      ctx.translate(200, 200);
       ctx.rotate(angle + sliceAngle / 2);
-      ctx.textAlign = "right";
+      ctx.translate(130, 0);
+      ctx.rotate(Math.PI / 2);
       ctx.fillStyle = "#fff";
-      ctx.font = "bold 16px Arial";
-      ctx.fillText(labels[i], 180, 10);
+      ctx.font = "bold 14px Arial";
+      ctx.textAlign = "center";
+      ctx.fillText(labels[i], 0, 0);
       ctx.restore();
     }
+    ctx.restore();
   }
 
   function spinWheel() {
     if (spinning) return;
     spinning = true;
 
-    const randRotation = Math.random() * 360 + 360 * 5;
-    const totalRotation = rotation + randRotation;
-
-    const duration = 5000;
-    const startTime = performance.now();
+    const randomExtra = Math.random() * 360;
+    const spins = 6; // full spins
+    const targetAngle = (spins * 360 + randomExtra);
+    const duration = 4000;
+    const start = performance.now();
 
     function animate(now) {
-      const elapsed = now - startTime;
-      if (elapsed < duration) {
-        const ease = 1 - Math.pow(1 - (elapsed / duration), 3); // easeOut
-        const currentRotation = rotation + (randRotation * ease);
-        drawRotatedWheel(currentRotation);
+      const elapsed = now - start;
+      const progress = Math.min(elapsed / duration, 1);
+      const eased = 1 - Math.pow(1 - progress, 4);
+      const currentRotation = (rotation + eased * targetAngle) % 360;
+      const radians = currentRotation * Math.PI / 180;
+      drawWheel(radians);
+
+      if (progress < 1) {
         requestAnimationFrame(animate);
       } else {
-        rotation = totalRotation % 360;
-        drawRotatedWheel(rotation);
-        const selectedIndex = sliceCount - Math.floor(((rotation % 360) / 360) * sliceCount) - 1;
+        rotation = (rotation + targetAngle) % 360;
+        const selectedIndex = Math.floor(sliceCount - ((rotation % 360) / 360 * sliceCount)) % sliceCount;
         header.textContent = `You got: ${labels[selectedIndex]}`;
         resultImage.style.backgroundImage = `url(${images[selectedIndex]})`;
         resultImage.classList.remove("hidden");
@@ -223,17 +234,9 @@ document.addEventListener("DOMContentLoaded", function () {
     requestAnimationFrame(animate);
   }
 
-  function drawRotatedWheel(deg) {
-    const angle = deg * Math.PI / 180;
-    ctx.save();
-    ctx.translate(200, 200);
-    ctx.rotate(angle);
-    ctx.translate(-200, -200);
-    drawWheel();
-    ctx.restore();
-  }
-
-  drawWheel();
+  drawWheel(); // Draw initial wheel
   spinBtn.addEventListener("click", spinWheel);
 });
 </script>
+
+
