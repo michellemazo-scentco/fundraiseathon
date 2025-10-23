@@ -113,7 +113,14 @@ Radial labels, full circle, top triangle picker touching rim.
       const btnSpin = root.querySelector('[data-role="spin"]');
       const btnRespin = root.querySelector('[data-role="respin"]');
       const labelRadiusPx = parseFloat(getComputedStyle(root).getPropertyValue('--wp-label-radius')) || 42;
-      const POINTER_DEG = 90; // pointer at right (0 = top)
+      const POINTER_DEG = 90; // triangle at right edge
+      const labelRadiusPx = parseFloat(getComputedStyle(root).getPropertyValue('--wp-label-radius')) || 42;
+      const baseFontPx = parseFloat(getComputedStyle(root).getPropertyValue('--wp-label-font')) || 14;
+
+      // (keep your existing radius = 108)
+      const CAP_R = 26;      // center cap radius in wheel SVG units
+      const PAD_IN = 6;      // inner padding from cap
+      const PAD_OUT = 18;    // outer padding from rim
 
 
       if (n < 2) { btnSpin.disabled = true; btnSpin.textContent = 'Add at least 2 options'; }
@@ -155,14 +162,27 @@ Radial labels, full circle, top triangle picker touching rim.
 
           // Radial label: start near center, extend outward along the slice mid-angle
           const mid = start + sliceAngle / 2;
+
+            // clamp radius so labels don’t collide with cap or rim
+            const minR = CAP_R + PAD_IN;
+            const maxR = radius - PAD_OUT;
+            const rLabel = Math.max(minR, Math.min(labelRadiusPx, maxR));
+
+            // auto-upright: flip labels on the left side
+            const flip = mid > 90 && mid < 270;
+            const rotation = flip ? mid + 180 : mid;
+            const x = flip ? -rLabel : rLabel;
+
             const text = mk('text');
             text.setAttribute('class', 'wp-label');
-            text.setAttribute('text-anchor', 'middle');       // center on the ray
+            text.setAttribute('text-anchor', 'middle');   // centered on its ray
             text.setAttribute('dominant-baseline', 'middle');
-            text.setAttribute('transform', `rotate(${mid})`);
-            text.setAttribute('x', String(labelRadiusPx));    // e.g., 42px from center
+            text.setAttribute('transform', `rotate(${rotation})`);
+            text.setAttribute('x', String(x));
             text.setAttribute('y', '0');
             text.textContent = options[i].label;
+            // optional: apply base font size from slider (overrides CSS var if needed)
+            // text.setAttribute('font-size', String(baseFontPx));
             svg.appendChild(text);
 
 
