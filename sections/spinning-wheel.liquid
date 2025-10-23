@@ -10,6 +10,7 @@ Radial labels, full circle, top triangle picker touching rim.
   --wp-pointer-size: {{ section.settings.pointer_size }}px;
   --wp-pointer-offset: {{ section.settings.pointer_offset }}px;
   --wp-label-radius: {{ section.settings.label_radius | default: 42 }}px;
+  --wp-label-font: {{ section.settings.label_font_size | default: 14 }}px;
 ">
   <div class="wp-container">
     <div class="wp-grid">
@@ -283,15 +284,15 @@ Radial labels, full circle, top triangle picker touching rim.
     .wp-wheel:hover .wp-slice { filter: brightness(1.02); }
 
     .wp-label{
-      font-size: 12px;
-      font-weight: 700;
-      fill: #0a2540;
-      paint-order: stroke;    /* why: keep outline under text for contrast */
-      stroke: #ffffff;
-      stroke-width: 2px;
-      letter-spacing: .2px;
-      user-select: none;
-      pointer-events: none;
+        font-size: var(--wp-label-font, 14px);
+        font-weight: 700;
+        fill: #0a2540;
+        paint-order: stroke;     /* why: white outline for legibility */
+        stroke: #ffffff;
+        stroke-width: 2px;
+        letter-spacing: .2px;
+        user-select: none;
+        pointer-events: none;
     }
     .wp-hide-labels .wp-label { display: none; }
 
