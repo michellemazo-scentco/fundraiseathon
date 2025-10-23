@@ -1,6 +1,6 @@
 {% comment %}
 File: sections/wheel-picker.liquid
-Radial labels, full circle, top triangle picker touching rim.
+Interactive wheel: right-side pointer, blue wedges, centered radial labels.
 {% endcomment %}
 
 <section id="wheel-picker-{{ section.id }}" class="wheel-picker-section {% unless section.settings.show_labels_on_wheel %}wp-hide-labels{% endunless %}" style="
@@ -17,10 +17,10 @@ Radial labels, full circle, top triangle picker touching rim.
       <!-- LEFT: Wheel -->
       <div class="wp-left">
         <div class="wp-wheel-wrapper">
-          <!-- picker triangle (fixed) -->
+          <!-- Right-side triangle picker -->
           <div class="wp-pointer" aria-hidden="true"></div>
 
-          <!-- soft shadow behind wheel -->
+          <!-- Soft shadow behind wheel -->
           <svg class="wp-shadow-plate" viewBox="-125 -125 250 250" aria-hidden="true">
             <defs>
               <radialGradient id="wp-shadow-grad-{{ section.id }}" cx="50%" cy="40%" r="70%">
@@ -31,14 +31,14 @@ Radial labels, full circle, top triangle picker touching rim.
             <circle r="118" fill="url(#wp-shadow-grad-{{ section.id }})"></circle>
           </svg>
 
-          <!-- main wheel (rotates) -->
+          <!-- Main wheel (rotates) -->
           <svg class="wp-wheel" viewBox="-120 -120 240 240" role="img" aria-label="Selection wheel">
             <!-- slices/labels injected by JS -->
             <circle class="wp-rim" r="112"></circle>
             <circle class="wp-rim-glow" r="115"></circle>
           </svg>
 
-          <!-- center cap -->
+          <!-- Center cap -->
           <div class="wp-cap-wrap">
             <svg class="wp-cap" viewBox="-40 -40 80 80" aria-hidden="true">
               <defs>
@@ -66,10 +66,12 @@ Radial labels, full circle, top triangle picker touching rim.
           {% endif %}
         </header>
 
+        <!-- Initial panel -->
         <div class="wp-panel wp-panel-initial">
           <button type="button" class="wp-btn wp-btn-primary" data-role="spin">{{ section.settings.spin_label | escape }}</button>
         </div>
 
+        <!-- Result panel -->
         <div class="wp-panel wp-panel-result" hidden>
           <h3 class="wp-result-heading"></h3>
           <div class="wp-result-card">
@@ -86,6 +88,7 @@ Radial labels, full circle, top triangle picker touching rim.
       const root = document.getElementById('wheel-picker-{{ section.id }}');
       if (!root) return;
 
+      // Blocks -> options
       const options = [
         {% for block in section.blocks %}
           {
@@ -112,26 +115,27 @@ Radial labels, full circle, top triangle picker touching rim.
       const resultImg = root.querySelector('.wp-result-img');
       const btnSpin = root.querySelector('[data-role="spin"]');
       const btnRespin = root.querySelector('[data-role="respin"]');
-      const labelRadiusPx = parseFloat(getComputedStyle(root).getPropertyValue('--wp-label-radius')) || 42;
-      const POINTER_DEG = 90; // triangle at right edge
-      const baseFontPx = parseFloat(getComputedStyle(root).getPropertyValue('--wp-label-font')) || 14;
 
-      // (keep your existing radius = 108)
-      const CAP_R = 26;      // center cap radius in wheel SVG units
-      const PAD_IN = 6;      // inner padding from cap
-      const PAD_OUT = 18;    // outer padding from rim
+      // ---- constants & computed styles ----
+      const POINTER_DEG = 90; // pointer on the right
 
+      const style = getComputedStyle(root);
+      const labelRadiusPx = parseFloat(style.getPropertyValue('--wp-label-radius')) || 42;
+      const baseFontPx    = parseFloat(style.getPropertyValue('--wp-label-font'))   || 14;
 
       if (n < 2) { btnSpin.disabled = true; btnSpin.textContent = 'Add at least 2 options'; }
 
       const blues = ['#E3F2FD','#BBDEFB','#90CAF9','#64B5F6','#42A5F5','#1E88E5'];
 
-      const radius = 108;              // safe within viewBox
-      const innerLabelRadius = 34;     // why: start near center and point outward
+      const radius = 108;      // wheel radius inside viewBox
+      const CAP_R = 26;        // center cap radius (SVG units)
+      const PAD_IN = 6;        // label padding from cap
+      const PAD_OUT = 18;      // label padding from rim
       const sliceAngle = 360 / (n || 1);
 
       const NS = 'http://www.w3.org/2000/svg';
       const mk = (tag) => document.createElementNS(NS, tag);
+      // -------------------------------------
 
       function polar(r, deg) {
         const rad = (deg - 90) * Math.PI / 180;
@@ -159,32 +163,28 @@ Radial labels, full circle, top triangle picker touching rim.
           path.setAttribute('stroke-width', '1');
           svg.insertBefore(path, svg.firstChild);
 
-          // Radial label: start near center, extend outward along the slice mid-angle
+          // Label centered on slice mid-angle, near hub, auto-upright
           const mid = start + sliceAngle / 2;
 
-            // clamp radius so labels don’t collide with cap or rim
-            const minR = CAP_R + PAD_IN;
-            const maxR = radius - PAD_OUT;
-            const rLabel = Math.max(minR, Math.min(labelRadiusPx, maxR));
+          const minR = CAP_R + PAD_IN;
+          const maxR = radius - PAD_OUT;
+          const rLabel = Math.max(minR, Math.min(labelRadiusPx, maxR));
 
-            // auto-upright: flip labels on the left side
-            const flip = mid > 90 && mid < 270;
-            const rotation = flip ? mid + 180 : mid;
-            const x = flip ? -rLabel : rLabel;
+          const flip = mid > 90 && mid < 270;
+          const rotation = flip ? mid + 180 : mid;
+          const x = flip ? -rLabel : rLabel;
 
-            const text = mk('text');
-            text.setAttribute('class', 'wp-label');
-            text.setAttribute('text-anchor', 'middle');   // centered on its ray
-            text.setAttribute('dominant-baseline', 'middle');
-            text.setAttribute('transform', `rotate(${rotation})`);
-            text.setAttribute('x', String(x));
-            text.setAttribute('y', '0');
-            text.textContent = options[i].label;
-            // optional: apply base font size from slider (overrides CSS var if needed)
-            // text.setAttribute('font-size', String(baseFontPx));
-            svg.appendChild(text);
-
-
+          const text = mk('text');
+          text.setAttribute('class', 'wp-label');
+          text.setAttribute('text-anchor', 'middle');
+          text.setAttribute('dominant-baseline', 'middle');
+          text.setAttribute('transform', `rotate(${rotation})`);
+          text.setAttribute('x', String(x));
+          text.setAttribute('y', '0');
+          // Uncomment to force font via attribute:
+          // text.setAttribute('font-size', String(baseFontPx));
+          text.textContent = options[i].label;
+          svg.appendChild(text);
         }
       }
       buildWheel();
@@ -194,11 +194,11 @@ Radial labels, full circle, top triangle picker touching rim.
       let currentRotation = 0;
       const fullTurns = 6;
 
-     function indexFromRotation(rotDeg) {
+      function indexFromRotation(rotDeg) {
         const norm = ((rotDeg % 360) + 360) % 360;
         const hitDeg = (POINTER_DEG - norm + 360) % 360;
         return Math.floor(hitDeg / sliceAngle) % n;
-    }
+      }
 
       function setPanels(showResult) {
         panelInitial.hidden = !!showResult;
@@ -277,22 +277,19 @@ Radial labels, full circle, top triangle picker touching rim.
     .wp-wheel-wrapper { position: relative; width: min(88vw, 440px); aspect-ratio: 1 / 1; }
     .wp-shadow-plate, .wp-wheel { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
 
-   
     /* Right-side triangle picker – tip touches the rim */
     .wp-pointer{
-        position: absolute;
-        top: 50%;
-        left: calc(100% - var(--wp-pointer-offset)); /* nudge inward/outward */
-        transform: translateY(-50%);
-        width: 0; height: 0;
-        border-top:  calc(var(--wp-pointer-size) * .6) solid transparent;
-        border-bottom: calc(var(--wp-pointer-size) * .6) solid transparent;
-        border-right: var(--wp-pointer-size) solid var(--wp-accent); /* points right */
-        filter: drop-shadow(0 2px 2px rgba(0,0,0,.25));
-        z-index: 2;
+      position: absolute;
+      top: 50%;
+      left: calc(100% - var(--wp-pointer-offset));
+      transform: translateY(-50%);
+      width: 0; height: 0;
+      border-top:  calc(var(--wp-pointer-size) * .6) solid transparent;
+      border-bottom: calc(var(--wp-pointer-size) * .6) solid transparent;
+      border-right: var(--wp-pointer-size) solid var(--wp-accent);
+      filter: drop-shadow(0 2px 2px rgba(0,0,0,.25));
+      z-index: 2;
     }
-
-
 
     /* Rim */
     .wp-rim { fill: none; stroke: #E6F0FF; stroke-width: 8; }
@@ -303,15 +300,15 @@ Radial labels, full circle, top triangle picker touching rim.
     .wp-wheel:hover .wp-slice { filter: brightness(1.02); }
 
     .wp-label{
-        font-size: var(--wp-label-font, 14px);
-        font-weight: 700;
-        fill: #0a2540;
-        paint-order: stroke;     /* why: white outline for legibility */
-        stroke: #ffffff;
-        stroke-width: 2px;
-        letter-spacing: .2px;
-        user-select: none;
-        pointer-events: none;
+      font-size: var(--wp-label-font, 14px);
+      font-weight: 700;
+      fill: #0a2540;
+      paint-order: stroke;     /* why: white outline for legibility */
+      stroke: #ffffff;
+      stroke-width: 2px;
+      letter-spacing: .2px;
+      user-select: none;
+      pointer-events: none;
     }
     .wp-hide-labels .wp-label { display: none; }
 
@@ -363,8 +360,6 @@ Radial labels, full circle, top triangle picker touching rim.
       { "type": "range", "id": "pointer_offset", "label": "Pointer tip offset", "min": -20, "max": 20, "step": 1, "default": 4 },
       { "type": "range", "id": "label_radius", "label": "Label radius (from center)", "min": 24, "max": 70, "step": 1, "default": 42 },
       { "type": "range", "id": "label_font_size", "label": "Label font size (px)", "min": 10, "max": 28, "step": 1, "default": 14 }
-
-
     ],
     "blocks": [
       {
