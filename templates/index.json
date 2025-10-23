@@ -276,9 +276,9 @@
         "bg_color": "#ffffff",
         "text_color": "#1f2937",
         "accent_color": "#111827",
-        "pointer_color": "#ef4444",
-        "pointer_size": 31,
-        "pointer_offset": -8,
+        "pointer_color": "#1f2443",
+        "pointer_size": 28,
+        "pointer_offset": -2,
         "label_font_size": 12
       }
     }
