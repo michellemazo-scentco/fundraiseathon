@@ -133,6 +133,29 @@ Interactive wheel: right-side pointer, blue wedges, centered radial labels.
       const PAD_OUT = 18;      // label padding from rim
       const sliceAngle = 360 / (n || 1);
 
+      const DEG2RAD = Math.PI / 180;
+
+        // convert CSS px → SVG units for current wheel size
+        function pxToSvgUnits(px) {
+        const vbWidth = 240; // viewBox width (-120..120)
+        const w = svg.clientWidth || svg.getBoundingClientRect().width || 1;
+        return px * (vbWidth / w);
+        }
+
+        // pointer-aware clearance near the rim (keeps text off the triangle)
+        const pointerSizePx = parseFloat(style.getPropertyValue('--wp-pointer-size')) || 28;
+        // triangle vertical span ≈ 1.2x size (top+bottom borders)
+        const pointerHeightPx = pointerSizePx * 1.2;
+        const labelClearancePx = Math.max(8, pointerHeightPx * 0.55);
+        const labelClearanceSvg = pxToSvgUnits(labelClearancePx);
+
+        // compute the *central* radius for labels between inner cap and rim (minus clearances)
+        function centralLabelRadius() {
+        const minR = CAP_R + PAD_IN;                     // inner limit (cap + padding)
+        const maxR = radius - PAD_OUT - labelClearanceSvg; // outer limit (rim - padding - triangle)
+        return (minR + Math.max(minR, maxR)) / 2;        // midpoint across the annulus
+        }
+
       const NS = 'http://www.w3.org/2000/svg';
       const mk = (tag) => document.createElementNS(NS, tag);
       // -------------------------------------
