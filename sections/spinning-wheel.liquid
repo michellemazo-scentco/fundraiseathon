@@ -1,7 +1,7 @@
 {% comment %}
 File: sections/wheel-picker.liquid
-Left: animated wheel with inner picker ring.
-Right: heading/subheading + Spin → swaps to result card + Respin.
+Look & feel: blue-shade wedges, glossy rim, white center cap (no text).
+Layout: spinner left, content/result right.
 {% endcomment %}
 
 <section id="wheel-picker-{{ section.id }}" class="wheel-picker-section" style="
@@ -14,35 +14,41 @@ Right: heading/subheading + Spin → swaps to result card + Respin.
       <!-- LEFT: Wheel -->
       <div class="wp-left">
         <div class="wp-wheel-wrapper">
-          <!-- fixed pointer -->
+          <!-- top pointer -->
           <div class="wp-pointer" aria-hidden="true"></div>
 
-          <!-- wheel svg (rotates) -->
-          <svg class="wp-wheel" viewBox="-110 -110 220 220" role="img" aria-label="Selection wheel">
-            <!-- slices/labels injected by JS -->
+          <!-- shadow plate behind the wheel for subtle depth -->
+          <svg class="wp-shadow-plate" viewBox="-115 -115 230 230" aria-hidden="true">
+            <defs>
+              <radialGradient id="wp-shadow-grad-{{ section.id }}" cx="50%" cy="40%" r="70%">
+                <stop offset="0%" stop-color="rgba(0,0,0,0.06)"/>
+                <stop offset="100%" stop-color="rgba(0,0,0,0.0)"/>
+              </radialGradient>
+            </defs>
+            <circle r="110" fill="url(#wp-shadow-grad-{{ section.id }})"></circle>
           </svg>
 
-          <!-- inner picker ring (decorative) -->
-          <svg class="wp-inner" viewBox="-60 -60 120 120" aria-hidden="true">
-            <defs>
-              <mask id="wp-slot-{{ section.id }}">
-                <rect x="-60" y="-60" width="120" height="120" fill="white"/>
-                <!-- small slot at top to hint 'picker' look -->
-                <rect x="-20" y="-60" width="40" height="20" rx="4" fill="black"/>
-              </mask>
-            </defs>
-            <circle r="58" class="wp-inner-ring"/>
-            <!-- tick marks -->
-            {% for i in (0..11) %}
-            <line class="wp-tick" x1="0" y1="-50" x2="0" y2="-56" transform="rotate({{ forloop.index0 | times: 30 }})"/>
-            {% endfor %}
-            <!-- center cap -->
-            <circle r="8" class="wp-cap"/>
-            <!-- masked decorative plate -->
-            <g mask="url(#wp-slot-{{ section.id }})">
-              <circle r="40" class="wp-plate"/>
-            </g>
+          <!-- main wheel (rotates) -->
+          <svg class="wp-wheel" viewBox="-110 -110 220 220" role="img" aria-label="Selection wheel">
+            <!-- slices + labels injected by JS -->
+            <!-- rim -->
+            <circle class="wp-rim" r="106"></circle>
+            <circle class="wp-rim-glow" r="108"></circle>
           </svg>
+
+          <!-- inner cap (fixed to wheel center, rotates with it via nesting) -->
+          <div class="wp-cap-wrap">
+            <svg class="wp-cap" viewBox="-40 -40 80 80" aria-hidden="true">
+              <defs>
+                <radialGradient id="wp-cap-grad-{{ section.id }}" cx="50%" cy="45%" r="60%">
+                  <stop offset="0%" stop-color="#ffffff"/>
+                  <stop offset="100%" stop-color="#f4f7fb"/>
+                </radialGradient>
+              </defs>
+              <circle r="26" fill="url(#wp-cap-grad-{{ section.id }})" />
+              <circle r="26" fill="none" stroke="rgba(0,0,0,.06)" stroke-width="1" />
+            </svg>
+          </div>
         </div>
         <p class="visually-hidden" aria-live="polite" aria-atomic="true" id="wp-live-{{ section.id }}"></p>
       </div>
@@ -80,6 +86,7 @@ Right: heading/subheading + Spin → swaps to result card + Respin.
       const root = document.getElementById('wheel-picker-{{ section.id }}');
       if (!root) return;
 
+      // Data
       const options = [
         {% for block in section.blocks %}
           {
@@ -96,7 +103,6 @@ Right: heading/subheading + Spin → swaps to result card + Respin.
       const template = {{ section.settings.result_heading_template | json }};
 
       const svg = root.querySelector('.wp-wheel');
-      const inner = root.querySelector('.wp-inner');
       const headingEl = root.querySelector('.wp-heading');
       const baseHeading = headingEl.dataset.baseHeading || headingEl.textContent.trim();
       const live = root.querySelector('#wp-live-{{ section.id }}');
@@ -105,7 +111,6 @@ Right: heading/subheading + Spin → swaps to result card + Respin.
       const panelResult  = root.querySelector('.wp-panel-result');
       const resultHeading = root.querySelector('.wp-result-heading');
       const resultImg = root.querySelector('.wp-result-img');
-
       const btnSpin = root.querySelector('[data-role="spin"]');
       const btnRespin = root.querySelector('[data-role="respin"]');
 
@@ -114,32 +119,44 @@ Right: heading/subheading + Spin → swaps to result card + Respin.
         btnSpin.textContent = 'Add at least 2 options';
       }
 
+      // Blue palette (ordered light -> dark, will cycle if n < 6)
+      const blues = ['#E3F2FD','#BBDEFB','#90CAF9','#64B5F6','#42A5F5','#1E88E5'];
+
       const radius = 100;
       const sliceAngle = 360 / (n || 1);
 
-      function polarToCartesian(cx, cy, r, deg) {
+      function polar(cx, cy, r, deg) {
         const rad = (deg - 90) * Math.PI / 180;
         return { x: cx + r * Math.cos(rad), y: cy + r * Math.sin(rad) };
       }
-      function describeSlice(startDeg, endDeg, r) {
-        const start = polarToCartesian(0,0,r, endDeg);
-        const end = polarToCartesian(0,0,r, startDeg);
+      function slicePath(startDeg, endDeg, r) {
+        const start = polar(0,0,r, endDeg);
+        const end = polar(0,0,r, startDeg);
         const largeArc = endDeg - startDeg <= 180 ? 0 : 1;
         return `M 0 0 L ${start.x} ${start.y} A ${r} ${r} 0 ${largeArc} 0 ${end.x} ${end.y} Z`;
       }
+
       function buildWheel() {
-        svg.innerHTML = '';
+        // Remove any existing slices/labels but keep rim circles
+        [...svg.querySelectorAll('.wp-slice, .wp-label')].forEach(n => n.remove());
+
         for (let i = 0; i < n; i++) {
           const start = i * sliceAngle;
           const end = (i + 1) * sliceAngle;
 
           const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-          path.setAttribute('d', describeSlice(start, end, radius));
+          path.setAttribute('d', slicePath(start, end, radius));
           path.setAttribute('class', 'wp-slice');
-          svg.appendChild(path);
+          // Assign blue shade
+          const color = blues[i % blues.length];
+          path.setAttribute('fill', color);
+          path.setAttribute('stroke', '#ffffff');
+          path.setAttribute('stroke-width', '1');
+          svg.insertBefore(path, svg.firstChild);
 
+          // Keep labels for possible future use / screen readers (hidden via CSS)
           const mid = start + sliceAngle / 2;
-          const pos = polarToCartesian(0,0,radius * 0.62, mid);
+          const pos = polar(0,0,radius * 0.62, mid);
           const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
           text.setAttribute('x', String(pos.x));
           text.setAttribute('y', String(pos.y));
@@ -152,35 +169,27 @@ Right: heading/subheading + Spin → swaps to result card + Respin.
       }
       buildWheel();
 
+      // Spin plumbing
       let spinning = false;
       let currentRotation = 0;
       const fullTurns = 6;
 
       function indexFromRotation(rotDeg) {
         const norm = ((rotDeg % 360) + 360) % 360;
-        const hitDeg = (0 - norm + 360) % 360;
+        const hitDeg = (0 - norm + 360) % 360; // pointer at 0°
         return Math.floor(hitDeg / sliceAngle) % n;
       }
-
       function setPanels(showResult) {
         panelInitial.hidden = !!showResult;
         panelResult.hidden  = !showResult;
-      }
-
-      function applyRotation(deg) {
-        svg.style.transform = `rotate(${deg}deg)`;
-        // inner ring slight counter-rotation for depth
-        inner.style.transform = `rotate(${(-deg * 0.15)}deg)`;
       }
 
       function spinOnce() {
         if (spinning || n < 2) return;
         spinning = true;
 
-        // pre state
         headingEl.textContent = baseHeading;
         setPanels(false);
-
         btnSpin.setAttribute('aria-busy', 'true');
         btnSpin.disabled = true;
 
@@ -191,23 +200,22 @@ Right: heading/subheading + Spin → swaps to result card + Respin.
         const nextRotation = currentRotation + delta;
 
         svg.style.transition = `transform ${spinMs}ms cubic-bezier(0.12, 0.65, 0, 1)`;
-        inner.style.transition = `transform ${spinMs}ms cubic-bezier(0.12, 0.65, 0, 1)`;
-        applyRotation(nextRotation);
+        svg.style.transform = `rotate(${nextRotation}deg)`;
 
         const onEnd = () => {
           svg.removeEventListener('transitionend', onEnd);
           currentRotation = nextRotation % 360;
           svg.style.transition = 'none';
-          inner.style.transition = 'none';
-          applyRotation(currentRotation);
+          svg.style.transform = `rotate(${currentRotation}deg)`;
 
           const idx = indexFromRotation(currentRotation);
           const chosen = options[idx];
-
           const newHeading = (template && template.includes('{word}'))
             ? template.replace('{word}', chosen.label)
             : `You should choose ${chosen.label}`;
+
           headingEl.textContent = newHeading;
+          resultHeading.textContent = newHeading;
 
           if (chosen.image) {
             resultImg.src = chosen.image;
@@ -217,9 +225,7 @@ Right: heading/subheading + Spin → swaps to result card + Respin.
             resultImg.alt = '';
           }
 
-          resultHeading.textContent = newHeading;
           setPanels(true);
-
           if (live) live.textContent = `Selected ${chosen.label}`;
 
           btnSpin.disabled = false;
@@ -234,11 +240,10 @@ Right: heading/subheading + Spin → swaps to result card + Respin.
       btnSpin?.addEventListener('click', spinOnce);
       btnRespin?.addEventListener('click', () => { setPanels(false); spinOnce(); });
 
-      // reduced motion
+      // Reduced motion courtesy
       const media = window.matchMedia('(prefers-reduced-motion: reduce)');
       if (media.matches) {
         svg.style.transitionDuration = '300ms';
-        inner.style.transitionDuration = '300ms';
       }
     })();
   </script>
@@ -252,27 +257,28 @@ Right: heading/subheading + Spin → swaps to result card + Respin.
     /* LEFT */
     .wp-left { display: grid; place-items: center; }
     .wp-wheel-wrapper { position: relative; width: min(88vw, 420px); aspect-ratio: 1 / 1; }
-    .wp-wheel { width: 100%; height: 100%; transform: rotate(0deg); will-change: transform; }
+    .wp-shadow-plate { position: absolute; inset: 0; width: 100%; height: 100%; }
+    .wp-wheel { position: relative; width: 100%; height: 100%; transform: rotate(0deg); will-change: transform; }
     .wp-pointer {
       position: absolute; top: -10px; left: 50%; transform: translateX(-50%);
       width: 0; height: 0;
-      border-left: 12px solid transparent; border-right: 12px solid transparent;
-      border-bottom: 18px solid var(--wp-accent);
-      filter: drop-shadow(0 2px 2px rgba(0,0,0,.2));
+      border-left: 13px solid transparent; border-right: 13px solid transparent;
+      border-bottom: 20px solid #1E88E5; /* deep blue tip */
+      filter: drop-shadow(0 2px 2px rgba(0,0,0,.25));
     }
 
-    /* Slices & labels */
-    .wp-slice { fill: none; stroke: var(--wp-accent); stroke-width: 1; }
-    .wp-slice:nth-of-type(odd) { fill: color-mix(in oklab, var(--wp-accent) 14%, white); }
-    .wp-slice:nth-of-type(even){ fill: color-mix(in oklab, var(--wp-accent) 6%, white); }
-    .wp-label { font-size: 12px; fill: currentColor; pointer-events: none; }
+    /* Rim styling */
+    .wp-rim { fill: none; stroke: #E6F0FF; stroke-width: 8; }
+    .wp-rim-glow { fill: none; stroke: rgba(30,136,229,.2); stroke-width: 12; }
 
-    /* Inner picker ring */
-    .wp-inner { position: absolute; inset: 0; width: 65%; height: 65%; margin: auto; }
-    .wp-inner-ring { r:58; fill: none; stroke: var(--wp-accent); stroke-width: 1.5; opacity: .7; }
-    .wp-tick { stroke: var(--wp-accent); stroke-width: 1; opacity: .6; transform-origin: 0 0; }
-    .wp-cap { fill: var(--wp-accent); }
-    .wp-plate { fill: color-mix(in oklab, var(--wp-accent) 10%, white); }
+    /* Slices & labels */
+    .wp-slice { transition: filter .2s ease; }
+    .wp-wheel:hover .wp-slice { filter: brightness(1.02); }
+    .wp-label { display: none; } /* visual: no text on wheel */
+
+    /* Center cap */
+    .wp-cap-wrap { position: absolute; inset: 0; display: grid; place-items: center; pointer-events: none; }
+    .wp-cap { width: 36%; height: 36%; filter: drop-shadow(0 6px 20px rgba(0,0,0,.12)); }
 
     /* RIGHT */
     .wp-right { max-width: 560px; margin: 0 auto; }
@@ -289,11 +295,7 @@ Right: heading/subheading + Spin → swaps to result card + Respin.
     .wp-btn-primary { background: var(--wp-accent); color: #fff; }
     .wp-btn-secondary { background: transparent; color: var(--wp-accent); outline: 2px solid var(--wp-accent); }
 
-    .wp-result-card {
-      margin: .75rem 0 1rem;
-      border-radius: 14px; overflow: hidden;
-      box-shadow: 0 6px 20px rgba(0,0,0,.12);
-    }
+    .wp-result-card { margin: .75rem 0 1rem; border-radius: 14px; overflow: hidden; box-shadow: 0 6px 20px rgba(0,0,0,.12); }
     .wp-result-img { width: 100%; height: auto; display: block; }
 
     .visually-hidden {
@@ -325,7 +327,7 @@ Right: heading/subheading + Spin → swaps to result card + Respin.
       },
       { "type": "color", "id": "bg_color", "label": "Background color", "default": "#ffffff" },
       { "type": "color", "id": "text_color", "label": "Text color", "default": "#1f2937" },
-      { "type": "color", "id": "accent_color", "label": "Accent color", "default": "#111827" }
+      { "type": "color", "id": "accent_color", "label": "Accent color (buttons/pointer)", "default": "#1E88E5" }
     ],
     "blocks": [
       {
@@ -340,14 +342,14 @@ Right: heading/subheading + Spin → swaps to result card + Respin.
     ],
     "presets": [
       {
-        "name": "Wheel Picker (Left) + Content (Right)",
+        "name": "Wheel Picker (Blue)",
         "category": "Interactive",
         "blocks": [
-          { "type": "option", "settings": { "label": "Vanilla" } },
-          { "type": "option", "settings": { "label": "Chocolate" } },
-          { "type": "option", "settings": { "label": "Strawberry" } },
-          { "type": "option", "settings": { "label": "Matcha" } },
-          { "type": "option", "settings": { "label": "Mango" } }
+          { "type": "option", "settings": { "label": "Option 1" } },
+          { "type": "option", "settings": { "label": "Option 2" } },
+          { "type": "option", "settings": { "label": "Option 3" } },
+          { "type": "option", "settings": { "label": "Option 4" } },
+          { "type": "option", "settings": { "label": "Option 5" } }
         ]
       }
     ]
