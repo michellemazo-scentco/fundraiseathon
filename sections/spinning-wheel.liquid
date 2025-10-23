@@ -1,6 +1,6 @@
 {% comment %}
 File: sections/wheel-picker.liquid
-Wheel with right-side SVG wedge pointer; curved labels (up to 2 lines), outward-facing.
+Wheel with left-pointing wedge pointer, curved labels (up to 2 lines), bounce + confetti on stop.
 {% endcomment %}
 
 <section id="wheel-picker-{{ section.id }}" class="wheel-picker-section {% unless section.settings.show_labels_on_wheel %}wp-hide-labels{% endunless %}" style="
@@ -35,6 +35,9 @@ Wheel with right-side SVG wedge pointer; curved labels (up to 2 lines), outward-
             <circle class="wp-rim-glow" r="115"></circle>
           </svg>
 
+          <!-- Confetti overlay -->
+          <canvas class="wp-confetti" aria-hidden="true"></canvas>
+
           <!-- Center cap -->
           <div class="wp-cap-wrap">
             <svg class="wp-cap" viewBox="-40 -40 80 80" aria-hidden="true">
@@ -49,11 +52,13 @@ Wheel with right-side SVG wedge pointer; curved labels (up to 2 lines), outward-
             </svg>
           </div>
 
-          <!-- Right-side SVG wedge pointer (tip at rim) -->
+          <!-- Right-side SVG wedge pointer (TIP at rim), pointing LEFT -->
           <div class="wp-pointer" aria-hidden="true">
             <svg class="wp-pointer-svg" viewBox="0 0 100 80" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
-                <polygon class="wp-pointer-back"  points="0,40 90,10 90,70"></polygon>
-                <polygon class="wp-pointer-front" points="2,40 86,16 86,64"></polygon>
+              <!-- backplate -->
+              <polygon class="wp-pointer-back"  points="0,40 90,10 90,70"></polygon>
+              <!-- white face -->
+              <polygon class="wp-pointer-front" points="2,40 86,16 86,64"></polygon>
             </svg>
           </div>
         </div>
@@ -155,11 +160,11 @@ Wheel with right-side SVG wedge pointer; curved labels (up to 2 lines), outward-
       }
       function slicePath(startDeg, endDeg, r) {
         const start = polar(r, endDeg);
-        theEnd = polar(r, startDeg);
+        const endPt = polar(r, startDeg);
         const largeArc = endDeg - startDeg <= 180 ? 0 : 1;
-        return `M 0 0 L ${start.x} ${start.y} A ${r} ${r} 0 ${largeArc} 0 ${theEnd.x} ${theEnd.y} Z`;
+        return `M 0 0 L ${start.x} ${start.y} A ${r} ${r} 0 ${largeArc} 0 ${endPt.x} ${endPt.y} Z`;
       }
-      // rough two-line splitter
+      // two-line splitter
       function splitTwoLines(label) {
         const words = label.trim().split(/\s+/);
         if (words.length <= 1) return [label, null];
@@ -257,6 +262,78 @@ Wheel with right-side SVG wedge pointer; curved labels (up to 2 lines), outward-
       }
       buildWheel();
 
+      // ---- Confetti utils ----
+      function wpConfetti(rootEl, opts = {}) {
+        const canvas = rootEl.querySelector('.wp-confetti');
+        if (!canvas) return;
+        const dpr = Math.max(1, Math.min(2, window.devicePixelRatio || 1));
+        const rectCSS = canvas.getBoundingClientRect();
+        // set size each time (wheel size may be responsive)
+        canvas.width  = Math.floor(rectCSS.width * dpr);
+        canvas.height = Math.floor(rectCSS.height * dpr);
+        const ctx = canvas.getContext('2d');
+        ctx.setTransform(1,0,0,1,0,0);
+        ctx.scale(dpr, dpr);
+
+        const colors = opts.colors || ['#FFD166','#06D6A0','#118AB2','#EF476F','#8338EC','#FFBE0B'];
+        const N = opts.count || 120;
+        const g = opts.gravity || 0.22;
+        const drag = opts.drag || 0.005;
+        const spread = opts.spread || Math.PI * 0.8; // angular spread
+        const centerX = rectCSS.width * 0.70;        // burst from right side
+        const centerY = rectCSS.height * 0.50;
+
+        const parts = Array.from({ length: N }, () => {
+          const angle = (Math.PI * 1.0) + (Math.random() - 0.5) * spread; // fling leftward
+          const speed = 6 + Math.random() * 6;
+          return {
+            x: centerX, y: centerY,
+            vx: Math.cos(angle) * speed,
+            vy: Math.sin(angle) * speed - 2,
+            r: 2 + Math.random() * 3,
+            w: 6 + Math.random() * 7,
+            h: 3 + Math.random() * 4,
+            rot: Math.random() * Math.PI,
+            vr: (Math.random() - 0.5) * 0.25,
+            color: colors[Math.floor(Math.random() * colors.length)],
+            life: 1, decay: 0.008 + Math.random() * 0.01
+          };
+        });
+
+        let rafId = 0;
+        function step() {
+          ctx.clearRect(0, 0, rectCSS.width, rectCSS.height);
+          let alive = 0;
+          for (const p of parts) {
+            p.vx *= (1 - drag);
+            p.vy += g;
+            p.x += p.vx;
+            p.y += p.vy;
+            p.rot += p.vr;
+            p.life -= p.decay;
+
+            if (p.life > 0 && p.y < rectCSS.height + 20 && p.x > -20) {
+              alive++;
+              ctx.save();
+              ctx.translate(p.x, p.y);
+              ctx.rotate(p.rot);
+              ctx.globalAlpha = Math.max(0, p.life);
+              ctx.fillStyle = p.color;
+              ctx.fillRect(-p.w/2, -p.h/2, p.w, p.h);
+              ctx.beginPath();
+              ctx.arc(0, 0, p.r, 0, Math.PI * 2);
+              ctx.fill();
+              ctx.restore();
+            }
+          }
+          if (alive > 0) rafId = requestAnimationFrame(step);
+          else { ctx.clearRect(0, 0, rectCSS.width, rectCSS.height); }
+        }
+        cancelAnimationFrame(rafId);
+        step();
+      }
+      // -------------------------------------
+
       // Spin logic
       let spinning = false;
       let currentRotation = 0;
@@ -314,6 +391,18 @@ Wheel with right-side SVG wedge pointer; curved labels (up to 2 lines), outward-
             resultImg.alt = '';
           }
 
+          // Pointer bounce
+          const pointerSvg = root.querySelector('.wp-pointer-svg');
+          if (pointerSvg) {
+            pointerSvg.classList.remove('wp-bounce'); // restart if rapid respin
+            void pointerSvg.offsetWidth;              // reflow to re-trigger
+            pointerSvg.classList.add('wp-bounce');
+          }
+
+          // Confetti burst over the wheel wrapper
+          const wrapper = root.querySelector('.wp-wheel-wrapper');
+          if (wrapper) wpConfetti(wrapper, { count: 140 });
+
           setPanels(true);
           if (live) live.textContent = `Selected ${chosen.label}`;
 
@@ -322,7 +411,7 @@ Wheel with right-side SVG wedge pointer; curved labels (up to 2 lines), outward-
           spinning = false;
         };
 
-        const timeoutId = setTimeout(() => { if (spinning) onEnd(); }, spinMs + 100);
+        const timeoutId = setTimeout(() => { if (spinning) onEnd(); }, spinMs + 120);
         svg.addEventListener('transitionend', () => { clearTimeout(timeoutId); onEnd(); }, { once: true });
       }
 
@@ -346,42 +435,49 @@ Wheel with right-side SVG wedge pointer; curved labels (up to 2 lines), outward-
       position: relative;
       width: min(88vw, 440px);
       aspect-ratio: 1 / 1;
-      overflow: visible; /* allow pointer to stick out */
+      overflow: visible; /* allow pointer & confetti to stick out */
     }
     .wp-shadow-plate, .wp-wheel { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
 
-    /* Right-side SVG wedge pointer – tip at rim (right edge), pointing LEFT */
+    /* Confetti canvas overlays the wheel, below the pointer */
+    .wp-confetti{
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 90;
+      display: block;
+    }
+
+    /* Pointer (right side, pointing LEFT) */
     .wp-pointer{
       position: absolute;
       top: 50%;
-      right: calc(0px - (var(--wp-pointer-offset, 0px))); /* 0 = tip exactly on rim; negative overlaps */
+      left: calc(100% + (var(--wp-pointer-offset, 0px))); /* 0 = tip at rim; negative overlaps */
       transform: translateY(-50%);
-      z-index: 100; pointer-events: none;
+      z-index: 100;
+      pointer-events: none;
     }
     .wp-pointer-svg{
       width: calc(var(--wp-pointer-size, 30px) * 1.9);
-  height: calc(var(--wp-pointer-size, 30px) * 1.2);
-  filter: drop-shadow(0 2px 2px rgba(0,0,0,.25));
-  display: block;
+      height: calc(var(--wp-pointer-size, 30px) * 1.2);
+      filter: drop-shadow(0 2px 2px rgba(0,0,0,.25));
+      display: block;
+      transform-origin: center;
     }
-    .wp-pointer-back,
-    .wp-pointer-front{
-        stroke-linejoin: round;          /* round the vertices */
-        stroke-linecap: round;
-        vector-effect: non-scaling-stroke; /* keep stroke width when resized */
-    }
+    .wp-pointer-back  { fill: #9CA3AF; }
+    .wp-pointer-front { fill: #ffffff; stroke: var(--wp-pointer-color, #6B7280); stroke-width: 2; }
 
-    .wp-pointer-back  {
-        fill: #9CA3AF;
-        stroke: #9CA3AF;
-        stroke-width: 2;
+    /* Pointer bounce animation */
+    @keyframes wp-bounce {
+      0%   { transform: translateX(0) scale(1); }
+      30%  { transform: translateX(-4px) scale(1.02); }
+      60%  { transform: translateX(0) scale(1); }
+      80%  { transform: translateX(-1px) scale(1.01); }
+      100% { transform: translateX(0) scale(1); }
     }
-
-    .wp-pointer-front {
-        fill: #ffffff;
-        stroke: var(--wp-pointer-color, #6B7280);
-        stroke-width: 2;
-    }
+    .wp-pointer-svg.wp-bounce { animation: wp-bounce 400ms cubic-bezier(.25,.75,.25,1) 1; }
 
     /* Rim */
     .wp-rim { fill: none; stroke: #E6F0FF; stroke-width: 8; }
@@ -466,7 +562,7 @@ Wheel with right-side SVG wedge pointer; curved labels (up to 2 lines), outward-
     ],
     "presets": [
       {
-        "name": "Wheel Picker (Curved labels + wedge pointer)",
+        "name": "Wheel Picker (Confetti + Bounce)",
         "category": "Interactive",
         "blocks": [
           { "type": "option", "settings": { "label": "Option 1" } },
