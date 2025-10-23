@@ -229,8 +229,11 @@
         "main_heading": "Spin the Wheel!",
         "subheading": "Try your luck and win something!",
         "option_1_label": "Read-a-thon",
+        "option_1_image": "shopify://shop_images/Asset_5_4x_ade18be7-7b08-411b-916d-a3f14ed6f01e.png",
         "option_2_label": "Bake-a-thon",
+        "option_2_image": "shopify://shop_images/Asset_4_4x_dad1e52c-11d9-4fd5-ae80-733f20c23de6.png",
         "option_3_label": "Draw-a-thon",
+        "option_3_image": "shopify://shop_images/Asset_8_4x_29fb23a4-6c75-4f98-b9b7-b5bf1fc723c0.png",
         "option_4_label": "Run-a-thon",
         "option_5_label": "Skate-a-thon"
       }
