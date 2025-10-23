@@ -164,27 +164,32 @@ Interactive wheel: right-side pointer, blue wedges, centered radial labels.
           svg.insertBefore(path, svg.firstChild);
 
           // Label centered on slice mid-angle, near hub, auto-upright
-          const mid = start + sliceAngle / 2;
+          // Label centered on slice mid-angle, near hub, stays upright
+const mid = start + sliceAngle / 2;
 
-          const minR = CAP_R + PAD_IN;
-          const maxR = radius - PAD_OUT;
-          const rLabel = Math.max(minR, Math.min(labelRadiusPx, maxR));
+// clamp label radius
+const minR = CAP_R + PAD_IN;
+const maxR = radius - PAD_OUT;
+const rLabel = Math.max(minR, Math.min(labelRadiusPx, maxR));
 
-          const flip = mid > 90 && mid < 270;
-          const rotation = flip ? mid + 180 : mid;
-          const x = flip ? -rLabel : rLabel;
+// auto-upright: flip labels on the left side
+const flip = mid > 90 && mid < 270;
+const rotation = flip ? mid + 180 : mid;
+const x = flip ? -rLabel : rLabel;
 
-          const text = mk('text');
-          text.setAttribute('class', 'wp-label');
-          text.setAttribute('text-anchor', 'middle');
-          text.setAttribute('dominant-baseline', 'middle');
-          text.setAttribute('transform', `rotate(${rotation})`);
-          text.setAttribute('x', String(x));
-          text.setAttribute('y', '0');
-          // Uncomment to force font via attribute:
-          // text.setAttribute('font-size', String(baseFontPx));
-          text.textContent = options[i].label;
-          svg.appendChild(text);
+const text = mk('text');
+text.setAttribute('class', 'wp-label');
+text.setAttribute('text-anchor', 'middle');           // horizontal centering
+text.setAttribute('alignment-baseline', 'middle');    // vertical centering (fallback)
+text.setAttribute('dominant-baseline', 'middle');     // vertical centering (SVG)
+text.setAttribute('dy', '.35em');                     // cross-browser tweak
+text.setAttribute('transform', `rotate(${rotation})`);
+text.setAttribute('x', String(x));
+text.setAttribute('y', '0');
+// text.setAttribute('font-size', String(baseFontPx)); // optional: force size
+text.textContent = options[i].label;
+svg.appendChild(text);
+
         }
       }
       buildWheel();
