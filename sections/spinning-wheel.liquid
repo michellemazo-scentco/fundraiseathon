@@ -1,10 +1,9 @@
 {% comment %}
 File: sections/wheel-picker.liquid
-Look & feel: blue-shade wedges, glossy rim, white center cap (no text).
-Layout: spinner left, content/result right.
+Wheel with blue slices, visible labels (toggleable), left; content/result, right.
 {% endcomment %}
 
-<section id="wheel-picker-{{ section.id }}" class="wheel-picker-section" style="
+<section id="wheel-picker-{{ section.id }}" class="wheel-picker-section {% unless section.settings.show_labels_on_wheel %}wp-hide-labels{% endunless %}" style="
   --wp-bg: {{ section.settings.bg_color }};
   --wp-text: {{ section.settings.text_color }};
   --wp-accent: {{ section.settings.accent_color }};
@@ -14,10 +13,9 @@ Layout: spinner left, content/result right.
       <!-- LEFT: Wheel -->
       <div class="wp-left">
         <div class="wp-wheel-wrapper">
-          <!-- top pointer -->
           <div class="wp-pointer" aria-hidden="true"></div>
 
-          <!-- shadow plate behind the wheel for subtle depth -->
+          <!-- soft background shadow -->
           <svg class="wp-shadow-plate" viewBox="-115 -115 230 230" aria-hidden="true">
             <defs>
               <radialGradient id="wp-shadow-grad-{{ section.id }}" cx="50%" cy="40%" r="70%">
@@ -30,13 +28,12 @@ Layout: spinner left, content/result right.
 
           <!-- main wheel (rotates) -->
           <svg class="wp-wheel" viewBox="-110 -110 220 220" role="img" aria-label="Selection wheel">
-            <!-- slices + labels injected by JS -->
-            <!-- rim -->
+            <!-- slices/labels injected by JS -->
             <circle class="wp-rim" r="106"></circle>
             <circle class="wp-rim-glow" r="108"></circle>
           </svg>
 
-          <!-- inner cap (fixed to wheel center, rotates with it via nesting) -->
+          <!-- center cap -->
           <div class="wp-cap-wrap">
             <svg class="wp-cap" viewBox="-40 -40 80 80" aria-hidden="true">
               <defs>
@@ -64,12 +61,10 @@ Layout: spinner left, content/result right.
           {% endif %}
         </header>
 
-        <!-- Initial panel -->
         <div class="wp-panel wp-panel-initial">
           <button type="button" class="wp-btn wp-btn-primary" data-role="spin">{{ section.settings.spin_label | escape }}</button>
         </div>
 
-        <!-- Result panel -->
         <div class="wp-panel wp-panel-result" hidden>
           <h3 class="wp-result-heading"></h3>
           <div class="wp-result-card">
@@ -86,7 +81,6 @@ Layout: spinner left, content/result right.
       const root = document.getElementById('wheel-picker-{{ section.id }}');
       if (!root) return;
 
-      // Data
       const options = [
         {% for block in section.blocks %}
           {
@@ -119,9 +113,7 @@ Layout: spinner left, content/result right.
         btnSpin.textContent = 'Add at least 2 options';
       }
 
-      // Blue palette (ordered light -> dark, will cycle if n < 6)
       const blues = ['#E3F2FD','#BBDEFB','#90CAF9','#64B5F6','#42A5F5','#1E88E5'];
-
       const radius = 100;
       const sliceAngle = 360 / (n || 1);
 
@@ -137,7 +129,6 @@ Layout: spinner left, content/result right.
       }
 
       function buildWheel() {
-        // Remove any existing slices/labels but keep rim circles
         [...svg.querySelectorAll('.wp-slice, .wp-label')].forEach(n => n.remove());
 
         for (let i = 0; i < n; i++) {
@@ -147,14 +138,13 @@ Layout: spinner left, content/result right.
           const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
           path.setAttribute('d', slicePath(start, end, radius));
           path.setAttribute('class', 'wp-slice');
-          // Assign blue shade
           const color = blues[i % blues.length];
           path.setAttribute('fill', color);
           path.setAttribute('stroke', '#ffffff');
           path.setAttribute('stroke-width', '1');
           svg.insertBefore(path, svg.firstChild);
 
-          // Keep labels for possible future use / screen readers (hidden via CSS)
+          // Visible label
           const mid = start + sliceAngle / 2;
           const pos = polar(0,0,radius * 0.62, mid);
           const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
@@ -169,14 +159,13 @@ Layout: spinner left, content/result right.
       }
       buildWheel();
 
-      // Spin plumbing
       let spinning = false;
       let currentRotation = 0;
       const fullTurns = 6;
 
       function indexFromRotation(rotDeg) {
         const norm = ((rotDeg % 360) + 360) % 360;
-        const hitDeg = (0 - norm + 360) % 360; // pointer at 0°
+        const hitDeg = (0 - norm + 360) % 360;
         return Math.floor(hitDeg / sliceAngle) % n;
       }
       function setPanels(showResult) {
@@ -240,11 +229,8 @@ Layout: spinner left, content/result right.
       btnSpin?.addEventListener('click', spinOnce);
       btnRespin?.addEventListener('click', () => { setPanels(false); spinOnce(); });
 
-      // Reduced motion courtesy
       const media = window.matchMedia('(prefers-reduced-motion: reduce)');
-      if (media.matches) {
-        svg.style.transitionDuration = '300ms';
-      }
+      if (media.matches) svg.style.transitionDuration = '300ms';
     })();
   </script>
 
@@ -261,20 +247,31 @@ Layout: spinner left, content/result right.
     .wp-wheel { position: relative; width: 100%; height: 100%; transform: rotate(0deg); will-change: transform; }
     .wp-pointer {
       position: absolute; top: -10px; left: 50%; transform: translateX(-50%);
-      width: 0; height: 0;
-      border-left: 13px solid transparent; border-right: 13px solid transparent;
-      border-bottom: 20px solid #1E88E5; /* deep blue tip */
-      filter: drop-shadow(0 2px 2px rgba(0,0,0,.25));
+      width: 0; height: 0; border-left: 13px solid transparent; border-right: 13px solid transparent;
+      border-bottom: 20px solid #1E88E5; filter: drop-shadow(0 2px 2px rgba(0,0,0,.25));
     }
 
-    /* Rim styling */
     .wp-rim { fill: none; stroke: #E6F0FF; stroke-width: 8; }
     .wp-rim-glow { fill: none; stroke: rgba(30,136,229,.2); stroke-width: 12; }
 
     /* Slices & labels */
     .wp-slice { transition: filter .2s ease; }
     .wp-wheel:hover .wp-slice { filter: brightness(1.02); }
-    .wp-label { display: none; } /* visual: no text on wheel */
+
+    .wp-label {
+      font-size: 12px;
+      font-weight: 700;
+      fill: #0a2540;                 /* dark blue text */
+      paint-order: stroke;           /* why: ensure white outline is under fill for contrast */
+      stroke: #ffffff;
+      stroke-width: 2px;
+      letter-spacing: .2px;
+      user-select: none;
+      pointer-events: none;
+    }
+
+    /* Hide labels when toggle is off */
+    .wp-hide-labels .wp-label { display: none; }
 
     /* Center cap */
     .wp-cap-wrap { position: absolute; inset: 0; display: grid; place-items: center; pointer-events: none; }
@@ -319,12 +316,9 @@ Layout: spinner left, content/result right.
         "type": "range",
         "id": "spin_duration_ms",
         "label": "Spin duration (ms)",
-        "min": 300,
-        "max": 5000,
-        "step": 100,
-        "default": 2200,
-        "unit": "ms"
+        "min": 300, "max": 5000, "step": 100, "default": 2200, "unit": "ms"
       },
+      { "type": "checkbox", "id": "show_labels_on_wheel", "label": "Show labels on wheel", "default": true },
       { "type": "color", "id": "bg_color", "label": "Background color", "default": "#ffffff" },
       { "type": "color", "id": "text_color", "label": "Text color", "default": "#1f2937" },
       { "type": "color", "id": "accent_color", "label": "Accent color (buttons/pointer)", "default": "#1E88E5" }
@@ -356,5 +350,6 @@ Layout: spinner left, content/result right.
   }
   {% endschema %}
 </section>
+
 
 
