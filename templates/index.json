@@ -264,6 +264,7 @@
         "option_EBGAkx",
         "option_Lr6bba"
       ],
+      "disabled": true,
       "name": "Spinning Wheel",
       "settings": {
         "heading": "What should you choose?",
