@@ -221,6 +221,19 @@
       "type": "how-it-works-timeline",
       "disabled": true,
       "settings": {}
+    },
+    "spinning_wheel_WzTd6i": {
+      "type": "spinning-wheel",
+      "name": "Spinning Wheel",
+      "settings": {
+        "main_heading": "Spin the Wheel!",
+        "subheading": "Try your luck and win something!",
+        "option_1_label": "Read-a-thon",
+        "option_2_label": "Bake-a-thon",
+        "option_3_label": "Draw-a-thon",
+        "option_4_label": "Run-a-thon",
+        "option_5_label": "Skate-a-thon"
+      }
     }
   },
   "order": [
@@ -229,6 +242,7 @@
     "content_blocks_nfcJij",
     "image_with_text_w6aRem",
     "reviews_czKQgj",
-    "how-it-works-timeline"
+    "how-it-works-timeline",
+    "spinning_wheel_WzTd6i"
   ]
 }
