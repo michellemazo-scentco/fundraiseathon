@@ -364,8 +364,22 @@ Wheel with right-side pointer; labels curved (up to 2 lines), outward-facing.
       pointer-events: none; /* avoid capturing clicks */
     }
 
-    .wp-wheel-wrapper{ overflow: visible; position: relative; }
-.wp-shadow-plate, .wp-wheel{ overflow: visible; }
+    .wp-pointer-svg{
+        position: absolute;
+        inset: 0 auto 0 auto;           /* allow custom sizing below */
+        width: calc(var(--wp-pointer-size, 28px));      /* triangle width */
+        height: calc(var(--wp-pointer-size, 28px) * 1.2);/* visual height ~ 1.2x */
+        right: calc(0px - (var(--wp-pointer-offset, 0px)));
+        top: 50%; transform: translateY(-50%);
+        z-index: 100; pointer-events: none; display: none; /* default off */
+    }
+    .wp-pointer-svg polygon{
+        fill: var(--wp-pointer-color, var(--wp-accent, #1E88E5));
+        filter: drop-shadow(0 2px 2px rgba(0,0,0,.25));
+    }
+    .wp-pointer.use-svg { border: 0; }              /* remove border triangle */
+    .wp-pointer.use-svg .wp-pointer-svg{ display: block; }
+
 
     /* Rim */
     .wp-rim { fill: none; stroke: #E6F0FF; stroke-width: 8; }
