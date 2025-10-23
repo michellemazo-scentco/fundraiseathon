@@ -188,30 +188,36 @@ Interactive wheel: right-side pointer, blue wedges, centered radial labels.
 
           // Label centered on slice mid-angle, near hub, auto-upright
           // Label centered on slice mid-angle, near hub, stays upright
-const mid = start + sliceAngle / 2;
+            // Label: centered in the slice AND aligned with the inward point (slice mid-ray)
+            const mid = start + sliceAngle / 2;
 
-// clamp label radius
-const minR = CAP_R + PAD_IN;
-const maxR = radius - PAD_OUT;
-const rLabel = Math.max(minR, Math.min(labelRadiusPx, maxR));
+            // radius centered between inner vertex and outer rim (with clearances)
+            const rLabel = centralLabelRadius();
 
-// auto-upright: flip labels on the left side
-const flip = mid > 90 && mid < 270;
-const rotation = flip ? mid + 180 : mid;
-const x = flip ? -rLabel : rLabel;
+            // auto-upright (flip left side so text reads upright)
+            const flip = mid > 90 && mid < 270;
+            const rotation = flip ? mid + 180 : mid;
+            const x = flip ? -rLabel : rLabel;
 
-const text = mk('text');
-text.setAttribute('class', 'wp-label');
-text.setAttribute('text-anchor', 'middle');           // horizontal centering
-text.setAttribute('alignment-baseline', 'middle');    // vertical centering (fallback)
-text.setAttribute('dominant-baseline', 'middle');     // vertical centering (SVG)
-text.setAttribute('dy', '.35em');                     // cross-browser tweak
-text.setAttribute('transform', `rotate(${rotation})`);
-text.setAttribute('x', String(x));
-text.setAttribute('y', '0');
-// text.setAttribute('font-size', String(baseFontPx)); // optional: force size
-text.textContent = options[i].label;
-svg.appendChild(text);
+            // estimate a font size that fits within the slice arc at rLabel
+            const arcLen = (sliceAngle * DEG2RAD) * rLabel;        // available length along arc
+            const approxCharWidth = 0.6;                            // rough em-to-px width factor
+            const maxPxByArc = Math.max(10, Math.floor(arcLen / (Math.max(1, options[i].label.length) * approxCharWidth)));
+            const fontPx = Math.min(baseFontPx, maxPxByArc);        // clamp to requested slider value
+
+            const text = mk('text');
+            text.setAttribute('class', 'wp-label');
+            text.setAttribute('text-anchor', 'middle');           // center on the ray
+            text.setAttribute('alignment-baseline', 'middle');
+            text.setAttribute('dominant-baseline', 'middle');
+            text.setAttribute('dy', '.35em');                      // cross-browser vertical tweak
+            text.setAttribute('transform', `rotate(${rotation})`);
+            text.setAttribute('x', String(x));
+            text.setAttribute('y', '0');
+            text.setAttribute('font-size', String(fontPx));
+            text.textContent = options[i].label;
+            svg.appendChild(text);
+
 
         }
       }
