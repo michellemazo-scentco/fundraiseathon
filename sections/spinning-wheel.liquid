@@ -1,0 +1,220 @@
+{% schema %}
+{
+  "name": "Spinning Wheel",
+  "settings": [
+    {
+      "type": "text",
+      "id": "main_heading",
+      "label": "Main Heading",
+      "default": "Spin the Wheel!"
+    },
+    {
+      "type": "text",
+      "id": "subheading",
+      "label": "Subheading",
+      "default": "Try your luck and win something!"
+    },
+    {
+      "type": "header",
+      "content": "Wheel Options"
+    },
+    {
+      "type": "text",
+      "id": "option_1_label",
+      "label": "Option 1 Label",
+      "default": "Option 1"
+    },
+    {
+      "type": "image_picker",
+      "id": "option_1_image",
+      "label": "Option 1 Image"
+    },
+    {
+      "type": "text",
+      "id": "option_2_label",
+      "label": "Option 2 Label",
+      "default": "Option 2"
+    },
+    {
+      "type": "image_picker",
+      "id": "option_2_image",
+      "label": "Option 2 Image"
+    },
+    {
+      "type": "text",
+      "id": "option_3_label",
+      "label": "Option 3 Label",
+      "default": "Option 3"
+    },
+    {
+      "type": "image_picker",
+      "id": "option_3_image",
+      "label": "Option 3 Image"
+    },
+    {
+      "type": "text",
+      "id": "option_4_label",
+      "label": "Option 4 Label",
+      "default": "Option 4"
+    },
+    {
+      "type": "image_picker",
+      "id": "option_4_image",
+      "label": "Option 4 Image"
+    },
+    {
+      "type": "text",
+      "id": "option_5_label",
+      "label": "Option 5 Label",
+      "default": "Option 5"
+    },
+    {
+      "type": "image_picker",
+      "id": "option_5_image",
+      "label": "Option 5 Image"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Spinning Wheel"
+    }
+  ]
+}
+{% endschema %}
+
+<div class="spinning-wheel-section">
+  <div class="wheel-left">
+    <div class="wheel-container" id="wheel">
+      {% assign labels = '' | split: '' %}
+      {% assign labels = labels | push: section.settings.option_1_label %}
+      {% assign labels = labels | push: section.settings.option_2_label %}
+      {% assign labels = labels | push: section.settings.option_3_label %}
+      {% assign labels = labels | push: section.settings.option_4_label %}
+      {% assign labels = labels | push: section.settings.option_5_label %}
+
+      {% for label in labels %}
+        <div class="wheel-segment" style="transform: rotate({{ forloop.index0 | times: 72 }}deg)">
+          <span>{{ label }}</span>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+
+  <div class="wheel-content">
+    <h2 id="wheel-header">{{ section.settings.main_heading }}</h2>
+    <p id="wheel-subheader">{{ section.settings.subheading }}</p>
+
+    <div id="wheel-result-image" class="result-image hidden"></div>
+
+    <button id="spin-button">Spin</button>
+  </div>
+</div>
+
+<style>
+.spinning-wheel-section {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 2rem;
+  padding: 2rem;
+}
+.wheel-left {
+  width: 300px;
+  height: 300px;
+  position: relative;
+}
+.wheel-container {
+  width: 100%;
+  height: 100%;
+  border: 5px solid #333;
+  border-radius: 50%;
+  position: relative;
+  transition: transform 4s cubic-bezier(0.33, 1, 0.68, 1);
+}
+.wheel-segment {
+  position: absolute;
+  width: 50%;
+  height: 50%;
+  top: 50%;
+  left: 50%;
+  transform-origin: 0% 0%;
+}
+.wheel-segment span {
+  position: absolute;
+  left: 10px;
+  top: 10px;
+  font-size: 0.8rem;
+}
+.wheel-content {
+  flex: 1;
+}
+#wheel-result-image {
+  margin-top: 1rem;
+  width: 200px;
+  height: 200px;
+  background-size: cover;
+  background-position: center;
+}
+.hidden {
+  display: none;
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+  const button = document.getElementById('spin-button');
+  const wheel = document.getElementById('wheel');
+  const header = document.getElementById('wheel-header');
+  const resultImage = document.getElementById('wheel-result-image');
+
+  const options = [
+    {
+      label: {{ section.settings.option_1_label | json }},
+      image: {{ section.settings.option_1_image | image_url: width: 500 | json }}
+    },
+    {
+      label: {{ section.settings.option_2_label | json }},
+      image: {{ section.settings.option_2_image | image_url: width: 500 | json }}
+    },
+    {
+      label: {{ section.settings.option_3_label | json }},
+      image: {{ section.settings.option_3_image | image_url: width: 500 | json }}
+    },
+    {
+      label: {{ section.settings.option_4_label | json }},
+      image: {{ section.settings.option_4_image | image_url: width: 500 | json }}
+    },
+    {
+      label: {{ section.settings.option_5_label | json }},
+      image: {{ section.settings.option_5_image | image_url: width: 500 | json }}
+    }
+  ];
+
+  let spinning = false;
+  let hasSpun = false;
+
+  button.addEventListener('click', () => {
+    if (spinning || hasSpun) return;
+
+    spinning = true;
+    const selectedIndex = Math.floor(Math.random() * options.length);
+    const spins = 5;
+    const anglePerSegment = 360 / options.length;
+    const angle = 360 * spins + (selectedIndex * anglePerSegment) + anglePerSegment / 2;
+
+    wheel.style.transform = `rotate(${angle}deg)`;
+
+    setTimeout(() => {
+      spinning = false;
+      hasSpun = true;
+
+      const selected = options[selectedIndex];
+
+      header.textContent = `You got: ${selected.label}`;
+      resultImage.style.backgroundImage = `url(${selected.image})`;
+      resultImage.classList.remove('hidden');
+      button.textContent = "Respin";
+    }, 4000);
+  });
+});
+</script>
