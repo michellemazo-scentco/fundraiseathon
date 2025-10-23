@@ -1,7 +1,6 @@
 {% comment %}
 File: sections/wheel-picker.liquid
-Wheel with left-pointing wedge pointer, curved labels (2 lines), bounce + confetti.
-Right side shows ONE heading on result; image card matches wheel size.
+Wheel with left-pointing wedge pointer, curved labels (up to 2 lines), bounce + confetti on stop.
 {% endcomment %}
 
 <section id="wheel-picker-{{ section.id }}" class="wheel-picker-section {% unless section.settings.show_labels_on_wheel %}wp-hide-labels{% endunless %}" style="
@@ -69,12 +68,21 @@ Right side shows ONE heading on result; image card matches wheel size.
 
       <!-- RIGHT: Content -->
       <div class="wp-right">
-        <!-- Initial panel: no header/subheader, just a button -->
+        <header class="wp-header">
+          <h2 class="wp-heading" data-base-heading="{{ section.settings.heading | escape }}">
+            {{ section.settings.heading | escape }}
+          </h2>
+          {% if section.settings.subheading != blank %}
+            <p class="wp-subheading">{{ section.settings.subheading | escape }}</p>
+          {% endif %}
+        </header>
+
+        <!-- Initial panel -->
         <div class="wp-panel wp-panel-initial">
           <button type="button" class="wp-btn wp-btn-primary" data-role="spin">{{ section.settings.spin_label | escape }}</button>
         </div>
 
-        <!-- Result panel: SINGLE heading + image card sized to wheel + respin -->
+        <!-- Result panel -->
         <div class="wp-panel wp-panel-result" hidden>
           <h3 class="wp-result-heading"></h3>
           <div class="wp-result-card">
@@ -108,13 +116,14 @@ Right side shows ONE heading on result; image card matches wheel size.
       const template = {{ section.settings.result_heading_template | json }};
 
       const svg = root.querySelector('.wp-wheel');
+      const headingEl = root.querySelector('.wp-heading');
+      const baseHeading = headingEl.dataset.baseHeading || headingEl.textContent.trim();
       const live = root.querySelector('#wp-live-{{ section.id }}');
 
       const panelInitial = root.querySelector('.wp-panel-initial');
       const panelResult  = root.querySelector('.wp-panel-result');
       const resultHeading = root.querySelector('.wp-result-heading');
       const resultImg = root.querySelector('.wp-result-img');
-      const resultCard = root.querySelector('.wp-result-card');
       const btnSpin = root.querySelector('[data-role="spin"]');
       const btnRespin = root.querySelector('[data-role="respin"]');
 
@@ -259,6 +268,7 @@ Right side shows ONE heading on result; image card matches wheel size.
         if (!canvas) return;
         const dpr = Math.max(1, Math.min(2, window.devicePixelRatio || 1));
         const rectCSS = canvas.getBoundingClientRect();
+        // set size each time (wheel size may be responsive)
         canvas.width  = Math.floor(rectCSS.width * dpr);
         canvas.height = Math.floor(rectCSS.height * dpr);
         const ctx = canvas.getContext('2d');
@@ -324,20 +334,6 @@ Right side shows ONE heading on result; image card matches wheel size.
       }
       // -------------------------------------
 
-      // ---- Keep result card same size as wheel ----
-      function syncResultCardSize() {
-        const wheelWrap = root.querySelector('.wp-wheel-wrapper');
-        if (!wheelWrap || !resultCard) return;
-        const w = Math.round(wheelWrap.getBoundingClientRect().width);
-        // lock the card to a square of the same width as wheel
-        resultCard.style.width = w + 'px';
-        resultCard.style.height = w + 'px';
-      }
-      // initial sync + on resize
-      syncResultCardSize();
-      window.addEventListener('resize', syncResultCardSize);
-      // --------------------------------------------
-
       // Spin logic
       let spinning = false;
       let currentRotation = 0;
@@ -358,6 +354,7 @@ Right side shows ONE heading on result; image card matches wheel size.
         if (spinning || n < 2) return;
         spinning = true;
 
+        headingEl.textContent = baseHeading;
         setPanels(false);
         btnSpin.setAttribute('aria-busy', 'true');
         btnSpin.disabled = true;
@@ -379,12 +376,12 @@ Right side shows ONE heading on result; image card matches wheel size.
 
           const idx = indexFromRotation(currentRotation);
           const chosen = options[idx];
-          const line = (template && template.includes('{word}'))
+          const newHeading = (template && template.includes('{word}'))
             ? template.replace('{word}', chosen.label)
             : `You should choose ${chosen.label}`;
 
-          // single heading only
-          resultHeading.textContent = line;
+          headingEl.textContent = newHeading;
+          resultHeading.textContent = newHeading;
 
           if (chosen.image) {
             resultImg.src = chosen.image;
@@ -394,18 +391,17 @@ Right side shows ONE heading on result; image card matches wheel size.
             resultImg.alt = '';
           }
 
-          // bounce + confetti
+          // Pointer bounce
           const pointerSvg = root.querySelector('.wp-pointer-svg');
           if (pointerSvg) {
-            pointerSvg.classList.remove('wp-bounce');
-            void pointerSvg.offsetWidth;
+            pointerSvg.classList.remove('wp-bounce'); // restart if rapid respin
+            void pointerSvg.offsetWidth;              // reflow to re-trigger
             pointerSvg.classList.add('wp-bounce');
           }
+
+          // Confetti burst over the wheel wrapper
           const wrapper = root.querySelector('.wp-wheel-wrapper');
           if (wrapper) wpConfetti(wrapper, { count: 140 });
-
-          // ensure the card matches wheel size now too (in case of responsive change)
-          syncResultCardSize();
 
           setPanels(true);
           if (live) live.textContent = `Selected ${chosen.label}`;
@@ -504,21 +500,16 @@ Right side shows ONE heading on result; image card matches wheel size.
     }
     .wp-hide-labels .wp-label { display: none; }
 
+    /* Center cap */
+    .wp-cap-wrap { position: absolute; inset: 0; display: grid; place-items: center; pointer-events: none; }
+    .wp-cap { width: 36%; height: 36%; filter: drop-shadow(0 6px 20px rgba(0,0,0,.12)); }
+
     /* RIGHT */
     .wp-right { max-width: 560px; margin: 0 auto; }
-    .wp-panel { margin-top: 0; } /* tighter now we removed the header */
-    .wp-result-heading { font-size: clamp(1.25rem, 2.2vw, 2rem); margin: 0 0 .6rem 0; }
-
-    /* Result card mirrors wheel size via JS; keep square shape & cover */
-    .wp-result-card {
-      width: 100%; height: auto;
-      border-radius: 14px; overflow: hidden;
-      box-shadow: 0 6px 20px rgba(0,0,0,.12);
-      aspect-ratio: 1 / 1; /* fallback if JS didn't run yet */
-      max-width: 100%;
-    }
-    .wp-result-img { width: 100%; height: 100%; object-fit: cover; display: block; }
-
+    .wp-header { margin-bottom: .75rem; }
+    .wp-heading { font-size: clamp(1.5rem, 2.5vw, 2.25rem); margin: 0; }
+    .wp-subheading { margin: .25rem 0 0; opacity: .85; }
+    .wp-panel { margin-top: 1rem; }
     .wp-btn {
       border: 0; padding: .8rem 1.4rem; border-radius: 999px; font-weight: 600;
       transition: transform .12s ease, opacity .2s ease; cursor: pointer;
@@ -527,6 +518,9 @@ Right side shows ONE heading on result; image card matches wheel size.
     .wp-btn:active { transform: scale(.98); }
     .wp-btn-primary { background: var(--wp-accent); color: #fff; }
     .wp-btn-secondary { background: transparent; color: var(--wp-accent); outline: 2px solid var(--wp-accent); }
+
+    .wp-result-card { margin: .75rem 0 1rem; border-radius: 14px; overflow: hidden; box-shadow: 0 6px 20px rgba(0,0,0,.12); }
+    .wp-result-img { width: 100%; height: auto; display: block; }
 
     .visually-hidden {
       position: absolute!important; width: 1px; height: 1px; padding: 0; margin: -1px;
@@ -540,6 +534,8 @@ Right side shows ONE heading on result; image card matches wheel size.
     "tag": "section",
     "class": "shopify-section--wheel-picker",
     "settings": [
+      { "type": "text", "id": "heading", "label": "Heading", "default": "What should you choose?" },
+      { "type": "text", "id": "subheading", "label": "Subheading", "default": "Spin the wheel to decide." },
       { "type": "text", "id": "spin_label", "label": "Spin button label", "default": "Spin" },
       { "type": "text", "id": "respin_label", "label": "Respin button label", "default": "Respin" },
       { "type": "text", "id": "result_heading_template", "label": "Result heading template (use {word})", "default": "You should choose {word}" },
