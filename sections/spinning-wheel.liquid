@@ -7,8 +7,9 @@ Radial labels, full circle, top triangle picker touching rim.
   --wp-bg: {{ section.settings.bg_color }};
   --wp-text: {{ section.settings.text_color }};
   --wp-accent: {{ section.settings.accent_color }};
-   --wp-pointer-size: {{ section.settings.pointer_size }}px;
+  --wp-pointer-size: {{ section.settings.pointer_size }}px;
   --wp-pointer-offset: {{ section.settings.pointer_offset }}px;
+  --wp-label-radius: {{ section.settings.label_radius | default: 42 }}px;
 ">
   <div class="wp-container">
     <div class="wp-grid">
@@ -110,6 +111,7 @@ Radial labels, full circle, top triangle picker touching rim.
       const resultImg = root.querySelector('.wp-result-img');
       const btnSpin = root.querySelector('[data-role="spin"]');
       const btnRespin = root.querySelector('[data-role="respin"]');
+      const labelRadiusPx = parseFloat(getComputedStyle(root).getPropertyValue('--wp-label-radius')) || 42;
 
       if (n < 2) { btnSpin.disabled = true; btnSpin.textContent = 'Add at least 2 options'; }
 
@@ -149,18 +151,14 @@ Radial labels, full circle, top triangle picker touching rim.
           svg.insertBefore(path, svg.firstChild);
 
           // Radial label: start near center, extend outward along the slice mid-angle
-          // inside for (let i = 0; i < n; i++) { ... }
-            const mid = start + sliceAngle / 2;
-
-            // Centered radius between inner text start and near the rim
-            const labelRadius = (34 + (radius - 18)) / 2; // 34 = inner start; 18 = rim padding
+          const mid = start + sliceAngle / 2;
 
             const text = mk('text');
             text.setAttribute('class', 'wp-label');
-            text.setAttribute('text-anchor', 'start');
+            text.setAttribute('text-anchor', 'middle');          // center the word on the ray
             text.setAttribute('dominant-baseline', 'middle');
-            text.setAttribute('transform', `rotate(${mid})`);
-            text.setAttribute('x', String(labelRadius));
+            text.setAttribute('transform', `rotate(${mid})`);    // align to slice center angle
+            text.setAttribute('x', String(labelRadiusPx));       // close to middle circle
             text.setAttribute('y', '0');
             text.textContent = options[i].label;
             svg.appendChild(text);
