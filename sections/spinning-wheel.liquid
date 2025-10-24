@@ -1,8 +1,9 @@
 {% comment %}
 File: sections/wheel-picker.liquid
-- Header/subheader fade & collapse on result.
-- Result card: portrait (4:5), fixed size locked to wheel width on first reveal; image fits (contain).
-- Pointer bounce + confetti kept; curved 2-line labels.
+- Result card = same size as wheel (square) to prevent layout changes
+- Image soft fade-in on load
+- Header fades/collapses when showing result
+- Pointer bounce + confetti; curved 2-line labels
 {% endcomment %}
 
 <section id="wheel-picker-{{ section.id }}" class="wheel-picker-section {% unless section.settings.show_labels_on_wheel %}wp-hide-labels{% endunless %}" style="
@@ -320,32 +321,20 @@ File: sections/wheel-picker.liquid
       }
       // -------------------------------------
 
-      // ---- Portrait result card sizing (lock once) ----
-      let cardLocked = false;
-      function lockResultCardSize() {
-        if (cardLocked) return;
+      // ---- Result card sizing = same as wheel (square) ----
+      function syncResultCardSize() {
         const wheelWrap = root.querySelector('.wp-wheel-wrapper');
         if (!wheelWrap || !resultCard) return;
-        const w = Math.round(wheelWrap.getBoundingClientRect().width);
-        const h = Math.round(w * 1.25); // 4:5 portrait
+        const rect = wheelWrap.getBoundingClientRect();
+        const w = Math.round(rect.width);
+        const h = Math.round(rect.height); // same (square)
         resultCard.style.width  = w + 'px';
         resultCard.style.height = h + 'px';
-        cardLocked = true; // do not change on resize
       }
-      // Pre-set a reasonable size on load (in case result opens immediately)
-      lockResultCardSize();
-      // --------------------------------------------------
-
-      // Spin logic
-      let spinning = false;
-      let currentRotation = 0;
-      const fullTurns = 6;
-
-      function indexFromRotation(rotDeg) {
-        const norm = ((rotDeg % 360) + 360) % 360;
-        const hitDeg = (POINTER_DEG - norm + 360) % 360;
-        return Math.floor(hitDeg / sliceAngle) % n;
-      }
+      // Initial sync and keep in sync on resize
+      syncResultCardSize();
+      window.addEventListener('resize', syncResultCardSize);
+      // -----------------------------------------------------
 
       // Fade/collapse header when showing result
       function setPanels(showResult) {
@@ -361,6 +350,17 @@ File: sections/wheel-picker.liquid
             headerEl.setAttribute('aria-hidden', 'false');
           }
         }
+      }
+
+      // Spin logic
+      let spinning = false;
+      let currentRotation = 0;
+      const fullTurns = 6;
+
+      function indexFromRotation(rotDeg) {
+        const norm = ((rotDeg % 360) + 360) % 360;
+        const hitDeg = (POINTER_DEG - norm + 360) % 360;
+        return Math.floor(hitDeg / sliceAngle) % n;
       }
 
       function spinOnce() {
@@ -395,7 +395,14 @@ File: sections/wheel-picker.liquid
           // Only result heading
           resultHeading.textContent = newHeading;
 
+          // Soft image fade: reset to transparent until the new image loads
+          resultImg.classList.remove('wp-img-fade-in');
           if (chosen.image) {
+            const onLoad = () => {
+              resultImg.classList.add('wp-img-fade-in');
+              resultImg.removeEventListener('load', onLoad);
+            };
+            resultImg.addEventListener('load', onLoad, { once: true });
             resultImg.src = chosen.image;
             resultImg.alt = chosen.imageAlt || chosen.label;
           } else {
@@ -403,8 +410,8 @@ File: sections/wheel-picker.liquid
             resultImg.alt = '';
           }
 
-          // Lock portrait card size now (based on wheel) and keep fixed
-          lockResultCardSize();
+          // Ensure the card still matches wheel size (responsive cases)
+          syncResultCardSize();
 
           // Pointer bounce
           const pointerSvg = root.querySelector('.wp-pointer-svg');
@@ -541,15 +548,14 @@ File: sections/wheel-picker.liquid
 
     .wp-panel { margin-top: 1rem; }
 
-    /* Portrait result card: fixed, image fits */
+    /* Result card: same size as wheel (square); image fades in and fits */
     .wp-result-card {
       border-radius: 14px;
       overflow: hidden;
       box-shadow: 0 6px 20px rgba(0,0,0,.12);
-      aspect-ratio: 4 / 5;     /* fallback until JS lock runs */
-      width: 100%;
-      max-width: 100%;
+      width: 100%;           /* JS sets exact px width/height = wheel */
       height: auto;
+      aspect-ratio: 1/1;     /* fallback until JS sync runs */
       background: #fff;
       display: grid;
       place-items: center;
@@ -557,9 +563,12 @@ File: sections/wheel-picker.liquid
     .wp-result-img {
       width: 100%;
       height: 100%;
-      object-fit: contain;     /* fit inside without distortion */
+      object-fit: contain;
       display: block;
+      opacity: 0;            /* start hidden for fade */
+      transition: opacity .35s ease;
     }
+    .wp-result-img.wp-img-fade-in { opacity: 1; }
 
     .wp-btn {
       border: 0; padding: .8rem 1.4rem; border-radius: 999px; font-weight: 600;
