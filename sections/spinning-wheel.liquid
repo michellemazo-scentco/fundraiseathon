@@ -325,7 +325,7 @@ File: sections/wheel-picker.liquid
         step();
       }
       // -------------------------------------
-
+      /*
       // ---- Result card sizing = same as wheel (square) ----
       function syncResultCardSize() {
         const wheelWrap = root.querySelector('.wp-wheel-wrapper');
@@ -339,6 +339,7 @@ File: sections/wheel-picker.liquid
       syncResultCardSize();
       window.addEventListener('resize', syncResultCardSize);
       // -----------------------------------------------------
+      */
 
       // Panels (header stays; no fade/hide)
       function setPanels(showResult) {
@@ -408,7 +409,7 @@ File: sections/wheel-picker.liquid
           }
 
           // Ensure sizes are synced at the moment of reveal
-          syncResultCardSize();
+          //syncResultCardSize();
 
           // Pointer bounce
           const pointerSvg = root.querySelector('.wp-pointer-svg');
