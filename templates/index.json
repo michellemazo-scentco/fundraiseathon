@@ -98,6 +98,70 @@
         "main_heading": "How it Works"
       }
     },
+    "spinning_wheel_WzTd6i": {
+      "type": "spinning-wheel",
+      "blocks": {
+        "option_bWYPzn": {
+          "type": "option",
+          "settings": {
+            "label": "Read-a-thon",
+            "image": "shopify://shop_images/Asset_16.png"
+          }
+        },
+        "option_PX3wqx": {
+          "type": "option",
+          "settings": {
+            "label": "Bake-a-thon",
+            "image": "shopify://shop_images/Asset_5_4x_2cb3085a-80a2-4b39-8485-9448bf004591.png"
+          }
+        },
+        "option_cyYCXg": {
+          "type": "option",
+          "settings": {
+            "label": "Skate-a-thon",
+            "image": "shopify://shop_images/Asset_8_4x_0c04f9a2-fc58-47fd-af30-e87f969d706c.png"
+          }
+        },
+        "option_EBGAkx": {
+          "type": "option",
+          "settings": {
+            "label": "Run-a-thon",
+            "image": "shopify://shop_images/Asset_15.png"
+          }
+        },
+        "option_Lr6bba": {
+          "type": "option",
+          "settings": {
+            "label": "Draw-a-thon",
+            "image": "shopify://shop_images/Asset_4_4x_81dc3960-01dd-4cd0-af0d-e33b1b697130.png"
+          }
+        }
+      },
+      "block_order": [
+        "option_bWYPzn",
+        "option_PX3wqx",
+        "option_cyYCXg",
+        "option_EBGAkx",
+        "option_Lr6bba"
+      ],
+      "name": "Spinning Wheel",
+      "settings": {
+        "heading": "Choose your next fundraiser!",
+        "subheading": "Spin the wheel to decide.",
+        "spin_label": "Spin",
+        "respin_label": "Respin",
+        "result_heading_template": "Time to run a {word}!",
+        "spin_duration_ms": 2200,
+        "show_labels_on_wheel": true,
+        "bg_color": "#ffffff",
+        "text_color": "#1f2443",
+        "accent_color": "#e1831b",
+        "pointer_color": "#1f2443",
+        "pointer_size": 20,
+        "pointer_offset": -33,
+        "label_font_size": 12
+      }
+    },
     "image_with_text_w6aRem": {
       "type": "image-with-text",
       "blocks": {
@@ -221,79 +285,15 @@
       "type": "how-it-works-timeline",
       "disabled": true,
       "settings": {}
-    },
-    "spinning_wheel_WzTd6i": {
-      "type": "spinning-wheel",
-      "blocks": {
-        "option_bWYPzn": {
-          "type": "option",
-          "settings": {
-            "label": "Read-a-thon",
-            "image": "shopify://shop_images/Asset_16.png"
-          }
-        },
-        "option_PX3wqx": {
-          "type": "option",
-          "settings": {
-            "label": "Bake-a-thon",
-            "image": "shopify://shop_images/Asset_5_4x_2cb3085a-80a2-4b39-8485-9448bf004591.png"
-          }
-        },
-        "option_cyYCXg": {
-          "type": "option",
-          "settings": {
-            "label": "Skate-a-thon",
-            "image": "shopify://shop_images/Asset_8_4x_0c04f9a2-fc58-47fd-af30-e87f969d706c.png"
-          }
-        },
-        "option_EBGAkx": {
-          "type": "option",
-          "settings": {
-            "label": "Run-a-thon",
-            "image": "shopify://shop_images/Asset_15.png"
-          }
-        },
-        "option_Lr6bba": {
-          "type": "option",
-          "settings": {
-            "label": "Draw-a-thon",
-            "image": "shopify://shop_images/Asset_4_4x_81dc3960-01dd-4cd0-af0d-e33b1b697130.png"
-          }
-        }
-      },
-      "block_order": [
-        "option_bWYPzn",
-        "option_PX3wqx",
-        "option_cyYCXg",
-        "option_EBGAkx",
-        "option_Lr6bba"
-      ],
-      "name": "Spinning Wheel",
-      "settings": {
-        "heading": "Choose your next fundraiser!",
-        "subheading": "Spin the wheel to decide.",
-        "spin_label": "Spin",
-        "respin_label": "Respin",
-        "result_heading_template": "Time to run a {word}!",
-        "spin_duration_ms": 2200,
-        "show_labels_on_wheel": true,
-        "bg_color": "#ffffff",
-        "text_color": "#1f2443",
-        "accent_color": "#e1831b",
-        "pointer_color": "#1f2443",
-        "pointer_size": 20,
-        "pointer_offset": -33,
-        "label_font_size": 12
-      }
     }
   },
   "order": [
     "hero_THbkFB",
     "rich_text_image_6z6gBx",
     "content_blocks_nfcJij",
+    "spinning_wheel_WzTd6i",
     "image_with_text_w6aRem",
     "reviews_czKQgj",
-    "how-it-works-timeline",
-    "spinning_wheel_WzTd6i"
+    "how-it-works-timeline"
   ]
 }
