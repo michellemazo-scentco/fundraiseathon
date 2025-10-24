@@ -1,7 +1,8 @@
 {% comment %}
 File: sections/wheel-picker.liquid
-One result heading only (no top header/subheader while showing result).
-Pointer bounce + confetti kept. Curved 2-line labels.
+- Header/subheader fade & collapse on result.
+- Result card: portrait (4:5), fixed size locked to wheel width on first reveal; image fits (contain).
+- Pointer bounce + confetti kept; curved 2-line labels.
 {% endcomment %}
 
 <section id="wheel-picker-{{ section.id }}" class="wheel-picker-section {% unless section.settings.show_labels_on_wheel %}wp-hide-labels{% endunless %}" style="
@@ -115,14 +116,14 @@ Pointer bounce + confetti kept. Curved 2-line labels.
       const template = {{ section.settings.result_heading_template | json }};
 
       const svg = root.querySelector('.wp-wheel');
-      const headerEl = root.querySelector('.wp-header'); // hide/show as panels switch
-      const headingEl = root.querySelector('.wp-heading');
+      const headerEl = root.querySelector('.wp-header'); // fade/collapse
       const live = root.querySelector('#wp-live-{{ section.id }}');
 
       const panelInitial = root.querySelector('.wp-panel-initial');
       const panelResult  = root.querySelector('.wp-panel-result');
       const resultHeading = root.querySelector('.wp-result-heading');
       const resultImg = root.querySelector('.wp-result-img');
+      const resultCard = root.querySelector('.wp-result-card');
       const btnSpin = root.querySelector('[data-role="spin"]');
       const btnRespin = root.querySelector('[data-role="respin"]');
 
@@ -319,6 +320,22 @@ Pointer bounce + confetti kept. Curved 2-line labels.
       }
       // -------------------------------------
 
+      // ---- Portrait result card sizing (lock once) ----
+      let cardLocked = false;
+      function lockResultCardSize() {
+        if (cardLocked) return;
+        const wheelWrap = root.querySelector('.wp-wheel-wrapper');
+        if (!wheelWrap || !resultCard) return;
+        const w = Math.round(wheelWrap.getBoundingClientRect().width);
+        const h = Math.round(w * 1.25); // 4:5 portrait
+        resultCard.style.width  = w + 'px';
+        resultCard.style.height = h + 'px';
+        cardLocked = true; // do not change on resize
+      }
+      // Pre-set a reasonable size on load (in case result opens immediately)
+      lockResultCardSize();
+      // --------------------------------------------------
+
       // Spin logic
       let spinning = false;
       let currentRotation = 0;
@@ -330,14 +347,19 @@ Pointer bounce + confetti kept. Curved 2-line labels.
         return Math.floor(hitDeg / sliceAngle) % n;
       }
 
-      // Hides header/subheader when result is visible
+      // Fade/collapse header when showing result
       function setPanels(showResult) {
         panelInitial.hidden = !!showResult;
         panelResult.hidden  = !showResult;
 
         if (headerEl) {
-          headerEl.hidden = !!showResult;
-          headerEl.setAttribute('aria-hidden', showResult ? 'true' : 'false');
+          if (showResult) {
+            headerEl.classList.add('wp-header--hidden');
+            headerEl.setAttribute('aria-hidden', 'true');
+          } else {
+            headerEl.classList.remove('wp-header--hidden');
+            headerEl.setAttribute('aria-hidden', 'false');
+          }
         }
       }
 
@@ -370,7 +392,7 @@ Pointer bounce + confetti kept. Curved 2-line labels.
             ? template.replace('{word}', chosen.label)
             : `You should choose ${chosen.label}`;
 
-          // Only update the RESULT heading; do NOT touch the top header
+          // Only result heading
           resultHeading.textContent = newHeading;
 
           if (chosen.image) {
@@ -380,6 +402,9 @@ Pointer bounce + confetti kept. Curved 2-line labels.
             resultImg.removeAttribute('src');
             resultImg.alt = '';
           }
+
+          // Lock portrait card size now (based on wheel) and keep fixed
+          lockResultCardSize();
 
           // Pointer bounce
           const pointerSvg = root.querySelector('.wp-pointer-svg');
@@ -496,14 +521,45 @@ Pointer bounce + confetti kept. Curved 2-line labels.
 
     /* RIGHT */
     .wp-right { max-width: 560px; margin: 0 auto; }
-    .wp-header { margin-bottom: .75rem; }
-    .wp-header[hidden]{ display:none; } /* collapse during result */
+
+    /* Header fade + collapse (no layout jump) */
+    .wp-header{
+      margin-bottom: .75rem;
+      transition: opacity .25s ease, max-height .25s ease, margin .25s ease;
+      max-height: 200px;
+      opacity: 1;
+    }
+    .wp-header--hidden{
+      opacity: 0;
+      max-height: 0;
+      margin: 0;
+      overflow: hidden;
+      pointer-events: none;
+    }
     .wp-heading { font-size: clamp(1.5rem, 2.5vw, 2.25rem); margin: 0; }
     .wp-subheading { margin: .25rem 0 0; opacity: .85; }
+
     .wp-panel { margin-top: 1rem; }
 
-    .wp-result-card { margin: .75rem 0 1rem; border-radius: 14px; overflow: hidden; box-shadow: 0 6px 20px rgba(0,0,0,.12); max-height: 300px;}
-    .wp-result-img { width: 80%; height: auto; display: block; object-fit: contain; }
+    /* Portrait result card: fixed, image fits */
+    .wp-result-card {
+      border-radius: 14px;
+      overflow: hidden;
+      box-shadow: 0 6px 20px rgba(0,0,0,.12);
+      aspect-ratio: 4 / 5;     /* fallback until JS lock runs */
+      width: 100%;
+      max-width: 100%;
+      height: auto;
+      background: #fff;
+      display: grid;
+      place-items: center;
+    }
+    .wp-result-img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;     /* fit inside without distortion */
+      display: block;
+    }
 
     .wp-btn {
       border: 0; padding: .8rem 1.4rem; border-radius: 999px; font-weight: 600;
