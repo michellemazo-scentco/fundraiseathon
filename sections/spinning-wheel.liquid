@@ -1,8 +1,7 @@
 {% comment %}
 File: sections/wheel-picker.liquid
-- Result card = same size as wheel (square) to prevent layout changes
-- Image soft fade-in on load
-- Header fades/collapses when showing result
+- One heading only: top header updates with result text (no fade/hide)
+- Result card = same size as wheel (square); image soft fade-in
 - Pointer bounce + confetti; curved 2-line labels
 {% endcomment %}
 
@@ -85,7 +84,7 @@ File: sections/wheel-picker.liquid
 
         <!-- Result panel -->
         <div class="wp-panel wp-panel-result" hidden>
-          <h3 class="wp-result-heading"></h3>
+          <!-- (removed result h3 to avoid duplicate headings) -->
           <div class="wp-result-card">
             <img class="wp-result-img" src="" alt="" loading="lazy">
           </div>
@@ -117,12 +116,13 @@ File: sections/wheel-picker.liquid
       const template = {{ section.settings.result_heading_template | json }};
 
       const svg = root.querySelector('.wp-wheel');
-      const headerEl = root.querySelector('.wp-header'); // fade/collapse
+      const headerEl = root.querySelector('.wp-header');
+      const headingEl = root.querySelector('.wp-heading');
+      const baseHeading = headingEl?.dataset.baseHeading || headingEl?.textContent.trim() || '';
       const live = root.querySelector('#wp-live-{{ section.id }}');
 
       const panelInitial = root.querySelector('.wp-panel-initial');
       const panelResult  = root.querySelector('.wp-panel-result');
-      const resultHeading = root.querySelector('.wp-result-heading');
       const resultImg = root.querySelector('.wp-result-img');
       const resultCard = root.querySelector('.wp-result-card');
       const btnSpin = root.querySelector('[data-role="spin"]');
@@ -192,6 +192,7 @@ File: sections/wheel-picker.liquid
           const start = i * sliceAngle;
           const end = (i + 1) * sliceAngle;
 
+          // Slice
           const path = mk('path');
           path.setAttribute('d', slicePath(start, end, radius));
           path.setAttribute('class', 'wp-slice');
@@ -200,6 +201,7 @@ File: sections/wheel-picker.liquid
           path.setAttribute('stroke-width', '1');
           svg.insertBefore(path, svg.firstChild);
 
+          // Two concentric arcs for 2 text lines
           const rOuterText = radius - PAD_OUT - labelClearanceSvg;
           const rInnerText = Math.max(CAP_R + PAD_IN + 10, rOuterText - 14);
 
@@ -217,8 +219,10 @@ File: sections/wheel-picker.liquid
           arc2.setAttribute('d', arcPath(rInnerText, arcStart, arcEnd));
           defs.appendChild(arc2);
 
+          // Split into up to 2 lines
           const [line1, line2] = splitTwoLines(options[i].label);
 
+          // Render line 1 on outer arc
           const text1 = mk('text');
           text1.setAttribute('class', 'wp-label');
           text1.setAttribute('text-anchor', 'middle');
@@ -232,6 +236,7 @@ File: sections/wheel-picker.liquid
           text1.appendChild(tp1);
           svg.appendChild(text1);
 
+          // Render line 2 (if any) on inner arc
           if (line2) {
             const text2 = mk('text');
             text2.setAttribute('class', 'wp-label');
@@ -331,25 +336,14 @@ File: sections/wheel-picker.liquid
         resultCard.style.width  = w + 'px';
         resultCard.style.height = h + 'px';
       }
-      // Initial sync and keep in sync on resize
       syncResultCardSize();
       window.addEventListener('resize', syncResultCardSize);
       // -----------------------------------------------------
 
-      // Fade/collapse header when showing result
+      // Panels (header stays; no fade/hide)
       function setPanels(showResult) {
         panelInitial.hidden = !!showResult;
         panelResult.hidden  = !showResult;
-
-        if (headerEl) {
-          if (showResult) {
-            headerEl.classList.add('wp-header--hidden');
-            headerEl.setAttribute('aria-hidden', 'true');
-          } else {
-            headerEl.classList.remove('wp-header--hidden');
-            headerEl.setAttribute('aria-hidden', 'false');
-          }
-        }
       }
 
       // Spin logic
@@ -366,6 +360,9 @@ File: sections/wheel-picker.liquid
       function spinOnce() {
         if (spinning || n < 2) return;
         spinning = true;
+
+        // Reset header text at spin start
+        if (headingEl) headingEl.textContent = baseHeading;
 
         setPanels(false);
         btnSpin.setAttribute('aria-busy', 'true');
@@ -392,10 +389,10 @@ File: sections/wheel-picker.liquid
             ? template.replace('{word}', chosen.label)
             : `You should choose ${chosen.label}`;
 
-          // Only result heading
-          resultHeading.textContent = newHeading;
+          // Update ONLY the top header (single heading UX)
+          if (headingEl) headingEl.textContent = newHeading;
 
-          // Soft image fade: reset to transparent until the new image loads
+          // Image soft fade-in
           resultImg.classList.remove('wp-img-fade-in');
           if (chosen.image) {
             const onLoad = () => {
@@ -410,7 +407,7 @@ File: sections/wheel-picker.liquid
             resultImg.alt = '';
           }
 
-          // Ensure the card still matches wheel size (responsive cases)
+          // Ensure sizes are synced at the moment of reveal
           syncResultCardSize();
 
           // Pointer bounce
@@ -438,7 +435,13 @@ File: sections/wheel-picker.liquid
       }
 
       btnSpin?.addEventListener('click', spinOnce);
-      btnRespin?.addEventListener('click', () => { setPanels(false); spinOnce(); });
+      btnRespin?.addEventListener('click', () => {
+        // restore initial view; keep header visible with base heading while spinning again
+        if (headingEl) headingEl.textContent = baseHeading;
+        setPanels(false);
+        syncResultCardSize();
+        spinOnce();
+      });
 
       const media = window.matchMedia('(prefers-reduced-motion: reduce)');
       if (media.matches) svg.style.transitionDuration = '300ms';
@@ -528,21 +531,7 @@ File: sections/wheel-picker.liquid
 
     /* RIGHT */
     .wp-right { max-width: 560px; margin: 0 auto; }
-
-    /* Header fade + collapse (no layout jump) */
-    .wp-header{
-      margin-bottom: .75rem;
-      transition: opacity .25s ease, max-height .25s ease, margin .25s ease;
-      max-height: 200px;
-      opacity: 1;
-    }
-    .wp-header--hidden{
-      opacity: 0;
-      max-height: 0;
-      margin: 0;
-      overflow: hidden;
-      pointer-events: none;
-    }
+    .wp-header { margin-bottom: .75rem; }
     .wp-heading { font-size: clamp(1.5rem, 2.5vw, 2.25rem); margin: 0; }
     .wp-subheading { margin: .25rem 0 0; opacity: .85; }
 
@@ -553,9 +542,9 @@ File: sections/wheel-picker.liquid
       border-radius: 14px;
       overflow: hidden;
       box-shadow: 0 6px 20px rgba(0,0,0,.12);
-      width: 100%;           /* JS sets exact px width/height = wheel */
+      width: 100%;         /* JS sets exact px width/height to match wheel */
       height: auto;
-      aspect-ratio: 1/1;     /* fallback until JS sync runs */
+      aspect-ratio: 1/1;   /* fallback until JS sync runs */
       background: #fff;
       display: grid;
       place-items: center;
@@ -565,7 +554,7 @@ File: sections/wheel-picker.liquid
       height: 100%;
       object-fit: contain;
       display: block;
-      opacity: 0;            /* start hidden for fade */
+      opacity: 0;          /* start hidden for fade */
       transition: opacity .35s ease;
     }
     .wp-result-img.wp-img-fade-in { opacity: 1; }
