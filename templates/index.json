@@ -270,11 +270,11 @@
       ],
       "name": "Spinning Wheel",
       "settings": {
-        "heading": "What should you choose?",
+        "heading": "Choose your next fundraiser!",
         "subheading": "Spin the wheel to decide.",
         "spin_label": "Spin",
         "respin_label": "Respin",
-        "result_heading_template": "You should choose {word}",
+        "result_heading_template": "Time to run a {word}!",
         "spin_duration_ms": 2200,
         "show_labels_on_wheel": true,
         "bg_color": "#ffffff",
