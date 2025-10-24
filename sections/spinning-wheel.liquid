@@ -540,6 +540,7 @@ File: sections/wheel-picker.liquid
 
     /* Result card: same size as wheel (square); image fades in and fits */
     .wp-result-card {
+      display: flex;
       border-radius: 14px;
       overflow: hidden;
       box-shadow: 0 6px 20px rgba(0,0,0,.12);
@@ -550,6 +551,8 @@ File: sections/wheel-picker.liquid
       display: grid;
       place-items: center;
       object-fit: contain;
+      align-items: center;
+      justify-content: center;
     }
     .wp-result-img {
       width: 80%;
