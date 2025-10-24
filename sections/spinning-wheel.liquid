@@ -508,6 +508,23 @@ File: sections/wheel-picker.liquid
       80%  { transform: translateX(-1px) scale(1.01); }
       100% { transform: translateX(0) scale(1); }
     }
+
+    .spinner-bottom-curve {
+    width: 100%;
+    line-height: 0;
+    background: #2877C2;
+    position: relative;
+    z-index: 0; 
+    overflow: visible;
+    }
+
+    .spinner-bottom-curve svg {
+    display: block;
+    width: 100%;
+    height: auto;
+    z-index: -1; 
+    }
+
     .wp-pointer-svg.wp-bounce { animation: wp-bounce 400ms cubic-bezier(.25,.75,.25,1) 1; }
 
     /* Rim */
