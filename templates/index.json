@@ -281,7 +281,7 @@
         "text_color": "#1f2937",
         "accent_color": "#111827",
         "pointer_color": "#1f2443",
-        "pointer_size": 24,
+        "pointer_size": 20,
         "pointer_offset": -20,
         "label_font_size": 12
       }
