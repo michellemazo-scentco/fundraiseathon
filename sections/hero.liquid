@@ -262,24 +262,21 @@
   transition: all 0.25s ease;
 }
 
-/* Responsive adjustments */
-@media (max-width: 992px) {
-  .hero-landing-container {
-    flex-direction: column;
-    text-align: center;
+@media (max-width: 600px) {
+  .hero-content h1,
+  .highlighted-text-wrapper {
+    font-size: 1.8rem;
   }
 
-  .hero-left, .hero-right {
-    flex: 1 1 100%;
-    position: static;
-  }
-
-  .hero-image-wrapper {
-    margin-top: 40px;
+  .hero-content p {
+    font-size: 1rem;
   }
 
   .hero-buttons .btn {
-    margin-bottom: 10px;
+    width: 100%;
+    max-width: 280px;
+    display: block;
+    margin: 10px auto;
   }
 }
 </style>
