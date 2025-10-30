@@ -1,9 +1,8 @@
 {% comment %}
 File: sections/wheel-picker.liquid
-Mobile flow states + desktop unchanged:
-- Mobile: initial(header+subheading+spin) → spinning(wheel only) → result(header updated + card + respin).
-- Desktop: wheel left, content right always visible.
-- Card size = wheel size; image fades in.
+- One heading only: top header updates with result text (no fade/hide)
+- Result card = same size as wheel (square); image soft fade-in
+- Pointer bounce + confetti; curved 2-line labels
 {% endcomment %}
 
 <section id="wheel-picker-{{ section.id }}" class="wheel-picker-section {% unless section.settings.show_labels_on_wheel %}wp-hide-labels{% endunless %}" style="
@@ -14,7 +13,7 @@ Mobile flow states + desktop unchanged:
   --wp-pointer-offset: {{ section.settings.pointer_offset }}px;
   --wp-pointer-color: {{ section.settings.pointer_color }};
   --wp-label-font: {{ section.settings.label_font_size | default: 14 }}px;
-" data-mobile-state="">
+">
   <div class="wp-container">
     <div class="wp-grid">
       <!-- LEFT: Wheel -->
@@ -33,6 +32,7 @@ Mobile flow states + desktop unchanged:
 
           <!-- Wheel (rotates) -->
           <svg class="wp-wheel" viewBox="-120 -120 240 240" role="img" aria-label="Selection wheel">
+            <!-- dynamic <defs>, slices & labels injected by JS -->
             <circle class="wp-rim" r="112"></circle>
             <circle class="wp-rim-glow" r="115"></circle>
           </svg>
@@ -84,6 +84,7 @@ Mobile flow states + desktop unchanged:
 
         <!-- Result panel -->
         <div class="wp-panel wp-panel-result" hidden>
+          <!-- (removed result h3 to avoid duplicate headings) -->
           <div class="wp-result-card">
             <img class="wp-result-img" src="" alt="" loading="lazy">
           </div>
@@ -115,12 +116,10 @@ Mobile flow states + desktop unchanged:
       const template = {{ section.settings.result_heading_template | json }};
 
       const svg = root.querySelector('.wp-wheel');
-      const wheelWrap = root.querySelector('.wp-wheel-wrapper');
-
       const headerEl = root.querySelector('.wp-header');
       const headingEl = root.querySelector('.wp-heading');
       const baseHeading = headingEl?.dataset.baseHeading || headingEl?.textContent.trim() || '';
-      const subheadingEl = root.querySelector('.wp-subheading');
+      const live = root.querySelector('#wp-live-{{ section.id }}');
 
       const panelInitial = root.querySelector('.wp-panel-initial');
       const panelResult  = root.querySelector('.wp-panel-result');
@@ -128,7 +127,6 @@ Mobile flow states + desktop unchanged:
       const resultCard = root.querySelector('.wp-result-card');
       const btnSpin = root.querySelector('[data-role="spin"]');
       const btnRespin = root.querySelector('[data-role="respin"]');
-      const live = root.querySelector('#wp-live-{{ section.id }}');
 
       const POINTER_DEG = 90; // pointer on the right
       const style = getComputedStyle(root);
@@ -148,20 +146,6 @@ Mobile flow states + desktop unchanged:
       const NS = 'http://www.w3.org/2000/svg';
       const mk = (tag) => document.createElementNS(NS, tag);
 
-      // --- mobile state helpers ---
-      const mql = window.matchMedia('(max-width: 768px)');
-      function isMobile() { return mql.matches; }
-      function setMobileState(state) {
-        // valid: "", "initial", "spinning", "result"
-        root.setAttribute('data-mobile-state', state || '');
-      }
-      function initState() {
-        setMobileState(isMobile() ? 'initial' : '');
-      }
-      mql.addEventListener?.('change', initState);
-      initState();
-
-      // --- geometry helpers ---
       function polar(r, deg) {
         const rad = (deg - 90) * Math.PI / 180;
         return { x: r * Math.cos(rad), y: r * Math.sin(rad) };
@@ -199,7 +183,6 @@ Mobile flow states + desktop unchanged:
       const pointerHeightPx = pointerSizePx * 1.2;
       const labelClearanceSvg = pxToSvgUnits(Math.max(8, pointerHeightPx * 0.55));
 
-      // --- build wheel with curved, 2-line labels ---
       function buildWheel() {
         svg.querySelectorAll('.wp-slice, .wp-label, defs').forEach(n => n.remove());
         const defs = mk('defs');
@@ -209,6 +192,7 @@ Mobile flow states + desktop unchanged:
           const start = i * sliceAngle;
           const end = (i + 1) * sliceAngle;
 
+          // Slice
           const path = mk('path');
           path.setAttribute('d', slicePath(start, end, radius));
           path.setAttribute('class', 'wp-slice');
@@ -217,6 +201,7 @@ Mobile flow states + desktop unchanged:
           path.setAttribute('stroke-width', '1');
           svg.insertBefore(path, svg.firstChild);
 
+          // Two concentric arcs for 2 text lines
           const rOuterText = radius - PAD_OUT - labelClearanceSvg;
           const rInnerText = Math.max(CAP_R + PAD_IN + 10, rOuterText - 14);
 
@@ -234,8 +219,10 @@ Mobile flow states + desktop unchanged:
           arc2.setAttribute('d', arcPath(rInnerText, arcStart, arcEnd));
           defs.appendChild(arc2);
 
+          // Split into up to 2 lines
           const [line1, line2] = splitTwoLines(options[i].label);
 
+          // Render line 1 on outer arc
           const text1 = mk('text');
           text1.setAttribute('class', 'wp-label');
           text1.setAttribute('text-anchor', 'middle');
@@ -249,6 +236,7 @@ Mobile flow states + desktop unchanged:
           text1.appendChild(tp1);
           svg.appendChild(text1);
 
+          // Render line 2 (if any) on inner arc
           if (line2) {
             const text2 = mk('text');
             text2.setAttribute('class', 'wp-label');
@@ -267,7 +255,7 @@ Mobile flow states + desktop unchanged:
       }
       buildWheel();
 
-      // ---- Confetti ----
+      // ---- Confetti utils ----
       function wpConfetti(rootEl, opts = {}) {
         const canvas = rootEl.querySelector('.wp-confetti');
         if (!canvas) return;
@@ -336,23 +324,24 @@ Mobile flow states + desktop unchanged:
         cancelAnimationFrame(rafId);
         step();
       }
-
+      // -------------------------------------
+      /*
       // ---- Result card sizing = same as wheel (square) ----
       function syncResultCardSize() {
+        const wheelWrap = root.querySelector('.wp-wheel-wrapper');
         if (!wheelWrap || !resultCard) return;
         const rect = wheelWrap.getBoundingClientRect();
         const w = Math.round(rect.width);
-        const h = Math.round(rect.height);
+        const h = Math.round(rect.height); // same (square)
         resultCard.style.width  = w + 'px';
         resultCard.style.height = h + 'px';
       }
       syncResultCardSize();
-      window.addEventListener('resize', () => {
-        syncResultCardSize();
-        if (isMobile()) setMobileState('initial'); // re-evaluate visibility on orientation change
-      });
+      window.addEventListener('resize', syncResultCardSize);
+      // -----------------------------------------------------
+      */
 
-      // Panels (desktop-only usage; mobile uses data-mobile-state for visibility)
+      // Panels (header stays; no fade/hide)
       function setPanels(showResult) {
         panelInitial.hidden = !!showResult;
         panelResult.hidden  = !showResult;
@@ -373,17 +362,12 @@ Mobile flow states + desktop unchanged:
         if (spinning || n < 2) return;
         spinning = true;
 
+        // Reset header text at spin start
         if (headingEl) headingEl.textContent = baseHeading;
 
-        // Mobile: show wheel-only phase
-        if (isMobile()) setMobileState('spinning');
-        else setPanels(false);
-
+        setPanels(false);
         btnSpin.setAttribute('aria-busy', 'true');
         btnSpin.disabled = true;
-
-        // Size lock before animation (used for card later)
-        syncResultCardSize();
 
         const targetIndex = Math.floor(Math.random() * n);
         const targetCenterDeg = (targetIndex * sliceAngle) + sliceAngle / 2;
@@ -406,12 +390,15 @@ Mobile flow states + desktop unchanged:
             ? template.replace('{word}', chosen.label)
             : `You should choose ${chosen.label}`;
 
+          // Update ONLY the top header (single heading UX)
           if (headingEl) headingEl.textContent = newHeading;
 
+          // Image soft fade-in
           resultImg.classList.remove('wp-img-fade-in');
           if (chosen.image) {
             const onLoad = () => {
               resultImg.classList.add('wp-img-fade-in');
+              resultImg.removeEventListener('load', onLoad);
             };
             resultImg.addEventListener('load', onLoad, { once: true });
             resultImg.src = chosen.image;
@@ -421,8 +408,10 @@ Mobile flow states + desktop unchanged:
             resultImg.alt = '';
           }
 
-          syncResultCardSize();
+          // Ensure sizes are synced at the moment of reveal
+          //syncResultCardSize();
 
+          // Pointer bounce
           const pointerSvg = root.querySelector('.wp-pointer-svg');
           if (pointerSvg) {
             pointerSvg.classList.remove('wp-bounce');
@@ -430,14 +419,13 @@ Mobile flow states + desktop unchanged:
             pointerSvg.classList.add('wp-bounce');
           }
 
+          // Confetti burst
           const wrapper = root.querySelector('.wp-wheel-wrapper');
           if (wrapper) wpConfetti(wrapper, { count: 140 });
 
-          // Mobile: move to result state (wheel hides; card + respin show)
-          if (isMobile()) setMobileState('result');
-          else setPanels(true);
-
+          setPanels(true);
           if (live) live.textContent = `Selected ${chosen.label}`;
+
           btnSpin.disabled = false;
           btnSpin.removeAttribute('aria-busy');
           spinning = false;
@@ -448,12 +436,10 @@ Mobile flow states + desktop unchanged:
       }
 
       btnSpin?.addEventListener('click', spinOnce);
-
       btnRespin?.addEventListener('click', () => {
+        // restore initial view; keep header visible with base heading while spinning again
         if (headingEl) headingEl.textContent = baseHeading;
-        // Mobile: go back to spinning (wheel view), desktop: initial panel
-        if (isMobile()) setMobileState('spinning');
-        else setPanels(false);
+        setPanels(false);
         syncResultCardSize();
         spinOnce();
       });
@@ -464,9 +450,9 @@ Mobile flow states + desktop unchanged:
   </script>
 
   <style>
-    .wheel-picker-section { background: var(--wp-bg); color: var(--wp-text); padding: 2rem 1rem; }
+    .wheel-picker-section { background: #2877C2; color: var(--wp-text); display: flex; padding: 2rem 1rem; min-height: 800px; margin: auto 0; align-items: center;}
     .wp-container { max-width: 1100px; margin: 0 auto; }
-    .wp-grid { display: grid; gap: 1.5rem; align-items: center; }
+    .wp-grid { display: grid; gap: 100px; align-items: center; }
     @media (min-width: 900px) { .wp-grid { grid-template-columns: 1fr 1fr; } }
 
     /* LEFT */
@@ -479,37 +465,52 @@ Mobile flow states + desktop unchanged:
     }
     .wp-shadow-plate, .wp-wheel { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
 
+    /* Confetti canvas overlays the wheel, below the pointer */
     .wp-confetti{
-      position: absolute; inset: 0; width: 100%; height: 100%;
-      pointer-events: none; z-index: 90; display: block;
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 90;
+      display: block;
     }
 
     /* Pointer (right side, pointing LEFT) */
     .wp-pointer{
-      position: absolute; top: 50%;
+      position: absolute;
+      top: 50%;
       left: calc(100% + (var(--wp-pointer-offset, 0px)));
       transform: translateY(-50%);
-      z-index: 100; pointer-events: none;
+      z-index: 100;
+      pointer-events: none;
     }
     .wp-pointer-svg{
       width: calc(var(--wp-pointer-size, 30px) * 1.9);
       height: calc(var(--wp-pointer-size, 30px) * 1.2);
       filter: drop-shadow(0 2px 2px rgba(0,0,0,.25));
-      display: block; transform-origin: center;
+      display: block;
+      transform-origin: center;
     }
     .wp-pointer-back  { fill: #9CA3AF; }
     .wp-pointer-front { fill: #ffffff; stroke: var(--wp-pointer-color, #6B7280); stroke-width: 2; }
 
+    /* Pointer bounce animation */
     @keyframes wp-bounce {
-      0%{transform:translateX(0) scale(1)} 30%{transform:translateX(-4px) scale(1.02)}
-      60%{transform:translateX(0) scale(1)} 80%{transform:translateX(-1px) scale(1.01)}
-      100%{transform:translateX(0) scale(1)}
+      0%   { transform: translateX(0) scale(1); }
+      30%  { transform: translateX(-4px) scale(1.02); }
+      60%  { transform: translateX(0) scale(1); }
+      80%  { transform: translateX(-1px) scale(1.01); }
+      100% { transform: translateX(0) scale(1); }
     }
+
     .wp-pointer-svg.wp-bounce { animation: wp-bounce 400ms cubic-bezier(.25,.75,.25,1) 1; }
 
+    /* Rim */
     .wp-rim { fill: none; stroke: #E6F0FF; stroke-width: 8; }
     .wp-rim-glow { fill: none; stroke: rgba(30,136,229,.18); stroke-width: 8; }
 
+    /* Slices & labels */
     .wp-slice { transition: filter .2s ease; }
     .wp-wheel:hover .wp-slice { filter: brightness(1.02); }
 
@@ -518,70 +519,64 @@ Mobile flow states + desktop unchanged:
       font-weight: 700;
       fill: #0a2540;
       paint-order: stroke;
-      stroke: #ffffff; stroke-width: 2px;
-      letter-spacing: .2px; user-select: none; pointer-events: none;
+      stroke: #ffffff;
+      stroke-width: 2px;
+      letter-spacing: .2px;
+      user-select: none;
+      pointer-events: none;
     }
     .wp-hide-labels .wp-label { display: none; }
 
+    /* Center cap */
     .wp-cap-wrap { position: absolute; inset: 0; display: grid; place-items: center; pointer-events: none; }
     .wp-cap { width: 36%; height: 36%; filter: drop-shadow(0 6px 20px rgba(0,0,0,.12)); }
 
     /* RIGHT */
     .wp-right { max-width: 560px; margin: 0 auto; }
-    .wp-header { margin-bottom: .75rem; }
-    .wp-heading { font-size: clamp(1.5rem, 2.5vw, 2.25rem); margin: 0; }
-    .wp-subheading { margin: .25rem 0 0; opacity: .85; }
+    .wp-header { margin-bottom: .75rem; color: #ffffff; font-family: 'Poppins', sans-serif;}
+    .wp-heading { font-size: clamp(1.5rem, 2.5vw, 2.25rem); margin: 0; color: #ffffff; font-family: 'Poppins', sans-serif;}
+    .wp-subheading { margin: .25rem 0 0; opacity: .85; color: #ffffff; font-family: 'Roboto', sans-serif;}
 
     .wp-panel { margin-top: 1rem; }
 
-    /* Result card = wheel size (JS locks), image fades in and fits */
+    /* Result card: same size as wheel (square); image fades in and fits */
     .wp-result-card {
-      border-radius: 14px; overflow: hidden; box-shadow: 0 6px 20px rgba(0,0,0,.12);
-      width: 100%; height: auto; aspect-ratio: 1/1; background: #fff;
-      display: grid; place-items: center;
+      display: flex;
+      border-radius: 14px;
+      overflow: hidden;
+      box-shadow: 0 6px 20px rgba(0,0,0,.12);
+      width: 100%;         /* JS sets exact px width/height to match wheel */
+      height: 300px;
+      aspect-ratio: 1/1;   /* fallback until JS sync runs */
+      background: #fff;
+      display: grid;
+      place-items: center;
+      object-fit: contain;
+      align-items: center;
+      justify-content: center;
     }
     .wp-result-img {
-      width: 100%; height: 100%; object-fit: contain; display: block;
-      opacity: 0; transition: opacity .35s ease;
+      width: 80%;
+      height: 80%;
+      object-fit: contain;
+      display: block;
+      opacity: 0;          /* start hidden for fade */
+      transition: opacity .05s ease;
     }
     .wp-result-img.wp-img-fade-in { opacity: 1; }
 
     .wp-btn {
-      border: 0; padding: .8rem 1.4rem; border-radius: 999px; font-weight: 600;
-      transition: transform .12s ease, opacity .2s ease; cursor: pointer;
+      border: 0; padding: 15px 20px; border-radius: 999px; font-weight: 600; font-size: 18px;
+      transition: transform .12s ease, opacity .2s ease; cursor: pointer; background: #E1831B; min-width: 200px;
     }
     .wp-btn[disabled] { opacity: .6; cursor: not-allowed; }
     .wp-btn:active { transform: scale(.98); }
     .wp-btn-primary { background: var(--wp-accent); color: #fff; }
-    .wp-btn-secondary { background: transparent; color: var(--wp-accent); outline: 2px solid var(--wp-accent); }
+    .wp-btn-secondary { background: transparent; color: #ffffff; outline: 2px solid #ffffff; margin-top: 20px; }
 
     .visually-hidden {
       position: absolute!important; width: 1px; height: 1px; padding: 0; margin: -1px;
       overflow: hidden; clip: rect(0,0,0,0); border: 0; white-space: nowrap;
-    }
-
-    /* -------- Mobile flow (<=768px) -------- */
-    @media (max-width: 768px) {
-      .wp-grid { grid-template-columns: 1fr; }
-      .wp-right { order: 1; text-align: center; }
-      .wp-left  { order: 2; }
-
-      /* Default visibility in mobile states */
-      /* initial: show header + subheading + initial button; hide wheel & result */
-      [data-mobile-state="initial"] .wp-left         { display: none; }
-      [data-mobile-state="initial"] .wp-panel-initial{ display: block; }
-      [data-mobile-state="initial"] .wp-panel-result { display: none !important; }
-
-      /* spinning: hide header/subheading/buttons; show wheel only */
-      [data-mobile-state="spinning"] .wp-header      { display: none; }
-      [data-mobile-state="spinning"] .wp-panel-initial{ display: none; }
-      [data-mobile-state="spinning"] .wp-panel-result { display: none !important; }
-      [data-mobile-state="spinning"] .wp-left        { display: grid; }
-
-      /* result: show header (updated), show result panel; hide wheel & initial button */
-      [data-mobile-state="result"] .wp-left          { display: none; }
-      [data-mobile-state="result"] .wp-panel-initial { display: none; }
-      [data-mobile-state="result"] .wp-panel-result  { display: block !important; }
     }
   </style>
 
@@ -603,7 +598,7 @@ Mobile flow states + desktop unchanged:
       { "type": "color", "id": "accent_color", "label": "Accent color (buttons)", "default": "#1E88E5" },
       { "type": "color", "id": "pointer_color", "label": "Pointer border color", "default": "#6B7280" },
       { "type": "range", "id": "pointer_size", "label": "Pointer size", "min": 16, "max": 48, "step": 1, "default": 30 },
-      { "type": "range", "id": "pointer_offset", "label": "Pointer tip offset", "min": -20, "max": 20, "step": 1, "default": 0 },
+      { "type": "range", "id": "pointer_offset", "label": "Pointer tip offset", "min": -100, "max": 0, "step": 1, "default": 0 },
       { "type": "range", "id": "label_font_size", "label": "Label font size (px)", "min": 10, "max": 28, "step": 1, "default": 14 }
     ],
     "blocks": [
@@ -619,7 +614,7 @@ Mobile flow states + desktop unchanged:
     ],
     "presets": [
       {
-        "name": "Wheel Picker (Mobile Flow)",
+        "name": "Wheel Picker (Confetti + Bounce)",
         "category": "Interactive",
         "blocks": [
           { "type": "option", "settings": { "label": "Option 1" } },
