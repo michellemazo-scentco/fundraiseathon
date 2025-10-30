@@ -273,6 +273,8 @@
 /* Hide the mobile image by default (desktop view) */
 .hero-image-wrapper-mobile {
   display: none;
+  position: relative; /* needed for the ::before glow */
+  z-index: 1;
 }
 
 /* Keep the desktop pig sizing stable */
@@ -282,6 +284,20 @@
   width: auto;
   height: auto;
   object-fit: contain;
+}
+.hero-image-wrapper-mobile::before {
+  content: "";
+  position: absolute;
+  top: 10%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 180%;
+  height: 180%;
+  background: radial-gradient(circle at center, #ffdca7 0%, #ffe9c7 50%, transparent 100%);
+  z-index: -1;
+  border-radius: 50%;
+  filter: blur(40px);
+  opacity: 0.8;
 }
 
 /* MOBILE: show smaller pig between header and buttons */
@@ -319,6 +335,32 @@
     display: block;
     margin: 10px auto;
     text-align: center;
+  }
+  .hero-image-wrapper.hero-right {
+    display: none;
+  }
+
+  /* Show mobile image and glow */
+  .hero-image-wrapper-mobile {
+    display: block;
+    margin: 20px auto;
+    max-width: 220px;
+  }
+
+  .hero-image-wrapper-mobile img {
+    width: 100%;
+    height: auto;
+    object-fit: contain;
+    position: relative;
+    z-index: 2;
+  }
+
+  .hero-image-wrapper-mobile::before {
+    top: 0;
+    width: 160%;
+    height: 160%;
+    filter: blur(60px);
+    opacity: 0.9;
   }
 }
 
