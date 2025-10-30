@@ -357,13 +357,41 @@
   }
 
   .hero-image-wrapper-mobile::before {
+    content: "";
+    position: absolute;
     top: 0;
+    left: 50%;
+    transform: translateX(-50%);
     width: 160%;
     height: 160%;
+    background: radial-gradient(circle at center, #ffdca7 0%, #ffe9c7 50%, transparent 100%);
+    border-radius: 50%;
+    z-index: 0;
     filter: blur(60px);
     opacity: 0.9;
+    animation: glow-pulse 4s ease-in-out infinite; /* ✨ Add this line */
+  }
   }
 }
+
+@keyframes glow-pulse {
+  0% {
+    opacity: 0.8;
+    transform: translateX(-50%) scale(1);
+    filter: blur(40px);
+  }
+  50% {
+    opacity: 1;
+    transform: translateX(-50%) scale(1.1);
+    filter: blur(60px);
+  }
+  100% {
+    opacity: 0.8;
+    transform: translateX(-50%) scale(1);
+    filter: blur(40px);
+  }
+}
+
 
 </style>
 
