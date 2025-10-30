@@ -269,23 +269,41 @@
   transition: all 0.25s ease;
 }
 
-@media (max-width: 600px) {
-  .hero-content h1,
-  .highlighted-text-wrapper {
-    font-size: 1.8rem;
+/* Hide the mobile image by default (desktop view) */
+.hero-image-wrapper-mobile {
+  display: none;
+}
+
+/* Keep the desktop pig sizing stable */
+.hero-image-wrapper img {
+  max-width: 100%;
+  max-height: 500px;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+}
+
+/* MOBILE: show smaller pig between header and buttons */
+@media (max-width: 768px) {
+  /* Hide desktop image on mobile */
+  .hero-image-wrapper.hero-right {
+    display: none;
   }
 
-  .hero-content p {
-    font-size: 1rem;
-  }
-
-  .hero-buttons .btn {
-    width: 100%;
-    max-width: 280px;
+  /* Show the mobile image */
+  .hero-image-wrapper-mobile {
     display: block;
-    margin: 10px auto;
+    margin: 20px auto;
+    max-width: 220px; /* smaller pig */
+  }
+
+  .hero-image-wrapper-mobile img {
+    width: 100%;
+    height: auto;
+    object-fit: contain;
   }
 }
+
 </style>
 
 <script>
