@@ -259,6 +259,42 @@
   height: auto;
 }
 
+/* 📱 Mobile responsiveness */
+@media (max-width: 768px) {
+  .alternating-section .content-block {
+    flex-direction: column !important; /* stack all blocks vertically */
+    flex-wrap: wrap;
+    align-items: center;
+    text-align: center; /* optional for better readability */
+  }
+
+  .alternating-section .text-content,
+  .alternating-section .image-content {
+    flex: 1 1 100%;
+    max-width: 100%;
+  }
+
+  /* spacing between text and image */
+  .alternating-section .image-content {
+    margin-top: 25px;
+  }
+
+  /* keep tags centered below text */
+  .tags-wrapper {
+    justify-content: center;
+  }
+
+  /* optional: reduce heading and paragraph size for mobile */
+  .text-content h3 {
+    font-size: 22px;
+  }
+
+  .text-content p {
+    font-size: 16px;
+  }
+}
+
+
 
 
 </style>
