@@ -14,7 +14,6 @@
       "label": "Review Section Body",
       "default": "Default"
     }
-
   ],
   "blocks": [
     {
@@ -60,155 +59,143 @@
 {% endschema %}
 
 {% stylesheet %}
-
-.review-heading{
-    font-family: 'Poppins', sans-serif;
-    font-size: 29px;
-    font-weight: 800;
-    color: #1F2443;
-    margin-bottom: 10px;
+/* --- General Section Styles --- */
+.review-heading {
+  font-family: 'Poppins', sans-serif;
+  font-size: 29px;
+  font-weight: 800;
+  color: #1F2443;
+  margin-bottom: 10px;
+  text-align: center;
 }
 
-.review-subheading{
-    font-family: 'Roboto', sans-serif;
-    font-size: 20px;
-    color: #1F2443;
-    margin-top: 0;
-    margin-bottom: 50px;
+.review-subheading {
+  font-family: 'Roboto', sans-serif;
+  font-size: 20px;
+  color: #1F2443;
+  margin: 0 0 50px;
+  text-align: center;
 }
+
+/* --- Carousel Container --- */
 .review-carousel-container {
-    position: relative;
-    overflow: hidden;
-    max-width: 1200px;
-    align-items: center;
-    margin: 50px auto;
-    background: #EAF3FB;
+  position: relative;
+  overflow: hidden;
+  max-width: 1200px;
+  margin: 50px auto;
+  background: #EAF3FB;
+  padding: 30px 15px;
+  border-radius: 12px;
 }
 
 .review-track {
-    margin-top: 50px;
-    display: flex;
-    transition: transform 0.4s ease;
+  display: flex;
+  transition: transform 0.4s ease;
+  will-change: transform;
+  align-items: stretch;
 }
 
+/* --- Review Card --- */
 .review-card {
-    display: flex;
-    flex: 0 0 33.3333%;
-    padding: 1rem;
-    box-sizing: border-box;
-    border: 1px solid #2877C2;
-    border-radius: 15px;
-    margin-right: 20px;
-    text-align: left;
-    transition: all 0.3s ease;
-    height: 400px;
-    max-width: 350px;
-    color: #1F2443;
-    justify-content: space-between;
-    flex-direction: column;
-}
-
-.card-content {
-  flex-grow: 1;
+  display: flex;
+  flex: 0 0 33.3333%;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 1rem;
+  margin-right: 20px;
+  border: 1px solid #2877C2;
+  border-radius: 15px;
+  text-align: left;
+  color: #1F2443;
+  height: 400px;
+  max-width: 350px;
+  background: #fff;
+  transition: all 0.3s ease;
 }
 
 .review-card.active {
-    border-color: #2877C2;
-    background-color: #2877C2;
-    color: #ffffff;
+  background-color: #2877C2;
+  border-color: #2877C2;
+  color: #fff;
+}
+
+/* --- Stars --- */
+.stars {
+  color: #2877C2;
+  margin: 10px 0 20px;
 }
 
 .review-card.active .stars-icon {
-    color: #ffffff;
+  color: #fff;
 }
 
-.stars {
-    color: #007aff;
-    margin-bottom: 20px;
-    margin-top: 10px;
-}
-
-
+/* --- Content --- */
 .review-title {
-    font-family: 'Roboto', sans-serif;
-    font-size: 20px;
-    font-weight: bold;
-    margin-bottom: 0.25rem;
+  font-family: 'Roboto', sans-serif;
+  font-size: 20px;
+  font-weight: bold;
+  margin-bottom: 10px;
 }
 
 .review-body {
-    font-family: 'Roboto', sans-serif;
-    font-size: 18px;
-    margin-bottom: 20px;
+  font-family: 'Roboto', sans-serif;
+  font-size: 18px;
+  margin-bottom: 20px;
 }
 
+/* --- Footer --- */
 .review-footer {
-    display: flex;
-    align-items: left;
-    justify-content: left;
-    gap: 0.75rem;
-    margin-top: 1rem;
-    align-items: stretch;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
 }
 
 .school-logo {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    object-fit: cover;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
 }
 
 .review-meta {
-    text-align: left;
+  text-align: left;
 }
 
 .review-meta .name {
-    font-weight: bold;
+  font-weight: bold;
 }
 
-  .review-meta .school {
-    font-style: italic;
-    font-size: 0.85rem;
-  }
+.review-meta .school {
+  font-style: italic;
+  font-size: 0.85rem;
+}
 
-  .carousel-controls {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-top: 1rem;
-  }
-
-  .carousel-dots {
-    display: flex;
-    justify-content: center;
-  }
-
-  .carousel-dots span {
-    width: 10px;
-    height: 10px;
-    background: #ccc;
-    border-radius: 50%;
-    margin: 0 4px;
-    cursor: pointer;
-  }
-
-  .carousel-dots span.active {
-    background: #007aff;
-  }
-
-  .arrow-btn {
-    background: none;
-    border: none;
-    font-size: 1.5rem;
-    cursor: pointer;
-  }
-  .carousel-navigation {
+/* --- Navigation --- */
+.carousel-navigation {
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 1rem;
-  margin-top: 1rem;
+  margin-top: 1.5rem;
+}
 
+.carousel-dots {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.carousel-dots span {
+  width: 10px;
+  height: 10px;
+  background: #ccc;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.carousel-dots span.active {
+  background: #007aff;
 }
 
 .arrow-btn {
@@ -220,27 +207,51 @@
   align-items: center;
   justify-content: center;
 }
+
+.arrow-btn svg {
+  width: 20px;
+  height: 20px;
+  color: #2877C2;
+  transition: color 0.3s ease;
+}
+
+.arrow-btn:hover svg {
+  color: #1F2443;
+}
+
+/* --- Responsive --- */
+@media screen and (max-width: 768px) {
+  .review-card {
+    flex: 0 0 100%;
+    margin: 0 auto;
+    max-width: 100%;
+  }
+
+  .review-carousel-container {
+    padding: 20px;
+  }
+
+  .carousel-navigation {
+    margin-top: 1rem;
+  }
+}
 {% endstylesheet %}
 
 <div class="review-carousel-container" data-reviews-carousel>
-   <h2 class="review-heading">{{ section.settings.review_heading }}</h2>
-   <p class="review-subheading">{{ section.settings.review_body }}</p>
+  <h2 class="review-heading">{{ section.settings.review_heading }}</h2>
+  <p class="review-subheading">{{ section.settings.review_body }}</p>
 
   <div class="review-track">
     {% for block in section.blocks %}
       <div class="review-card{% if forloop.index == 2 %} active{% endif %}">
         <div class="card-content">
-            <div class="stars">
-                <svg class="stars-icon"width="135" height="21" viewBox="0 0 208 33" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M18.536 0.81875C18.2798 0.31875 17.761 0 17.1985 0C16.636 0 16.1173 0.31875 15.861 0.81875L11.261 9.83125L1.2673 11.4187C0.711048 11.5062 0.248548 11.9 0.0735482 12.4375C-0.101452 12.975 0.0422981 13.5625 0.436048 13.9625L7.58605 21.1187L6.01105 31.1125C5.92355 31.6687 6.1548 32.2312 6.61105 32.5625C7.0673 32.8938 7.6673 32.9437 8.17355 32.6875L17.1985 28.1L26.2173 32.6875C26.7173 32.9437 27.3235 32.8938 27.7798 32.5625C28.236 32.2312 28.4673 31.675 28.3798 31.1125L26.7985 21.1187L33.9485 13.9625C34.3485 13.5625 34.4861 12.975 34.3111 12.4375C34.1361 11.9 33.6798 11.5062 33.1173 11.4187L23.1298 9.83125L18.536 0.81875Z" fill="currentColor"/>
-                    <path d="M61.9217 0.81875C61.6655 0.31875 61.1467 0 60.5842 0C60.0217 0 59.503 0.31875 59.2467 0.81875L54.6467 9.83125L44.653 11.4187C44.0967 11.5062 43.6342 11.9 43.4592 12.4375C43.2842 12.975 43.428 13.5625 43.8217 13.9625L50.9717 21.1187L49.3967 31.1125C49.3092 31.6687 49.5405 32.2312 49.9967 32.5625C50.453 32.8938 51.053 32.9437 51.5592 32.6875L60.5842 28.1L69.603 32.6875C70.103 32.9437 70.7092 32.8938 71.1655 32.5625C71.6217 32.2312 71.853 31.675 71.7655 31.1125L70.1842 21.1187L77.3342 13.9625C77.7342 13.5625 77.8717 12.975 77.6967 12.4375C77.5217 11.9 77.0655 11.5062 76.503 11.4187L66.5155 9.83125L61.9217 0.81875Z" fill="currentColor"/>
-                    <path d="M105.307 0.81875C105.051 0.31875 104.532 0 103.97 0C103.407 0 102.889 0.31875 102.632 0.81875L98.0324 9.83125L88.0387 11.4187C87.4824 11.5062 87.0199 11.9 86.8449 12.4375C86.6699 12.975 86.8137 13.5625 87.2074 13.9625L94.3574 21.1187L92.7824 31.1125C92.6949 31.6687 92.9262 32.2312 93.3824 32.5625C93.8387 32.8938 94.4387 32.9437 94.9449 32.6875L103.97 28.1L112.989 32.6875C113.489 32.9437 114.095 32.8938 114.551 32.5625C115.007 32.2312 115.239 31.675 115.151 31.1125L113.57 21.1187L120.72 13.9625C121.12 13.5625 121.257 12.975 121.082 12.4375C120.907 11.9 120.451 11.5062 119.889 11.4187L109.901 9.83125L105.307 0.81875Z" fill="currentColor"/>
-                    <path d="M148.693 0.81875C148.437 0.31875 147.918 0 147.356 0C146.793 0 146.274 0.31875 146.018 0.81875L141.418 9.83125L131.424 11.4187C130.868 11.5062 130.406 11.9 130.231 12.4375C130.056 12.975 130.199 13.5625 130.593 13.9625L137.743 21.1187L136.168 31.1125C136.081 31.6687 136.312 32.2312 136.768 32.5625C137.224 32.8938 137.824 32.9437 138.331 32.6875L147.356 28.1L156.374 32.6875C156.874 32.9437 157.481 32.8938 157.937 32.5625C158.393 32.2312 158.624 31.675 158.537 31.1125L156.956 21.1187L164.106 13.9625C164.506 13.5625 164.643 12.975 164.468 12.4375C164.293 11.9 163.837 11.5062 163.274 11.4187L153.287 9.83125L148.693 0.81875Z" fill="currentColor"/>
-                    <path d="M192.079 0.81875C191.823 0.31875 191.304 0 190.741 0C190.179 0 189.66 0.31875 189.404 0.81875L184.804 9.83125L174.81 11.4187C174.254 11.5062 173.791 11.9 173.616 12.4375C173.441 12.975 173.585 13.5625 173.979 13.9625L181.129 21.1187L179.554 31.1125C179.466 31.6687 179.698 32.2312 180.154 32.5625C180.61 32.8938 181.21 32.9437 181.716 32.6875L190.741 28.1L199.76 32.6875C200.26 32.9437 200.866 32.8938 201.323 32.5625C201.779 32.2312 202.01 31.675 201.923 31.1125L200.341 21.1187L207.491 13.9625C207.891 13.5625 208.029 12.975 207.854 12.4375C207.679 11.9 207.223 11.5062 206.66 11.4187L196.673 9.83125L192.079 0.81875Z" fill="currentColor"/>
-                </svg>
-            </div>
-            <div class="review-title">{{ block.settings.title }}</div>
-            <div class="review-body">{{ block.settings.body }}</div>
+          <div class="stars">
+            <svg class="stars-icon" width="135" height="21" viewBox="0 0 208 33" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="..." fill="currentColor"/>
+            </svg>
+          </div>
+          <div class="review-title">{{ block.settings.title }}</div>
+          <div class="review-body">{{ block.settings.body }}</div>
         </div>
         <div class="review-footer">
           {% if block.settings.school_logo %}
@@ -256,86 +267,80 @@
   </div>
 
   <div class="carousel-navigation">
-    <button class="arrow-btn" data-carousel-prev><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 512" width="20" height="20"><!--!Font Awesome Free v7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2025 Fonticons, Inc.--><path d="M7.7 235.8c-10.3 12.6-9.5 31.1 2.2 42.8l128 128c9.2 9.2 22.9 11.9 34.9 6.9s19.8-16.6 19.8-29.6l0-256c0-12.9-7.8-24.6-19.8-29.6s-25.7-2.2-34.9 6.9l-128 128-2.2 2.4z" fill="#2877C2"/></svg></button>
-  
-    <div class="carousel-dots">
-        {% for block in section.blocks %}
-        <span class="{% if forloop.index == 2 %}active{% endif %}" data-dot-index="{{ forloop.index0 }}"></span>
-        {% endfor %}
-    </div>
-    <button class="arrow-btn" data-carousel-next aria-label="Next review">
-       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 512" width="20" height="20"><!--!Font Awesome Free v7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2025 Fonticons, Inc.--><path d="M249.3 235.8c10.2 12.6 9.5 31.1-2.2 42.8l-128 128c-9.2 9.2-22.9 11.9-34.9 6.9S64.5 396.9 64.5 384l0-256c0-12.9 7.8-24.6 19.8-29.6s25.7-2.2 34.9 6.9l128 128 2.2 2.4z" fill="#2877C2"/></svg>
+    <button class="arrow-btn" data-carousel-prev aria-label="Previous review">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 512">
+        <path d="M7.7 235.8c-10.3 12.6-9.5 31.1 2.2 42.8l128 128c9.2 9.2 22.9 11.9 34.9 6.9s19.8-16.6 19.8-29.6l0-256c0-12.9-7.8-24.6-19.8-29.6s-25.7-2.2-34.9 6.9l-128 128-2.2 2.4z" fill="currentColor"/>
+      </svg>
     </button>
+
+    <div class="carousel-dots">
+      {% for block in section.blocks %}
+        <span class="{% if forloop.index == 2 %}active{% endif %}" data-dot-index="{{ forloop.index0 }}"></span>
+      {% endfor %}
     </div>
+
+    <button class="arrow-btn" data-carousel-next aria-label="Next review">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 512">
+        <path d="M249.3 235.8c10.2 12.6 9.5 31.1-2.2 42.8l-128 128c-9.2 9.2-22.9 11.9-34.9 6.9S64.5 396.9 64.5 384l0-256c0-12.9 7.8-24.6 19.8-29.6s25.7-2.2 34.9 6.9l128 128 2.2 2.4z" fill="currentColor"/>
+      </svg>
+    </button>
+  </div>
 </div>
 
+{% javascript %}
 <script>
-  (() => {
-    const container = document.querySelector('[data-reviews-carousel]');
-    if (!container) return;
+(() => {
+  const container = document.querySelector('[data-reviews-carousel]');
+  if (!container) return;
 
-    const track = container.querySelector('.review-track');
-    const cards = container.querySelectorAll('.review-card');
-    const dots = container.querySelectorAll('.carousel-dots span');
-    const prevBtn = container.querySelector('[data-carousel-prev]');
-    const nextBtn = container.querySelector('[data-carousel-next]');
-    let currentIndex = 1;
+  const track = container.querySelector('.review-track');
+  const cards = container.querySelectorAll('.review-card');
+  const dots = container.querySelectorAll('.carousel-dots span');
+  const prevBtn = container.querySelector('[data-carousel-prev]');
+  const nextBtn = container.querySelector('[data-carousel-next]');
+  
+  let currentIndex = 0;
 
-    const totalCards = cards.length;
-    const visibleCards = 3;
+  function getCardWidth() {
+    return cards[0].offsetWidth + parseFloat(getComputedStyle(cards[0]).marginRight || 0);
+  }
 
-    function updateCarousel() {
-      const cardWidth = cards[0].offsetWidth + 16; // includes margin
-      const offset = Math.max(0, (currentIndex - 1) * cardWidth);
-      track.style.transform = `translateX(-${offset}px)`;
+  function updateCarousel() {
+    const offset = currentIndex * getCardWidth();
+    track.style.transform = `translateX(-${offset}px)`;
+    cards.forEach((card, i) => card.classList.toggle('active', i === currentIndex));
+    dots.forEach((dot, i) => dot.classList.toggle('active', i === currentIndex));
+  }
 
-      cards.forEach((card, index) => {
-        card.classList.toggle('active', index === currentIndex);
-      });
-
-      dots.forEach((dot, index) => {
-        dot.classList.toggle('active', index === currentIndex);
-      });
-    }
-
-    function goTo(index) {
-      currentIndex = (index + totalCards) % totalCards;
-      updateCarousel();
-    }
-
-    prevBtn.addEventListener('click', () => goTo(currentIndex - 1));
-    nextBtn.addEventListener('click', () => goTo(currentIndex + 1));
-
-    dots.forEach(dot => {
-      dot.addEventListener('click', () => {
-        currentIndex = parseInt(dot.dataset.dotIndex);
-        updateCarousel();
-      });
-    });
-
-    // Auto-slide every 5 seconds
-    let autoSlide = true;
-    let interval = setInterval(() => {
-      if (autoSlide) goTo(currentIndex + 1);
-    }, 5000);
-
-    container.addEventListener('mouseenter', () => autoSlide = false);
-    container.addEventListener('mouseleave', () => autoSlide = true);
-
-    // Swipe support
-    let startX = 0;
-    container.addEventListener('touchstart', e => {
-      startX = e.touches[0].clientX;
-    });
-
-    container.addEventListener('touchend', e => {
-      let deltaX = e.changedTouches[0].clientX - startX;
-      if (deltaX > 50) goTo(currentIndex - 1);
-      if (deltaX < -50) goTo(currentIndex + 1);
-    });
-
-    window.addEventListener('resize', updateCarousel);
+  function goTo(index) {
+    if (index < 0) index = cards.length - 1;
+    if (index >= cards.length) index = 0;
+    currentIndex = index;
     updateCarousel();
-  })();
+  }
+
+  prevBtn.addEventListener('click', () => goTo(currentIndex - 1));
+  nextBtn.addEventListener('click', () => goTo(currentIndex + 1));
+  dots.forEach(dot => dot.addEventListener('click', () => goTo(parseInt(dot.dataset.dotIndex))));
+
+  let autoSlide = true;
+  let interval = setInterval(() => { if (autoSlide) goTo(currentIndex + 1); }, 5000);
+
+  container.addEventListener('mouseenter', () => autoSlide = false);
+  container.addEventListener('mouseleave', () => autoSlide = true);
+
+  let startX = 0;
+  container.addEventListener('touchstart', e => startX = e.touches[0].clientX);
+  container.addEventListener('touchend', e => {
+    const delta = e.changedTouches[0].clientX - startX;
+    if (delta > 50) goTo(currentIndex - 1);
+    if (delta < -50) goTo(currentIndex + 1);
+  });
+
+  window.addEventListener('resize', updateCarousel);
+  updateCarousel();
+})();
 </script>
+{% endjavascript %}
+
 
