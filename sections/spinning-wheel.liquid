@@ -1,8 +1,8 @@
 {% comment %}
 File: sections/wheel-picker.liquid
-- One heading only: top header updates with result text (no fade/hide)
-- Result card = same size as wheel (square); image soft fade-in
-- Pointer bounce + confetti; curved 2-line labels
+Mobile flow: initial(header+btn) → spinning(wheel only) → result(header updated + card + respin)
+Desktop: wheel left, content right (unchanged)
+Pointer bounce + confetti; curved 2-line labels; result card sized to wheel; image fade-in
 {% endcomment %}
 
 <section id="wheel-picker-{{ section.id }}" class="wheel-picker-section {% unless section.settings.show_labels_on_wheel %}wp-hide-labels{% endunless %}" style="
@@ -13,7 +13,7 @@ File: sections/wheel-picker.liquid
   --wp-pointer-offset: {{ section.settings.pointer_offset }}px;
   --wp-pointer-color: {{ section.settings.pointer_color }};
   --wp-label-font: {{ section.settings.label_font_size | default: 14 }}px;
-">
+" data-mobile-state="">
   <div class="wp-container">
     <div class="wp-grid">
       <!-- LEFT: Wheel -->
@@ -32,7 +32,6 @@ File: sections/wheel-picker.liquid
 
           <!-- Wheel (rotates) -->
           <svg class="wp-wheel" viewBox="-120 -120 240 240" role="img" aria-label="Selection wheel">
-            <!-- dynamic <defs>, slices & labels injected by JS -->
             <circle class="wp-rim" r="112"></circle>
             <circle class="wp-rim-glow" r="115"></circle>
           </svg>
@@ -84,7 +83,6 @@ File: sections/wheel-picker.liquid
 
         <!-- Result panel -->
         <div class="wp-panel wp-panel-result" hidden>
-          <!-- (removed result h3 to avoid duplicate headings) -->
           <div class="wp-result-card">
             <img class="wp-result-img" src="" alt="" loading="lazy">
           </div>
@@ -116,7 +114,8 @@ File: sections/wheel-picker.liquid
       const template = {{ section.settings.result_heading_template | json }};
 
       const svg = root.querySelector('.wp-wheel');
-      const headerEl = root.querySelector('.wp-header');
+      const wheelWrap = root.querySelector('.wp-wheel-wrapper');
+
       const headingEl = root.querySelector('.wp-heading');
       const baseHeading = headingEl?.dataset.baseHeading || headingEl?.textContent.trim() || '';
       const live = root.querySelector('#wp-live-{{ section.id }}');
@@ -146,6 +145,19 @@ File: sections/wheel-picker.liquid
       const NS = 'http://www.w3.org/2000/svg';
       const mk = (tag) => document.createElementNS(NS, tag);
 
+      // --- mobile state helpers ---
+      const mql = window.matchMedia('(max-width: 768px)');
+      function isMobile() { return mql.matches; }
+      function setMobileState(state) {
+        root.setAttribute('data-mobile-state', state || '');
+      }
+      function initState() {
+        setMobileState(isMobile() ? 'initial' : '');
+      }
+      mql.addEventListener?.('change', initState);
+      initState();
+
+      // --- geometry helpers ---
       function polar(r, deg) {
         const rad = (deg - 90) * Math.PI / 180;
         return { x: r * Math.cos(rad), y: r * Math.sin(rad) };
@@ -183,6 +195,7 @@ File: sections/wheel-picker.liquid
       const pointerHeightPx = pointerSizePx * 1.2;
       const labelClearanceSvg = pxToSvgUnits(Math.max(8, pointerHeightPx * 0.55));
 
+      // --- build wheel with curved, 2-line labels ---
       function buildWheel() {
         svg.querySelectorAll('.wp-slice, .wp-label, defs').forEach(n => n.remove());
         const defs = mk('defs');
@@ -192,7 +205,6 @@ File: sections/wheel-picker.liquid
           const start = i * sliceAngle;
           const end = (i + 1) * sliceAngle;
 
-          // Slice
           const path = mk('path');
           path.setAttribute('d', slicePath(start, end, radius));
           path.setAttribute('class', 'wp-slice');
@@ -201,7 +213,6 @@ File: sections/wheel-picker.liquid
           path.setAttribute('stroke-width', '1');
           svg.insertBefore(path, svg.firstChild);
 
-          // Two concentric arcs for 2 text lines
           const rOuterText = radius - PAD_OUT - labelClearanceSvg;
           const rInnerText = Math.max(CAP_R + PAD_IN + 10, rOuterText - 14);
 
@@ -219,10 +230,8 @@ File: sections/wheel-picker.liquid
           arc2.setAttribute('d', arcPath(rInnerText, arcStart, arcEnd));
           defs.appendChild(arc2);
 
-          // Split into up to 2 lines
           const [line1, line2] = splitTwoLines(options[i].label);
 
-          // Render line 1 on outer arc
           const text1 = mk('text');
           text1.setAttribute('class', 'wp-label');
           text1.setAttribute('text-anchor', 'middle');
@@ -236,7 +245,6 @@ File: sections/wheel-picker.liquid
           text1.appendChild(tp1);
           svg.appendChild(text1);
 
-          // Render line 2 (if any) on inner arc
           if (line2) {
             const text2 = mk('text');
             text2.setAttribute('class', 'wp-label');
@@ -255,7 +263,7 @@ File: sections/wheel-picker.liquid
       }
       buildWheel();
 
-      // ---- Confetti utils ----
+      // ---- Confetti ----
       function wpConfetti(rootEl, opts = {}) {
         const canvas = rootEl.querySelector('.wp-confetti');
         if (!canvas) return;
@@ -294,8 +302,10 @@ File: sections/wheel-picker.liquid
 
         let rafId = 0;
         function step() {
-          ctx.clearRect(0, 0, rectCSS.width, rectCSS.height);
+          const rectCSS = canvas.getBoundingClientRect(); // keep up with responsive size
           let alive = 0;
+          const ctx2 = ctx;
+          ctx2.clearRect(0, 0, rectCSS.width, rectCSS.height);
           for (const p of parts) {
             p.vx *= (1 - drag);
             p.vy += g;
@@ -306,42 +316,40 @@ File: sections/wheel-picker.liquid
 
             if (p.life > 0 && p.y < rectCSS.height + 20 && p.x > -20) {
               alive++;
-              ctx.save();
-              ctx.translate(p.x, p.y);
-              ctx.rotate(p.rot);
-              ctx.globalAlpha = Math.max(0, p.life);
-              ctx.fillStyle = p.color;
-              ctx.fillRect(-p.w/2, -p.h/2, p.w, p.h);
-              ctx.beginPath();
-              ctx.arc(0, 0, p.r, 0, Math.PI * 2);
-              ctx.fill();
-              ctx.restore();
+              ctx2.save();
+              ctx2.translate(p.x, p.y);
+              ctx2.rotate(p.rot);
+              ctx2.globalAlpha = Math.max(0, p.life);
+              ctx2.fillStyle = p.color;
+              ctx2.fillRect(-p.w/2, -p.h/2, p.w, p.h);
+              ctx2.beginPath();
+              ctx2.arc(0, 0, p.r, 0, Math.PI * 2);
+              ctx2.fill();
+              ctx2.restore();
             }
           }
           if (alive > 0) rafId = requestAnimationFrame(step);
-          else { ctx.clearRect(0, 0, rectCSS.width, rectCSS.height); }
+          else { ctx2.clearRect(0, 0, rectCSS.width, rectCSS.height); }
         }
         cancelAnimationFrame(rafId);
         step();
       }
-      // -------------------------------------
-      /*
+
       // ---- Result card sizing = same as wheel (square) ----
       function syncResultCardSize() {
-        const wheelWrap = root.querySelector('.wp-wheel-wrapper');
         if (!wheelWrap || !resultCard) return;
         const rect = wheelWrap.getBoundingClientRect();
         const w = Math.round(rect.width);
-        const h = Math.round(rect.height); // same (square)
         resultCard.style.width  = w + 'px';
-        resultCard.style.height = h + 'px';
+        resultCard.style.height = w + 'px';
       }
       syncResultCardSize();
-      window.addEventListener('resize', syncResultCardSize);
-      // -----------------------------------------------------
-      */
+      window.addEventListener('resize', () => {
+        syncResultCardSize();
+        if (isMobile()) setMobileState('initial');
+      });
 
-      // Panels (header stays; no fade/hide)
+      // Panels (desktop only; mobile uses state)
       function setPanels(showResult) {
         panelInitial.hidden = !!showResult;
         panelResult.hidden  = !showResult;
@@ -362,12 +370,17 @@ File: sections/wheel-picker.liquid
         if (spinning || n < 2) return;
         spinning = true;
 
-        // Reset header text at spin start
+        // Reset header at spin start
         if (headingEl) headingEl.textContent = baseHeading;
 
-        setPanels(false);
+        // Mobile: show wheel only; Desktop: show wheel panel
+        if (isMobile()) setMobileState('spinning'); else setPanels(false);
+
         btnSpin.setAttribute('aria-busy', 'true');
         btnSpin.disabled = true;
+
+        // Lock card size early (for result)
+        syncResultCardSize();
 
         const targetIndex = Math.floor(Math.random() * n);
         const targetCenterDeg = (targetIndex * sliceAngle) + sliceAngle / 2;
@@ -390,10 +403,8 @@ File: sections/wheel-picker.liquid
             ? template.replace('{word}', chosen.label)
             : `You should choose ${chosen.label}`;
 
-          // Update ONLY the top header (single heading UX)
           if (headingEl) headingEl.textContent = newHeading;
 
-          // Image soft fade-in
           resultImg.classList.remove('wp-img-fade-in');
           if (chosen.image) {
             const onLoad = () => {
@@ -408,10 +419,8 @@ File: sections/wheel-picker.liquid
             resultImg.alt = '';
           }
 
-          // Ensure sizes are synced at the moment of reveal
-          //syncResultCardSize();
+          syncResultCardSize();
 
-          // Pointer bounce
           const pointerSvg = root.querySelector('.wp-pointer-svg');
           if (pointerSvg) {
             pointerSvg.classList.remove('wp-bounce');
@@ -419,13 +428,13 @@ File: sections/wheel-picker.liquid
             pointerSvg.classList.add('wp-bounce');
           }
 
-          // Confetti burst
           const wrapper = root.querySelector('.wp-wheel-wrapper');
           if (wrapper) wpConfetti(wrapper, { count: 140 });
 
-          setPanels(true);
-          if (live) live.textContent = `Selected ${chosen.label}`;
+          // Mobile → result; Desktop → show result panel
+          if (isMobile()) setMobileState('result'); else setPanels(true);
 
+          if (live) live.textContent = `Selected ${chosen.label}`;
           btnSpin.disabled = false;
           btnSpin.removeAttribute('aria-busy');
           spinning = false;
@@ -436,10 +445,10 @@ File: sections/wheel-picker.liquid
       }
 
       btnSpin?.addEventListener('click', spinOnce);
+
       btnRespin?.addEventListener('click', () => {
-        // restore initial view; keep header visible with base heading while spinning again
         if (headingEl) headingEl.textContent = baseHeading;
-        setPanels(false);
+        if (isMobile()) setMobileState('spinning'); else setPanels(false);
         syncResultCardSize();
         spinOnce();
       });
@@ -503,7 +512,6 @@ File: sections/wheel-picker.liquid
       80%  { transform: translateX(-1px) scale(1.01); }
       100% { transform: translateX(0) scale(1); }
     }
-
     .wp-pointer-svg.wp-bounce { animation: wp-bounce 400ms cubic-bezier(.25,.75,.25,1) 1; }
 
     /* Rim */
@@ -541,27 +549,23 @@ File: sections/wheel-picker.liquid
 
     /* Result card: same size as wheel (square); image fades in and fits */
     .wp-result-card {
-      display: flex;
       border-radius: 14px;
       overflow: hidden;
       box-shadow: 0 6px 20px rgba(0,0,0,.12);
-      width: 100%;         /* JS sets exact px width/height to match wheel */
-      height: 300px;
-      aspect-ratio: 1/1;   /* fallback until JS sync runs */
+      width: 100%;
+      height: auto;
+      aspect-ratio: 1/1;
       background: #fff;
       display: grid;
       place-items: center;
-      object-fit: contain;
-      align-items: center;
-      justify-content: center;
     }
     .wp-result-img {
-      width: 80%;
-      height: 80%;
+      width: 100%;
+      height: 100%;
       object-fit: contain;
       display: block;
-      opacity: 0;          /* start hidden for fade */
-      transition: opacity .05s ease;
+      opacity: 0;
+      transition: opacity .25s ease;
     }
     .wp-result-img.wp-img-fade-in { opacity: 1; }
 
@@ -577,6 +581,29 @@ File: sections/wheel-picker.liquid
     .visually-hidden {
       position: absolute!important; width: 1px; height: 1px; padding: 0; margin: -1px;
       overflow: hidden; clip: rect(0,0,0,0); border: 0; white-space: nowrap;
+    }
+
+    /* -------- Mobile flow (<=768px) -------- */
+    @media (max-width: 768px) {
+      .wp-grid { grid-template-columns: 1fr; gap: 1.25rem; }
+      .wp-right { order: 1; text-align: center; }
+      .wp-left  { order: 2; }
+
+      /* initial: header + initial button; wheel hidden; result hidden */
+      [data-mobile-state="initial"] .wp-left           { display: none; }
+      [data-mobile-state="initial"] .wp-panel-initial  { display: block; }
+      [data-mobile-state="initial"] .wp-panel-result   { display: none !important; }
+
+      /* spinning: wheel only */
+      [data-mobile-state="spinning"] .wp-header        { display: none; }
+      [data-mobile-state="spinning"] .wp-panel-initial { display: none; }
+      [data-mobile-state="spinning"] .wp-panel-result  { display: none !important; }
+      [data-mobile-state="spinning"] .wp-left          { display: grid; }
+
+      /* result: header (updated) + result panel; wheel hidden; spin button hidden */
+      [data-mobile-state="result"] .wp-left            { display: none; }
+      [data-mobile-state="result"] .wp-panel-initial   { display: none; }
+      [data-mobile-state="result"] .wp-panel-result    { display: block !important; }
     }
   </style>
 
@@ -614,7 +641,7 @@ File: sections/wheel-picker.liquid
     ],
     "presets": [
       {
-        "name": "Wheel Picker (Confetti + Bounce)",
+        "name": "Wheel Picker (Mobile Flow)",
         "category": "Interactive",
         "blocks": [
           { "type": "option", "settings": { "label": "Option 1" } },
