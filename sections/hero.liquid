@@ -300,6 +300,24 @@
   opacity: 0.8;
 }
 
+@keyframes glow-pulse {
+  0% {
+    opacity: 0.8;
+    transform: translateX(-50%) scale(1);
+    filter: blur(40px);
+  }
+  50% {
+    opacity: 1;
+    transform: translateX(-50%) scale(1.1);
+    filter: blur(60px);
+  }
+  100% {
+    opacity: 0.8;
+    transform: translateX(-50%) scale(1);
+    filter: blur(40px);
+  }
+}
+
 /* MOBILE: show smaller pig between header and buttons */
 @media (max-width: 768px) {
   /* Hide desktop image on mobile */
@@ -374,23 +392,6 @@
   }
 }
 
-@keyframes glow-pulse {
-  0% {
-    opacity: 0.8;
-    transform: translateX(-50%) scale(1);
-    filter: blur(40px);
-  }
-  50% {
-    opacity: 1;
-    transform: translateX(-50%) scale(1.1);
-    filter: blur(60px);
-  }
-  100% {
-    opacity: 0.8;
-    transform: translateX(-50%) scale(1);
-    filter: blur(40px);
-  }
-}
 
 
 </style>
