@@ -220,6 +220,24 @@
   align-items: center;
   justify-content: center;
 }
+
+@media screen and (max-width: 768px) {
+  .review-card {
+    flex: 0 0 100%;
+    max-width: 100%;
+    margin-right: 0;
+  }
+
+  .review-track {
+    gap: 1rem; /* optional spacing for mobile */
+  }
+
+  .carousel-navigation {
+    flex-wrap: wrap;
+    gap: 0.75rem;
+  }
+}
+
 {% endstylesheet %}
 
 <div class="review-carousel-container" data-reviews-carousel>
