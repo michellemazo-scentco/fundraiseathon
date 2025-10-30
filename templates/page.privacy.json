@@ -81,7 +81,7 @@
       ],
       "name": "t:sections.image-with-text.presets.name",
       "settings": {
-        "image": "shopify://shop_images/Group_f7cc14ec-3e11-4b69-85f5-0995c282f4e9.png",
+        "image": "shopify://shop_images/Asset_14.png",
         "height": "adapt",
         "desktop_image_width": "small",
         "layout": "image_first",
