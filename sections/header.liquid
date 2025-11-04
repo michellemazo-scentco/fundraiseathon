@@ -202,71 +202,6 @@
   background-color: #e67e00;
 }
 
-/* --- Mobile Header Styles --- */
-@media (max-width: 989px) {
-  /* remove sticky/floating on mobile */
-  .header-wrapper {
-    position: static !important;
-    top: 0;
-    margin: 0;
-    border-radius: 0;
-    box-shadow: none;
-    background-color: #fff; /* white background */
-    height: 64px;
-    padding: 0 1rem;
-  }
-
-  /* internal layout: logo left, hamburger right */
-  .header {
-    justify-content: space-between !important;
-    align-items: center;
-  }
-
-  /* hide desktop menu + desktop CTA on mobile */
-  .list-menu,
-  .nav-cta-button {
-    display: none !important;
-  }
-
-  /* show Shopify's existing menu drawer toggle */
-  header-drawer {
-    display: flex !important;
-    align-items: center;
-    margin-left: auto;
-  }
-
-  /* optional: ensure logo scales well */
-  .header__heading-logo-wrapper img {
-    max-height: 40px;
-    width: auto;
-  }
-
-  /* ensure no gap above header */
-  body {
-    padding-top: 0 !important;
-  }
-
-  @media (max-width: 989px) {
-  header-drawer {
-    display: flex !important;
-    align-items: center;
-    margin-left: auto;
-  }
-
-  /* make sure menu links inside drawer are visible */
-  .menu-drawer__menu {
-    display: block !important;
-  }
-
-  /* prevent hiding mobile menu by accident */
-  header .list-menu {
-    display: none !important; /* hides desktop inline nav */
-  }
-}
-
-}
-
-
 </style>
 
 {%- style -%}
@@ -323,16 +258,12 @@
   -%}
   <header class="header header--{{ section.settings.logo_position }} header--mobile-{{ section.settings.mobile_logo_position }} page-width{% if section.settings.menu_type_desktop == 'drawer' %} drawer-menu{% endif %}{% if section.settings.menu != blank %} header--has-menu{% endif %}{% if has_app_block %} header--has-app{% endif %}{% if social_links %} header--has-social{% endif %}{% if shop.customer_accounts_enabled %} header--has-account{% endif %}{% if localization_forms %} header--has-localizations{% endif %}">
     {%- liquid
-      assign active_menu = section.settings.menu
-      if active_menu == blank
-        assign active_menu = linklists.main-menu
+      if section.settings.menu != blank
+        render 'header-drawer'
       endif
 
-      if active_menu != blank
-        render 'header-drawer', menu: active_menu
-      endif
+    
     -%}
-
 
     {%- if section.settings.logo_position != 'middle-center' -%}
       {%- if request.page_type == 'index' -%}
