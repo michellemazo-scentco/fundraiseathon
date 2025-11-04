@@ -202,6 +202,52 @@
   background-color: #e67e00;
 }
 
+/* --- Mobile Header Styles --- */
+@media (max-width: 989px) {
+  /* remove sticky/floating on mobile */
+  .header-wrapper {
+    position: static !important;
+    top: 0;
+    margin: 0;
+    border-radius: 0;
+    box-shadow: none;
+    background-color: #fff; /* white background */
+    height: 64px;
+    padding: 0 1rem;
+  }
+
+  /* internal layout: logo left, hamburger right */
+  .header {
+    justify-content: space-between !important;
+    align-items: center;
+  }
+
+  /* hide desktop menu + desktop CTA on mobile */
+  .list-menu,
+  .nav-cta-button {
+    display: none !important;
+  }
+
+  /* show Shopify's existing menu drawer toggle */
+  header-drawer {
+    display: flex !important;
+    align-items: center;
+    margin-left: auto;
+  }
+
+  /* optional: ensure logo scales well */
+  .header__heading-logo-wrapper img {
+    max-height: 40px;
+    width: auto;
+  }
+
+  /* ensure no gap above header */
+  body {
+    padding-top: 0 !important;
+  }
+}
+
+
 </style>
 
 {%- style -%}
