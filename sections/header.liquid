@@ -245,6 +245,25 @@
   body {
     padding-top: 0 !important;
   }
+
+  @media (max-width: 989px) {
+  header-drawer {
+    display: flex !important;
+    align-items: center;
+    margin-left: auto;
+  }
+
+  /* make sure menu links inside drawer are visible */
+  .menu-drawer__menu {
+    display: block !important;
+  }
+
+  /* prevent hiding mobile menu by accident */
+  header .list-menu {
+    display: none !important; /* hides desktop inline nav */
+  }
+}
+
 }
 
 
