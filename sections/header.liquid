@@ -126,6 +126,67 @@
 
   }
 
+  @media screen and (max-width: 749px) {
+
+    .header-wrapper {
+        top: 0;
+        margin: 0;
+        border-radius: 0;
+        box-shadow: none;
+        max-width: 100%;
+        padding: 0 1rem;
+        height: 60px;
+    }
+
+    /* --- Mobile drawer School Admin CTA --- */
+      .mobile-school-admin-cta {
+        display: flex;
+        justify-content: center;
+        margin: 1.5rem 0 2rem;
+      }
+
+      .mobile-school-admin-cta .nav-cta-button {
+        width: 80%;
+        text-align: center;
+        justify-content: center;
+        background-color: #E1831B;
+        padding: 0.8rem 1rem;
+        border-radius: 6px;
+        color: #fff;
+        font-family: 'Roboto', sans-serif;
+        font-size: 16px;
+        font-weight: 600;
+        text-decoration: none;
+        transition: background 0.2s ease;
+      }
+
+      .mobile-school-admin-cta .nav-cta-button:hover {
+        background-color: #e67e00;
+      }
+
+      .header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        width: 100%;
+      }
+
+      .header__heading {
+        margin: 0;
+      }
+
+      .header__icons {
+        margin-left: auto;
+        gap: 0;
+      }
+
+      header-drawer {
+        margin-left: 0;
+      }
+
+  
+  }
+
  
   .header__icons {
     display: flex;
@@ -172,45 +233,9 @@
     stroke: currentColor;
   }
 
-
-  @media screen and (max-width: 749px) {
-
-    .header-wrapper {
-        top: 0;
-        margin: 0;
-        border-radius: 0;
-        box-shadow: none;
-        max-width: 100%;
-        padding: 0 1rem;
-        height: 60px;
-    }
-
-    /* --- Mobile drawer School Admin CTA --- */
-      .nav-cta-button {
-        display: none;
-      }
-
-      .header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        width: 100%;
-      }
-
-      .header__heading {
-        margin: 0;
-      }
-
-      .header__icons {
-        margin-left: auto;
-        gap: 0;
-      }
-
-      header-drawer {
-        margin-left: 0;
-      }
-
-  
+  @media (max-width: 749px) {
+    .nav-cta-button { padding: 0.5rem 0.9rem; }
+    .nav-cta-label { font-size: 0.95rem; }
   }
 
 
