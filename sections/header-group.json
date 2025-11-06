@@ -13,6 +13,9 @@
   "sections": {
     "header": {
       "type": "header",
+      "custom_css": [
+        "body,html {background-color: #ffffff !important;}"
+      ],
       "settings": {
         "logo_position": "middle-left",
         "menu": "new-menu",
