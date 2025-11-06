@@ -14,7 +14,7 @@
     "header": {
       "type": "header",
       "custom_css": [
-        "body,html {background-color: #ffffff !important;}"
+        "body,html {background-color: #ffffff !important; color: white;}"
       ],
       "settings": {
         "logo_position": "middle-left",
