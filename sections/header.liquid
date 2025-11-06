@@ -390,7 +390,7 @@
         </h1>
       {%- endif -%}
     {%- endif -%}
-  
+    {% comment %}
     <div class="header__icons{% if section.settings.enable_country_selector or section.settings.enable_language_selector %} header__icons--localization header-localization{% endif %}">
       {% comment %}
       <div class="desktop-localization-wrapper">
@@ -450,7 +450,7 @@
         {%- endcase -%}
       {%- endfor -%}
 
-      {% comment %} Cart icon in header 
+       Cart icon in header 
       <!---- ><a href="{{ routes.cart_url }}" class="header__icon header__icon--cart link focus-inset" id="cart-icon-bubble">
         {%- liquid
           if cart == empty
