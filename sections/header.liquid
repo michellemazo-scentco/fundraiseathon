@@ -165,21 +165,16 @@
       }
 
       .header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        width: 100%;
         flex-direction: row-reverse;
-        padding: 0;
+        justify-content: flex-start;
       }
 
       .header__heading {
         margin: 0;
-        margin-right: auto;
       }
 
       .header__icons {
-        margin-left: auto;
+        margin-left: 0;
         gap: 0;
       }
 
@@ -199,9 +194,9 @@
         padding-left: 0;
       }
 
-      .page-width {
-        padding-left: 0;
-        padding-right: 0;
+      .page-width, .header-wrapper {
+        padding-left: 0 !important;
+        padding-right: 0 !important;
       }
 
       .header__icons header__icons--localization header-localization{
