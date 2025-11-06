@@ -21,7 +21,7 @@
         "menu": "new-menu",
         "menu_type_desktop": "dropdown",
         "sticky_header_type": "always",
-        "show_line_separator": true,
+        "show_line_separator": false,
         "color_scheme": "scheme-a6df8e7f-e635-4076-94a0-5d8ee4801a5b",
         "menu_color_scheme": "scheme-a6df8e7f-e635-4076-94a0-5d8ee4801a5b",
         "enable_country_selector": true,
