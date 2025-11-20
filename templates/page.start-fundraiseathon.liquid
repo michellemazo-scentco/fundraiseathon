@@ -642,7 +642,8 @@ document.addEventListener("DOMContentLoaded", async () => {
     option.value = c.dial_code.replace('+', '');
     option.dataset.code = c.code;
     option.dataset.flag = c.flag;
-    option.textContent = `${c.name} (${c.dial_code})`;
+   display.textContent = `(${flag} ${code}) +${dial}`;
+
     select.appendChild(option);
   });
 
