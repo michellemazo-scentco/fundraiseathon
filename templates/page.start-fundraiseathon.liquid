@@ -4,6 +4,10 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- Add in your <head> -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.17/css/intlTelInput.css" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.17/js/intlTelInput.min.js"></script>
+
 
   <title>Fundraiser Request</title>
   <style>
@@ -424,7 +428,7 @@
             <input class="signup-field" type="text" name="name" placeholder="Jane Doe"required>
             
             <label class="signup-label">Phone Number<span class="required">*</span></label>
-            <input class="signup-field" type="tel" name="phone" placeholder="000-000-0000" required>
+            <input class="signup-field" id="phone" type="tel" name="phone" placeholder="+1 415-555-2671" required>
 
             <label class="signup-label">Email*</label>
             <input class="signup-field" type="email" name="email" placeholder="janedoe@email.com" required>
