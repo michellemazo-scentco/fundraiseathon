@@ -273,8 +273,10 @@
 
 .custom-country-picker {
   position: relative;
-  max-width: 180px;
+  max-width: 200px;
   cursor: pointer;
+  display: flex;
+  align-items: center;
 }
 
 .phone-code-select {
@@ -289,15 +291,18 @@
 }
 
 .phone-code-display {
-  font-weight: bold;
-  font-family: monospace;
-  z-index: 1;
-  display: block;
+  display: flex;
+  align-items: center;
+  gap: 6px;
   padding: 10px;
   background: #f4f4f4;
   border: 1px solid #ccc;
   border-radius: 4px;
+  white-space: nowrap;
+  font-family: 'Poppins', sans-serif;
+  font-size: 14px;
 }
+
 
 
     /* Thank You Section */
