@@ -267,41 +267,16 @@
     .phone-input-wrapper {
   display: flex;
   gap: 10px;
-  align-items: stretch; /* ensures equal height */
+  align-items: center;
   margin-bottom: 20px;
 }
 
 .custom-country-picker {
   position: relative;
+  max-width: 200px;
+  cursor: pointer;
   display: flex;
   align-items: center;
-  flex: 0 0 200px;
-  font-family: 'Poppins', sans-serif;
-}
-
-.phone-code-display {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 8px;
-  width: 100%;
-  padding: 10px;
-  background: #f4f4f4;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  font-size: 14px;
-  white-space: nowrap;
-  position: relative;
-  height: 100%;
-  box-sizing: border-box;
-}
-
-/* Optional: Add arrow with a pseudo-element */
-.phone-code-display::after {
-  content: '▾';
-  margin-left: auto;
-  font-size: 12px;
-  color: #555;
 }
 
 .phone-code-select {
@@ -315,16 +290,18 @@
   z-index: 2;
 }
 
-#local-number {
-  flex: 1;
-  font-size: 14px;
+.phone-code-display {
+  display: flex;
+  align-items: center;
+  gap: 6px;
   padding: 10px;
+  background: #f4f4f4;
   border: 1px solid #ccc;
   border-radius: 4px;
-  box-sizing: border-box;
-  height: 100%;
+  white-space: nowrap;
+  font-family: 'Poppins', sans-serif;
+  font-size: 14px;
 }
-
 
 
 
@@ -652,11 +629,12 @@
       }
     });
   </script>
-<script>
+ <script>
 document.addEventListener("DOMContentLoaded", async () => {
   const select = document.getElementById('country-code');
   const display = document.getElementById('country-display');
 
+  // Fetch from Shopify assets folder
   const response = await fetch('{{ "countries.json" | asset_url }}');
   const countries = await response.json();
 
@@ -664,7 +642,6 @@ document.addEventListener("DOMContentLoaded", async () => {
     const option = document.createElement('option');
     option.value = c.dial_code.replace('+', '');
     option.dataset.code = c.code;
-    option.dataset.flag = c.flag;
     option.textContent = `${c.name} (${c.dial_code})`;
     select.appendChild(option);
   });
@@ -681,7 +658,6 @@ document.addEventListener("DOMContentLoaded", async () => {
   updateDisplay();
 });
 </script>
-
 
 
 
