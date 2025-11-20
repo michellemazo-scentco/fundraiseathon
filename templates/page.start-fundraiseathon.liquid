@@ -804,6 +804,20 @@
     });
   </script>
   <script>
+  const countrySelect = document.getElementById('country-code');
+  const displaySpan = document.getElementById('country-display');
+
+  function updateDisplay() {
+    displaySpan.textContent = '+' + countrySelect.value;
+  }
+
+  countrySelect.addEventListener('change', updateDisplay);
+
+  // Initialize on page load
+  updateDisplay();
+</script>
+
+  <script>
   document.addEventListener("DOMContentLoaded", function () {
     const phoneInput = document.querySelector("#phone");
     const iti = window.intlTelInput(phoneInput, {
