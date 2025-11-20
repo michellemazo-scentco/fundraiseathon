@@ -579,5 +579,48 @@
       }
     });
   </script>
+  <script>
+  const phoneInput = document.querySelector("#phone");
+  const iti = window.intlTelInput(phoneInput, {
+    initialCountry: "us",
+    nationalMode: false,
+    utilsScript: "https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.17/js/utils.js"
+  });
+
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    // Validate phone number
+    if (!iti.isValidNumber()) {
+      formMessage.textContent = "Please enter a valid phone number.";
+      return;
+    }
+
+    // Set the phone number in E.164 format
+    const phoneE164 = iti.getNumber();
+    const formData = new FormData(form);
+    formData.set('phone', phoneE164);
+
+    try {
+      const response = await fetch('https://usebasin.com/f/a62323b3665e', {
+        method: 'POST',
+        headers: { 'Accept': 'application/json' },
+        body: formData
+      });
+
+      if (response.ok) {
+        document.getElementById("form-section").style.display = "none";
+        document.getElementById("thank-you-section").style.display = "flex";
+        form.reset();
+        iti.setNumber(''); // reset phone input as well
+      } else {
+        formMessage.textContent = "There was an error submitting the form.";
+      }
+    } catch (error) {
+      formMessage.textContent = "Something went wrong. Try again later.";
+    }
+  });
+</script>
+
 </body>
 </html>
