@@ -812,9 +812,7 @@
   }
 
   countrySelect.addEventListener('change', updateDisplay);
-
-  // Initialize on page load
-  updateDisplay();
+  document.addEventListener('DOMContentLoaded', updateDisplay);
 </script>
 
   <script>
