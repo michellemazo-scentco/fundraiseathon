@@ -428,7 +428,17 @@
             <input class="signup-field" type="text" name="name" placeholder="Jane Doe"required>
             
             <label class="signup-label">Phone Number<span class="required">*</span></label>
-            <input class="signup-field" id="phone" type="tel" name="phone" placeholder="+1 415-555-2671" required>
+            <div style="display: flex; gap: 10px;">
+              <select id="country-code" name="country_code" style="width: 100px;" required>
+                <option value="+1">+1 (US)</option>
+                <option value="+44">+44 (UK)</option>
+                <option value="+61">+61 (AU)</option>
+                <option value="+91">+91 (IN)</option>
+                <!-- Add more as needed -->
+              </select>
+              <input id="local-number" class="signup-field" type="tel" name="local_number" placeholder="4155552671" required>
+            </div>
+
 
             <label class="signup-label">Email*</label>
             <input class="signup-field" type="email" name="email" placeholder="janedoe@email.com" required>
