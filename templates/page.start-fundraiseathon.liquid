@@ -637,35 +637,35 @@
       }
     });
   </script>
-<script>
-document.addEventListener("DOMContentLoaded", async () => {
-  const select = document.getElementById('country-code');
-  const display = document.getElementById('country-display');
+  <script>
+    document.addEventListener("DOMContentLoaded", async () => {
+      const select = document.getElementById('country-code');
+      const display = document.getElementById('country-display');
 
-  const response = await fetch('{{ "countries.json" | asset_url }}');
-  const countries = await response.json();
+      const response = await fetch('{{ "countries.json" | asset_url }}');
+      const countries = await response.json();
 
-  countries.forEach(c => {
-    const option = document.createElement('option');
-    option.value = c.dial_code.replace('+', '');
-    option.dataset.code = c.code;
-    option.dataset.flag = c.flag;
-    option.textContent = `${c.name} (${c.dial_code})`;
-    select.appendChild(option);
-  });
+      countries.forEach(c => {
+        const option = document.createElement('option');
+        option.value = c.dial_code.replace('+', '');
+        option.dataset.code = c.code;
+        option.dataset.flag = c.flag;
+        option.textContent = `${c.name} (${c.dial_code})`;
+        select.appendChild(option);
+      });
 
-  const updateDisplay = () => {
-    const selected = select.options[select.selectedIndex];
-    const code = selected.dataset.code;
-    const flag = selected.dataset.flag;
-    const dial = selected.value;
-    display.textContent = `(${flag} ${code}) +${dial}`;
-  };
+      const updateDisplay = () => {
+        const selected = select.options[select.selectedIndex];
+        const code = selected.dataset.code;
+        const flag = selected.dataset.flag;
+        const dial = selected.value;
+        display.textContent = `(${flag} ${code}) +${dial}`;
+      };
 
-  select.addEventListener('change', updateDisplay);
-  updateDisplay();
-});
-</script>
+      select.addEventListener('change', updateDisplay);
+      updateDisplay();
+    });
+  </script>
 
 
 
