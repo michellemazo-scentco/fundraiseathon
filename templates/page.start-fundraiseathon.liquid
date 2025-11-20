@@ -270,13 +270,33 @@
   align-items: center;
   margin-bottom: 20px;
 }
-.phone-code-select {
-  max-width: 220px;
+
+.custom-country-picker {
+  position: relative;
+  max-width: 180px;
+  cursor: pointer;
 }
+
+.phone-code-select {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  cursor: pointer;
+  z-index: 2;
+}
+
 .phone-code-display {
-  min-width: 80px;
   font-weight: bold;
   font-family: monospace;
+  z-index: 1;
+  display: block;
+  padding: 10px;
+  background: #f4f4f4;
+  border: 1px solid #ccc;
+  border-radius: 4px;
 }
 
 
@@ -604,16 +624,15 @@
       }
     });
   </script>
-  <script>
+ <script>
 document.addEventListener("DOMContentLoaded", async () => {
   const select = document.getElementById('country-code');
   const display = document.getElementById('country-display');
 
-  // Load country data from Shopify's assets folder
+  // Fetch from Shopify assets folder
   const response = await fetch('{{ "countries.json" | asset_url }}');
   const countries = await response.json();
 
-  // Populate dropdown
   countries.forEach(c => {
     const option = document.createElement('option');
     option.value = c.dial_code.replace('+', '');
@@ -622,7 +641,6 @@ document.addEventListener("DOMContentLoaded", async () => {
     select.appendChild(option);
   });
 
-  // Update display with acronym + dial code
   const updateDisplay = () => {
     const selected = select.options[select.selectedIndex];
     display.textContent = `${selected.dataset.code} (+${selected.value})`;
@@ -632,6 +650,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   updateDisplay();
 });
 </script>
+
 
 
 
