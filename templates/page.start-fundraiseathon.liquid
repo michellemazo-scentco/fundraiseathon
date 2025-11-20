@@ -586,16 +586,34 @@
     });
   </script>
   <script>
-  const countrySelect = document.getElementById('country-code');
-  const displaySpan = document.getElementById('country-display');
+    document.addEventListener("DOMContentLoaded", async () => {
+      const select = document.getElementById('country-code');
+      const display = document.getElementById('country-display');
 
-  function updateDisplay() {
-    displaySpan.textContent = '+' + countrySelect.value;
-  }
+      // Load JSON
+      const response = await fetch('/path/to/countries.json'); // Update this path
+      const countries = await response.json();
 
-  countrySelect.addEventListener('change', updateDisplay);
-  document.addEventListener('DOMContentLoaded', updateDisplay);
-</script>
+      // Populate dropdown
+      countries.forEach(c => {
+        const option = document.createElement('option');
+        option.value = c.dial_code.replace('+', '');
+        option.dataset.code = c.code;
+        option.textContent = `${c.name} (${c.dial_code})`;
+        select.appendChild(option);
+      });
+
+      // Update display when changed
+      const updateDisplay = () => {
+        const selected = select.options[select.selectedIndex];
+        display.textContent = `${selected.dataset.code} (+${selected.value})`;
+      };
+
+      select.addEventListener('change', updateDisplay);
+      updateDisplay();
+    });
+    </script>
+
 
   <script>
   document.addEventListener("DOMContentLoaded", function () {
