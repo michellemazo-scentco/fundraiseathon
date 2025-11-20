@@ -614,16 +614,21 @@
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
 
+      const dialCode = document.getElementById('country-code').value;   // e.g. "1"
+      const local = document.getElementById('local-number').value.replace(/\D/g, ''); // numeric only
+      
+      // Build E.164 phone number
+      const phoneE164 = `+${dialCode}${local}`;
+
       const formData = new FormData(form);
-      const data = Object.fromEntries(formData.entries());
+      formData.set('phone', phoneE164);  
 
       try {
-        // Replace with your Formspree or EmailJS endpoint
         const response = await fetch('https://usebasin.com/f/a62323b3665e', {
           method: 'POST',
           headers: { 'Accept': 'application/json' },
           body: formData
-        }); 
+        });
 
         if (response.ok) {
           document.getElementById("form-section").style.display = "none";
@@ -636,6 +641,7 @@
         formMessage.textContent = "Something went wrong. Try again later.";
       }
     });
+
   </script>
   <script>
     document.addEventListener("DOMContentLoaded", async () => {
