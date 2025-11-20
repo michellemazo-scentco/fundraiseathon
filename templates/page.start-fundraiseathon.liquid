@@ -648,8 +648,10 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   const updateDisplay = () => {
     const selected = select.options[select.selectedIndex];
+    const code = selected.dataset.code;
+    const flag = selected.dataset.flag;
+    const dial = selected.value;
     display.textContent = `(${flag} ${code}) +${dial}`;
-
   };
 
   select.addEventListener('change', updateDisplay);
