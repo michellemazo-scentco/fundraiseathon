@@ -629,12 +629,11 @@
       }
     });
   </script>
- <script>
+<script>
 document.addEventListener("DOMContentLoaded", async () => {
   const select = document.getElementById('country-code');
   const display = document.getElementById('country-display');
 
-  // Fetch from Shopify assets folder
   const response = await fetch('{{ "countries.json" | asset_url }}');
   const countries = await response.json();
 
@@ -642,6 +641,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     const option = document.createElement('option');
     option.value = c.dial_code.replace('+', '');
     option.dataset.code = c.code;
+    option.dataset.flag = c.flag;
     option.textContent = `${c.name} (${c.dial_code})`;
     select.appendChild(option);
   });
@@ -658,6 +658,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   updateDisplay();
 });
 </script>
+
 
 
 
