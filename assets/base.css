@@ -1233,6 +1233,7 @@ button.shopify-payment-button__button--unbranded {
 
 .cart__dynamic-checkout-buttons iframe {
   box-shadow: var(--shadow-horizontal-offset) var(--shadow-vertical-offset) var(--shadow-blur-radius) rgba(var(--color-shadow), var(--shadow-opacity));
+  display: none important!;
 }
 
 .button,
