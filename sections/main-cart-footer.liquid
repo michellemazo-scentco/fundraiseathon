@@ -194,7 +194,35 @@
           code[0] = 'fundraiser_id';
           code[1] = fundraiser_id;
         }
-        [...Object.entries(responseData.data), code].forEach((item) => addAttributeElement(item));
+        //
+        //[...Object.entries(responseData.data), code].forEach((item) => addAttributeElement(item));
+      //}
+    //} catch (error) {
+      //console.log('Something went wrong!', error);
+
+      [...Object.entries(responseData.data), code].forEach((item) => addAttributeElement(item));
+
+        // Also write to cart note_attributes so Apple Pay / Google Pay
+        // and other accelerated checkouts (which skip the cart form) still
+        // receive all order details on the webhook.
+        const noteAttributes = {};
+        if (referral_code) noteAttributes['referral_code'] = referral_code;
+        if (fundraiser_id) noteAttributes['campaign_code'] = fundraiser_id;
+        // Spread the full API response so anonymous donation fields
+        // (campaign_id, campaign_name, campaign_description, avatar, etc.)
+        // are also preserved through accelerated checkout.
+        Object.entries(responseData.data).forEach(([key, value]) => {
+          if (value !== null && value !== undefined && typeof value !== 'object') {
+            noteAttributes[key] = String(value);
+          }
+        });
+        if (Object.keys(noteAttributes).length > 0) {
+          fetch('/cart/update.js', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ note_attributes: noteAttributes }),
+          });
+        }
       }
     } catch (error) {
       console.log('Something went wrong!', error);
