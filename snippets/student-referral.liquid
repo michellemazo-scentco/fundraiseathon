@@ -169,12 +169,25 @@
   }
 
   // Save Student Referral Code to local storage to collect upon order submission
+  //function addCode(code) {
+    //if (!code) {
+      //removeCode();
+      //return;
+    //}
+    //localStorage.setItem('referral_code', code);
+  //}
+
   function addCode(code) {
     if (!code) {
       removeCode();
       return;
     }
     localStorage.setItem('referral_code', code);
+    fetch('/cart/update.js', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ note_attributes: { referral_code: code } }),
+    });
   }
 
   document.addEventListener('DOMContentLoaded', function () {
