@@ -176,11 +176,24 @@
   }
 
   // Save Fundraiser ID to local storage to collect upon order submission
+  //function addCode(code) {
+    //if (!code) {
+      //removeCode();
+      //return;
+    //}
+    //localStorage.setItem('fundraiser_id', code);
+  //}
+
   function addCode(code) {
     if (!code) {
       removeCode();
       return;
     }
     localStorage.setItem('fundraiser_id', code);
+    fetch('/cart/update.js', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ note_attributes: { campaign_code: code } }),
+    });
   }
 </script>
